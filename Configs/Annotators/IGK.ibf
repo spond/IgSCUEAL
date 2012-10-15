@@ -69,7 +69,7 @@ function MapIGK (ref,qry)
         }
     }
 	coords 	   = remapSequenceCoordinatesToReference (ref, qryWithN);
- 	fprintf ("/Users/sergei/Desktop/igg.fas", CLEAR_FILE,">ref\n", ref, "\n>qry\n", qry, "\n>qryN\n", qryWithN, "\n");
+ 	//fprintf ("/Users/sergei/Desktop/igg.fas", CLEAR_FILE,">ref\n", ref, "\n>qry\n", qry, "\n>qryN\n", qryWithN, "\n");
  		
 	_IGKHReport = {};
 	
