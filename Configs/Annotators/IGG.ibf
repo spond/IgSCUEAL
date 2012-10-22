@@ -28,7 +28,8 @@ _extraOutputColumns = {"0": "FW1",
                        "15": "D",
                        "16" : "D_AA",
                        "17" : "J",
-                       "18" : "J_AA"};
+                       "18" : "J_AA",
+                       "19" : "Mapped Read"};
 
 
 breaks = {{74,104,152,185,305,314,374}};
@@ -94,7 +95,7 @@ function MapIGG (ref,qry)
 	coords 	   = remapSequenceCoordinatesToReference (ref, qryWithN);
  	//fprintf ("/Users/sergei/Desktop/igg.fas", CLEAR_FILE,">ref\n", ref, "\n>qry\n", qry, "\n>qryN\n", qryWithN, "\n");
 	_IGHHReport = {};
-	
+	_IGHHReport ["Mapped Read"] = qryWithN;
 	_codonMappingIGHH = defineCodonToAA();
 	currentL         = 0;
 	// replace all triplet gaps with nothing

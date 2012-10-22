@@ -25,7 +25,8 @@ _extraOutputColumns = {"0": "FW1",
                        "12": "JUNCTION",
                        "13": "JUNCTION_AA",
                        "14" : "J",
-                       "15" : "J_AA"};
+                       "15" : "J_AA",
+                       "16" : "Mapped Read"};
 
 
 aa_breaks = {{26,38,55,58,94,101,113}};
@@ -72,7 +73,8 @@ function MapIGK (ref,qry)
  	//fprintf ("/Users/sergei/Desktop/igg.fas", CLEAR_FILE,">ref\n", ref, "\n>qry\n", qry, "\n>qryN\n", qryWithN, "\n");
  		
 	_IGKHReport = {};
-	
+	_IGKHReport ["Mapped Read"] = qryWithN;
+
 	_codonMappingIGHH = defineCodonToAA();
 	currentL         = 0;
 	// replace all triplet gaps with nothing
