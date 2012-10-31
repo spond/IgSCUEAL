@@ -2805,23 +2805,23 @@ summaryMatrix[0][0] = "Breakpoint locations";
 
 bpSupport = {ibp,3};
 
-for (_mc=0; _mc<ibp; _mc=_mc+1)
+for (_mc=0; _mc<ibp; _mc+=1)
 {
 	lb = bestPC[_mc];
 	ub = bestPC[_mc];
 	s  = breakPointSupport[bestPC[_mc]-1];
 	while (s<0.95)
 	{
-		lb = lb-1;
-		ub = ub+1;
-		
-		if (lb>=0)
-		{
-			s = s + breakPointSupport[lb];
+		if (lb>=1) {
+		    lb = lb-1;
+			s+=breakPointSupport[lb];
 		}
-		if (ub<filteredData.sites)
-		{
-			s = s + breakPointSupport[ub];
+		if (ub<filteredData.sites-1) {
+		    ub = ub+1;
+			s+=breakPointSupport[ub];
+		}
+		if (lb == 0 && ub == filteredData.sites-1) {
+		    break;
 		}
 	}
 	
