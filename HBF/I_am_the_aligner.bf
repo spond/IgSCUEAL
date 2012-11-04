@@ -474,7 +474,7 @@ for (_currentSeqID = 0; _currentSeqID < ds_to_align.species; _currentSeqID = _cu
 					if (alignmentType == 2)
 					{
 						// trim everything not covered by the reference
-						gapCount = aligned[1]$"^\\-+";
+						/*gapCount = aligned[1]$"^\\-+";
 						if (gapCount[1] >= 0)
 						{
 							aligned[1] = (aligned[1])[gapCount[1]+1][-1];
@@ -497,7 +497,7 @@ for (_currentSeqID = 0; _currentSeqID < ds_to_align.species; _currentSeqID = _cu
 								
 								aligned[2] = Join("",mx) + aligned[2];
 							}
-						}
+						}*/
 						bestAlignment = aligned;
 					}
 				}	
@@ -643,8 +643,6 @@ for (_currentSeqID = 0; _currentSeqID < ds_to_align.species; _currentSeqID = _cu
 		refLength = Abs (UnalignedSeqs[0]);
 	}
 	
-	
-
 	SeqAlignments 	 = {};
 	SeqAlignments[seqCounter] = aligned;
 	aligned = aligned[1];
@@ -654,6 +652,7 @@ for (_currentSeqID = 0; _currentSeqID < ds_to_align.species; _currentSeqID = _cu
         aligned1 = (SeqAlignments[seqCounter])[1];
         aligned2 = (SeqAlignments[seqCounter])[2];
         cleaned_up = correctReadUsingCodonAlignedData (aligned1, aligned2);
+        //fprintf (stdout, "\n\n", aligned1, "\n\n", aligned2, "\n\n");
         gappedSeqN  = cleaned_up ["QRY"];
         fullRefSeq  = cleaned_up ["REF"];
         ref_shift    = cleaned_up ["OFFSET"];
@@ -666,7 +665,7 @@ for (_currentSeqID = 0; _currentSeqID < ds_to_align.species; _currentSeqID = _cu
             aligned2    = gappedSeqN;
         }
         
-        //fprintf (stdout, "\n\n", aligned1, "\n\n", aligned2, "\n\n");
+        //fprintf (stdout, "\n\n", aligned1, "\n\n", aligned2, "\n\n", ref_shift, "\n");
           
     } else {
         myStartingPosition = aligned$"[^-]";
