@@ -57,4 +57,4 @@ _validBreakpointStructure [1] = {"0":"^V[^\\,]+\\,J[^\\,]+\\ inter",
 								 };
 								 
 _annotateSequenceByAlignment	  = "MapIGG";
-ExecuteAFile ("Annotators/IGG.ibf");
+ExecuteAFile ("Annotators/IGG_mouse.ibf");

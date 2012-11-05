@@ -3,10 +3,16 @@ FR1 	0-74		1
 CDR1 	75-104		2
 FR2 	105-152		3
 CDR2 	153-185		4
-FR3		186-305		5
+FR3		186-304		5
 CDR3	305-314		6
 J		315-374		7
 */
+
+aa_breaks = {{27,38,55,65,103,108,125}};
+
+breaks = (aa_breaks)*3+(-1);
+
+_IGGH_nuc_annotation = {1,375};
 
 _features           = {"0" : "FW1", "1": "CDR1", "2": "FW2", "3": "CDR2", "4": "FW3", "5": "CDR3", "6": "J"};
 
@@ -66,11 +72,7 @@ _D_sequences = {"D1_1":"TTTATTACTACGGTAGTAGCTAC",
 "D6_2":"AGGCAGCTAGTCTCTGCAGTGCCACAA"};
 
 
-aa_breaks = {{27,38,55,65,102,108,125}};
 
-breaks = (aa_breaks)*3+(-1);
-
-_IGGH_nuc_annotation = {1,375};
 
 curID   = 0;
 curCode = 1;
@@ -110,7 +112,7 @@ function MapIGG (ref,qry)
 	coords 	   = remapSequenceCoordinatesToReference (ref, qryWithN);
  	//fprintf ("/Users/sergei/Desktop/igg.fas", CLEAR_FILE,">ref\n", ref, "\n>qry\n", qry, "\n>qryN\n", qryWithN, "\n");
 	_IGHHReport = {};
-	_IGKHReport ["Mapped Read"] = qryWithN;
+	_IGHHReport ["Mapped Read"] = qryWithN;
 	_codonMappingIGHH = defineCodonToAA();
 	currentL         = 0;
 	// replace all triplet gaps with nothing
@@ -161,7 +163,7 @@ function MapIGG (ref,qry)
 	    scores  = {};
 	    inStr   = {{_IGHHReport ["JUNCTION"], ""}};
 	    
-	    fprintf (stdout, _IGHHReport ["JUNCTION"], ":", Abs (_IGHHReport ["JUNCTION"]), "\n");
+	    //fprintf (stdout, _IGHHReport ["JUNCTION"], ":", Abs (_IGHHReport ["JUNCTION"]), "\n");
 	    
 	    _dAlignOptions = alignOptions;
 	    _dAlignOptions ["SEQ_ALIGN_GAP_EXTEND"]  = 0;
@@ -192,7 +194,7 @@ function MapIGG (ref,qry)
 		}
 	}
 	
-	fprintf (stdout, _IGHHReport, "\n");
+	//fprintf (stdout, _IGHHReport, "\n");
 	
 	return _IGHHReport;
 }
