@@ -159,6 +159,7 @@ function MapIGG (ref,qry)
 	    for (d_allele = 0; d_allele < Abs (_D_sequences); d_allele += 1) {
 	        inStr[1] = _D_sequences[d_names[d_allele]];
 	    	AlignSequences(aligned, inStr, _dAlignOptions);
+	    	//fprintf (stdout, d_names[d_allele], "=>", aligned, "\n");
 	    	if ((aligned[0])[0] > max_score) {
 	    	    max_score     = (aligned[0])[0];
 	    	    best_allele   = d_names[d_allele];

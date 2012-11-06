@@ -181,8 +181,8 @@ if (alignmentType == 0 || alignmentType == 2)
         maxScore = Max (protScoreMatrix,0);
         minScore = Min (protScoreMatrix,0);
         
-        alignOptions ["SEQ_ALIGN_GAP_OPEN"]		= 	-2.5*minScore;
-        alignOptions ["SEQ_ALIGN_GAP_OPEN2"]	= 	-1.5*minScore;
+        alignOptions ["SEQ_ALIGN_GAP_OPEN"]		= 	-1*minScore;
+        alignOptions ["SEQ_ALIGN_GAP_OPEN2"]	= 	-1*minScore;
         alignOptions ["SEQ_ALIGN_GAP_EXTEND"]	= 	1;
         alignOptions ["SEQ_ALIGN_GAP_EXTEND2"]	= 	1;
         alignOptions ["SEQ_ALIGN_FRAMESHIFT"]	= 	Max(maxScore,-minScore);
@@ -651,16 +651,19 @@ for (_currentSeqID = 0; _currentSeqID < ds_to_align.species; _currentSeqID = _cu
     if (alignmentType == 2) {
         aligned1 = (SeqAlignments[seqCounter])[1];
         aligned2 = (SeqAlignments[seqCounter])[2];
-        cleaned_up = correctReadUsingCodonAlignedData (aligned1, aligned2);
         //fprintf (stdout, "\n\n", aligned1, "\n\n", aligned2, "\n\n");
+        cleaned_up = correctReadUsingCodonAlignedData (aligned1, aligned2);
         gappedSeqN  = cleaned_up ["QRY"];
         fullRefSeq  = cleaned_up ["REF"];
         ref_shift    = cleaned_up ["OFFSET"];
+        //fprintf (stdout, "\n\n", fullRefSeq, "\n\n", gappedSeqN, "\n\n");
         
         if (ref_shift) {
             aligned1    = aligned1[0][ref_shift-1] + fullRefSeq;
             aligned2    = aligned2[0][ref_shift-1] + gappedSeqN;
-        } else {
+            fullRefSeq = aligned1;
+            gappedSeqN = aligned2;
+       } else {
             aligned1    = fullRefSeq;
             aligned2    = gappedSeqN;
         }
@@ -699,8 +702,7 @@ for (_currentSeqID = 0; _currentSeqID < ds_to_align.species; _currentSeqID = _cu
         fullRefSeq * refLength;
         fullRefSeq * (s1[0]);
     
-        if (alignmentType == 0)
-        {
+        if (alignmentType == 0) {
             s1N = UnalignedSeqs[0];
         
             fullRefSeqN = "";
@@ -726,8 +728,7 @@ for (_currentSeqID = 0; _currentSeqID < ds_to_align.species; _currentSeqID = _cu
         }
     
         fullRefSeq  * 0;
-        if (alignmentType == 0)
-        {
+        if (alignmentType == 0) {
             fullRefSeqN * 0;
         }
         seqCounter = 1;
@@ -797,8 +798,6 @@ for (_currentSeqID = 0; _currentSeqID < ds_to_align.species; _currentSeqID = _cu
         }
 	}
 	
-	
-	
 	if (Abs (_annotateSequenceByAlignment)) {
 		_extraResult = Eval (_annotateSequenceByAlignment + "(aligned1,aligned2)");
 	}
@@ -852,6 +851,7 @@ for (_currentSeqID = 0; _currentSeqID < ds_to_align.species; _currentSeqID = _cu
 	gappedSeqN_Stripped = ""; gappedSeqN_Stripped * 128;
 	
 	for (s=startFrom; s<endAt; s+=1) {
+	    //fprintf (stdout, fullRefSeq[s], gappedSeqN[s], "\n");
 		if (fullRefSeq[s] == "-") {
 			shift += 1;
 			/*for (k=0; k< ref_ds.species; k+=1) {
@@ -863,7 +863,7 @@ for (_currentSeqID = 0; _currentSeqID < ds_to_align.species; _currentSeqID = _cu
 			/* only insert reference characters if 
 			   the query DOES NOT have indels in 
 			   that position */
-			   
+			 
 			if (alignmentType) {
 				if (gappedSeqN[s] != "-" || KEEP_ALL_GAPS_IN == 1) {
 					idx = (s-shift);
@@ -914,7 +914,7 @@ for (_currentSeqID = 0; _currentSeqID < ds_to_align.species; _currentSeqID = _cu
 	
 	outputAlignment * 0;
 	
-	fprintf (stdout, outputAlignment, "\n");
+	//fprintf (stdout, outputAlignment, "\n");
 
 	/* if ((outSeqs[ref_ds.species-1]||"[actg]")[0]>=0 || (alignedQuerySeq||"[actg]")[0]>=0) {
 		fprintf (stdout, outSeqs[ref_ds.species-1], "\n", alignedQuerySeq, "\n");
