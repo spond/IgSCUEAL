@@ -914,7 +914,7 @@ for (_currentSeqID = 0; _currentSeqID < ds_to_align.species; _currentSeqID = _cu
 	
 	outputAlignment * 0;
 	
-	//fprintf (stdout, outputAlignment, "\n");
+	fprintf (stdout, outputAlignment, "\n");
 
 	/* if ((outSeqs[ref_ds.species-1]||"[actg]")[0]>=0 || (alignedQuerySeq||"[actg]")[0]>=0) {
 		fprintf (stdout, outSeqs[ref_ds.species-1], "\n", alignedQuerySeq, "\n");
