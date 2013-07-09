@@ -137,7 +137,7 @@ function MapIGG (ref,qry)
 	    scores  = {};
 	    inStr   = {{_IGHHReport ["JUNCTION"], ""}};
 	    
-	    fprintf (stdout, _IGHHReport ["JUNCTION"], ":", Abs (_IGHHReport ["JUNCTION"]), "\n");
+	    //fprintf (stdout, _IGHHReport ["JUNCTION"], ":", Abs (_IGHHReport ["JUNCTION"]), "\n");
 	    
 	    _dAlignOptions = alignOptions;
 	    _dAlignOptions ["SEQ_ALIGN_GAP_EXTEND"]  = 0;
@@ -169,7 +169,7 @@ function MapIGG (ref,qry)
 		}
 	}
 	
-	fprintf (stdout, _IGHHReport, "\n");
+	//fprintf (stdout, _IGHHReport, "\n");
 	
 	return _IGHHReport;
 }
