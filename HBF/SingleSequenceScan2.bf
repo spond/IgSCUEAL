@@ -1730,10 +1730,13 @@ TRY_NUMERIC_SEQUENCE_MATCH	 = 1;
 nodeIDMap 		 = {};
 baseBranchValues = {tbc,1};
 nodeNameToAVL	 = {};
+reverseNodeIDMap = {};
 
 for (k=1; k<=tbc; k=k+1)
 {
-	nodeIDMap[k] 					= nodeToID[(refTopAVL[k])["Name"]];
+    k2 = nodeToID[(refTopAVL[k])["Name"]];
+	nodeIDMap[k] 					= k2;
+	reverseNodeIDMap[k2]            = (refTopAVL[k])["Name"];
 	nodeNameToAVL[(refTopAVL[k])["Name"]] = k;
 	ExecuteCommands 				("val = baselineTree." +(refTopAVL[k])["Name"] + ".t;");
 	baseBranchValues [nodeIDMap[k]] = val;
@@ -2902,16 +2905,15 @@ if (runInMPIMode) {
 }
 
 
-if (Rows(bestPC))
-{
-	if (runInMPIMode == 0)
-	{
-		fprintf (stdout, refSequenceString, "\n", overallBestFoundSisterNodes, "\n");
+if (Rows(bestPC)) {
+	if (runInMPIMode == 0) {
+		if (Abs (_extraResult)) {
+		    fprintf (stdout, "\nAdditional sequence annotation\n");
+			for (k = 0; k < Abs(_extraOutputColumns); k+=1) {	
+				fprintf (stdout, _extraOutputColumns[k], "\t", _extraResult[_extraOutputColumns[k]],"\n");
+			}		
+		}
 	}
-	/*else
-	{
-		returnAVL["SEQUENCE"] = refSequenceString;
-	}*/
 }
 
 

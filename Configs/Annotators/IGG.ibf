@@ -1,15 +1,9 @@
-/*
-FR1 	0-74		1
-CDR1 	75-104		2
-FR2 	105-152		3
-CDR2 	153-185		4
-FR3		186-305		5
-CDR3	305-314		6
-J		315-374		7
-*/
+IG_MRCA_sequence_length = 375;
+aa_breaks = {{25,35,51,62,102,105,125}};
+_IG_nuc_annotation = {1,IG_MRCA_sequence_length};
+jMotifRegExp       = "[FW]G.G";
 
 _features           = {"0" : "FW1", "1": "CDR1", "2": "FW2", "3": "CDR2", "4": "FW3", "5": "CDR3", "6": "J"};
-
 _extraOutputColumns = {"0": "FW1", 
                        "1": "FW1_AA",
                        "2": "CDR1", 
@@ -31,8 +25,6 @@ _extraOutputColumns = {"0": "FW1",
                        "18" : "J_AA",
                        "19" : "Mapped Read"};
 
-
-breaks = {{74,104,152,185,305,314,374}};
 
 _D_sequences = {
 "D3_16" : "GTATTATGATTACGTTTGGGGGAGTTATGCTTATACC",
@@ -56,14 +48,13 @@ _D_sequences = {
 "D5_18" : "GTGGATACAGCTATGGTTAC"};
 
 
-_IGGH_nuc_annotation = {1,375};
-
 curID   = 0;
 curCode = 1;
+breaks = (aa_breaks)*3+(-1);
 
 
-for (k = 0; k < 375; k+=1) {
-	_IGGH_nuc_annotation [k] = curCode;
+for (k = 0; k < IG_MRCA_sequence_length; k+=1) {
+	_IG_nuc_annotation [k] = curCode;
 	if (k == breaks[curID]) {
 		curCode += 1;
 		curID   += 1;
@@ -104,7 +95,7 @@ function MapIGG (ref,qry)
 	
 	
 	for (k = 1; k <= Abs (_features); k+=1) {
-		thisSpan = coords[coords["_IGGH_nuc_annotation[_MATRIX_ELEMENT_VALUE_]==k__"]];
+		thisSpan = coords[coords["_IG_nuc_annotation[_MATRIX_ELEMENT_VALUE_]==k__"]];
 		thisSpanL = Columns(thisSpan);
 		if (thisSpanL) {
 			subSeq = qryNoGaps[currentL][currentL+thisSpanL-1];
@@ -129,7 +120,7 @@ function MapIGG (ref,qry)
 	    if (whereAreTheC[0] >= 0) {
 	        whereAreTheC = whereAreTheC[Rows(whereAreTheC)-1];
 	        // find the motif in "J"
-	        jMotif = _IGHHReport ["J_AA"] $ "[FW]G.G";
+	        jMotif = _IGHHReport ["J_AA"] $ jMotifRegExp;
 	        if (jMotif[0] >= 0) {
 	            jMotif = jMotif[0];
 	            _IGHHReport ["JUNCTION"] = (_IGHHReport ["FW3"])[whereAreTheC*3][Abs(_IGHHReport ["FW3"])-1] + _IGHHReport["CDR3"] + (_IGHHReport["J"])[0][3*jMotif+2];

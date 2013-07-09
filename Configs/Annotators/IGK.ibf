@@ -1,12 +1,7 @@
-/*
-FR1 	0-74		1
-CDR1 	75-104		2
-FR2 	105-152		3
-CDR2 	153-185		4
-FR3		186-305		5
-CDR3	305-314		6
-J		315-374		7
-*/
+IG_MRCA_sequence_length = 339;
+_IG_nuc_annotation = {1,IG_MRCA_sequence_length};
+aa_breaks = {{26,38,55,58,94,101,113}};
+jMotifRegExp       = "[FW]G.G";
 
 _features           = {"0" : "FW1", "1": "CDR1", "2": "FW2", "3": "CDR2", "4": "FW3", "5": "CDR3", "6": "J"};
 
@@ -29,18 +24,15 @@ _extraOutputColumns = {"0": "FW1",
                        "16" : "Mapped Read"};
 
 
-aa_breaks = {{26,38,55,58,94,101,113}};
+//--------------------------------------------------------------
 
 breaks = (aa_breaks)*3+(-1);
-
-_IGGH_nuc_annotation = {1,339};
-
 curID   = 0;
 curCode = 1;
 
 
-for (k = 0; k < Columns(_IGGH_nuc_annotation); k+=1) {
-	_IGGH_nuc_annotation [k] = curCode;
+for (k = 0; k < IG_MRCA_sequence_length; k+=1) {
+	_IG_nuc_annotation [k] = curCode;
 	if (k == breaks[curID]) {
 		curCode += 1;
 		curID   += 1;
@@ -83,7 +75,7 @@ function MapIGK (ref,qry)
 	
 	
 	for (k = 1; k <= Abs (_features); k+=1) {
-		thisSpan = coords[coords["_IGGH_nuc_annotation[_MATRIX_ELEMENT_VALUE_]==k__"]];
+		thisSpan = coords[coords["_IG_nuc_annotation[_MATRIX_ELEMENT_VALUE_]==k__"]];
 		thisSpanL = Columns(thisSpan);
 		if (thisSpanL) {
 			subSeq = qryNoGaps[currentL][currentL+thisSpanL-1];
@@ -108,7 +100,7 @@ function MapIGK (ref,qry)
 	    if (whereAreTheC[0] >= 0) {
 	        whereAreTheC = whereAreTheC[Rows(whereAreTheC)-1];
 	        // find the motif in "J"
-	        jMotif = _IGKHReport ["J_AA"] $ "[FW]G.G";
+	        jMotif = _IGKHReport ["J_AA"] $ jMotifRegExp;
 	        if (jMotif[0] >= 0) {
 	            jMotif = jMotif[0];
 	            _IGKHReport ["JUNCTION"] = (_IGKHReport ["FW3"])[whereAreTheC*3][Abs(_IGKHReport ["FW3"])-1] + _IGKHReport["CDR3"] + (_IGKHReport["J"])[0][3*jMotif+2];

@@ -47,9 +47,10 @@ if (whichSeq >= 0)
 	ExecuteAFile ("../" + referenceFile + ".labels");
 	ExecuteAFile ("../HBF/I_am_the_aligner.bf", inOptions2);
 
-	if (Abs(outputAlignment))
-	{
+	if (Abs(outputAlignment)) {
 		ExecuteAFile ("../HBF/SingleSequenceScan2.bf");
-		/*ExecuteAFile ("../HBF/GASP_Postprocessor.bf");*/
+		if (Abs (_annotateSequenceByAlignment)) {
+		
+		}
 	}
 }

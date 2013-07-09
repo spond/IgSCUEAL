@@ -1003,7 +1003,7 @@ function mapStrings (sourceStr,targetStr)
 
 // -------------------------------------------------------------------------- //
 
-function _cdn_alignment_cleanup (reference, query, offset_nuc) {
+function _igg_alignment_cleanup (reference, query, offset_nuc) {
     too_short = 0;
     too_long  = 0;
     span      = 0; // how many nucleotides in the reference were covered by non-gaps
@@ -1036,10 +1036,6 @@ function _cdn_alignment_cleanup (reference, query, offset_nuc) {
 	        }
 	    }
 	}
-	/*for (;_rcidx < _seqL; _rcidx += 1 ) {
-        ref_cleaned * (reference [_rcidx]&&1);
-        qry_cleaned * (query [_rcidx]&&1);
-    }*/
 	ref_cleaned * 0; qry_cleaned * 0;
 	
 	return {"REF": ref_cleaned, "QRY": qry_cleaned, "TOO_SHORT" : too_short, "TOO_LONG": too_long, "SPAN": span, "OFFSET_AA" :  offset_nuc$3 + (offset_nuc % 3 > 0),"OFFSET" :  offset_nuc, "AA" : translateToAA (qry_cleaned, (3-offset_nuc%3)%3), "AA_REF" : translateToAA (ref_cleaned, (3-offset_nuc%3)%3)};
@@ -1108,8 +1104,7 @@ function translateToAA (aSeq, offset)
 /*-------------------------------------------------*/
 
 function correctReadUsingCodonAlignedData (aligned1, aligned2) {
-
-        
+      
     alL = computeCorrection(aligned1);
             
     /*alL is the starting,ending nucleotide on the reference relative to the read. if reference is longer than the read, then both are 0*/
@@ -1142,6 +1137,6 @@ function correctReadUsingCodonAlignedData (aligned1, aligned2) {
     LoadFunctionLibrary ("chooseGeneticCode", {"0":"Universal"});
     codonToAAMap = makeAAMap();
     
-    return _cdn_alignment_cleanup (nucSeqRef, nucSeq,seqOffset);
+    return _igg_alignment_cleanup (nucSeqRef, nucSeq,seqOffset);
        
 }

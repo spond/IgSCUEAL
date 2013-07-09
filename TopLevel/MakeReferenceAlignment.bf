@@ -8,8 +8,7 @@ SetDialogPrompt ("Reference sequences?");
 ChoiceList (alignmentType, "Codons or Nucleotides", 1, SKIP_NONE, "Codon", 		"In-frame (universal code) codon alignment",
 																  "Nucleotide", "Nucleotide alignment");
 
-if (alignmentType < 0)
-{
+if (alignmentType < 0) {
 	return 0;
 }
 
@@ -20,8 +19,8 @@ inFileToAlign 		   = LAST_FILE_PATH;
 inFileInfo			   = splitFilePath (inFileToAlign);
 
 alignmentOptions 	   = {};
-if (alignmentType == 0)
-{
+
+if (alignmentType == 0) {
 	alignmentOptions ["0"] = "HIV 25%";
 	alignmentOptions ["1"] = "No penalty";
 	alignmentOptions ["2"] = "First in file";
@@ -33,8 +32,7 @@ if (alignmentType == 0)
 	alignmentOptions ["7"] = inFileInfo["DIRECTORY"] + inFileInfo["FILENAME"] + 	
 							".aln";
 }
-else
-{
+else {
 	alignmentOptions ["0"]  = "No penalty";
 	alignmentOptions ["2"]  = "First in file";
 	alignmentOptions ["3"]  = "No";
@@ -53,8 +51,7 @@ cleanNames ["2"] = "Yes/No";
 
 
 hadTree = 0;
-if (doAlign == 0)
-{
+if (doAlign == 0) {
 	fprintf (stdout, "\n[PHASE 1]. Sequence alignment (wrt the first input sequence)\n");			
 					
 	if (alignmentType==0)
@@ -72,8 +69,7 @@ if (doAlign == 0)
 	fprintf (stdout, "\n[PHASE 2]. Cleaning up sequence names and removing duplicates (if any)\n");			
 	cleanNames ["1"] = alignmentOptions ["7"] + ".nuc";
 }
-else
-{
+else {
 	if (alignmentType==0)
 	{
 		cleanNames ["0"] = "Universal";
@@ -88,19 +84,16 @@ ExecuteAFile (HYPHY_LIB_DIRECTORY + "TemplateBatchFiles" + DIRECTORY_SEPARATOR
 DataSet reloadMe = ReadDataFile (inFileToAlign);
 
 useFileTree = Abs(DATAFILE_TREE);
-if (useFileTree)
-{
+if (useFileTree) {
 	ChoiceList (useFileTree, "Use file tree?", 1, SKIP_NONE, "Yes", "Use the tree already present in the file",
-				  	      "No", "Use a TN93 NJ tree");
-	if (useFileTree < 0)
-	{
+				  	      "No", "Make a TN93 NJ tree");
+	if (useFileTree < 0) {
 		return -1;
 	}
 	useFileTree = 1- useFileTree;
 }
 
-if (useFileTree == 0)
-{
+if (useFileTree == 0) {
 	fprintf (stdout, "\n[PHASE 3]. Making a TN93 NJ tree");			
 }
 
@@ -113,13 +106,11 @@ njOptions ["4"] = "TN93";
 njOptions ["5"] = "y";
 njOptions ["6"] = inFileInfo["DIRECTORY"] + inFileInfo["FILENAME"] + "_nj.tree";
 
-if (useFileTree == 0)
-{
+if (useFileTree == 0) {
 	ExecuteAFile (HYPHY_LIB_DIRECTORY + "TemplateBatchFiles" + DIRECTORY_SEPARATOR 
 									   + "NeighborJoining.bf", njOptions);
 }
-else
-{
+else {
 	outFile = njOptions ["6"];
 	fprintf (outFile, CLEAR_FILE, DATAFILE_TREE);
 }
@@ -128,8 +119,7 @@ skipSwap = 1;
 ChoiceList (skipSwap, "Branch Swapping", 1, SKIP_NONE, "Yes", "Do branch swapping",
 												     "No", "Skip branch swapping");
 												     
-if (skipSwap == 0)
-{						
+if (skipSwap == 0) {						
 	fprintf (stdout, "\n[PHASE 4]. Doing Branch Swapping");		
 	
 	swappingOptions = {};
@@ -159,8 +149,7 @@ OPTIMIZATION_PROGRESS_QUANTUM = 0.5;
 OPTIMIZATION_PROGRESS_STATUS  = "OPTIMIZING THE LIKELIHOOD FUNCTION";
 OPTIMIZATION_PROGRESS_TEMPLATE = "$1 Log(L) = $2 ($3% done) Time elapsed: $4 LF evals/second: $5 CPU load: $6";
 
-if (alignmentType == 0)
-{
+if (alignmentType == 0) {
 	codonOptions = {};
 	codonOptions ["0"] = "Universal";
 	codonOptions ["1"] = cleanNames ["3"];
@@ -178,8 +167,7 @@ if (alignmentType == 0)
 									   + "AnalyzeCodonData.bf", codonOptions);
 }
 
-if (alignmentType == 1)
-{
+if (alignmentType == 1) {
 	codonOptions = {};
 	codonOptions ["0"] = cleanNames ["3"];
 	codonOptions ["1"] = "GRM";
@@ -217,22 +205,12 @@ fprintf (stdout, "\n[PHASE 7]. Label sequences.\n");
 sequenceLabels = {};
 
 tc = TipCount (givenTree);
-
-/*
-for (k=0; k < tc; k = k+1)
-{
-	nodeName 	  = TipName (givenTree,k);
-	fprintf 		(stdout, "Label for tip ", nodeName, " : ");
-	fscanf			(stdin, "String", nodeLabel);
-	sequenceLabels [nodeName&&1] = nodeLabel;
-}*/
-
 LoadFunctionLibrary ("ReadDelimitedFiles");
 
 for (k=0; k < tc; k = k+1)
 {
 	nodeName 	  = TipName (givenTree,k);
-	subexp = extractAllExpressions (nodeName, "[^_]+", "");
+	subexp = extractAllExpressions (nodeName^ {{"^IG[A-Z]"}{""}}, "[^_]+", "");
 	sequenceLabels [nodeName&&1] = subexp[0]+"-"+subexp[1];
 	
 	fprintf (stdout, nodeName, "->", sequenceLabels [nodeName&&1], "\n");
@@ -240,66 +218,9 @@ for (k=0; k < tc; k = k+1)
 
 
 fprintf (stdout, "Auto-generating internal node labels"); 
-tc = BranchCount (givenTree);
-for (k=0; k < tc; k = k+1)
-{
-	nodeName 	  = BranchName (givenTree,k);
-	subtreeAVL	  = givenTree[nodeName];
-	nodeNames	  = Rows(subtreeAVL);
-	crfType			= {};
-	pureType		= {};
-	
-	for (k2 = 0; k2 < Abs (subtreeAVL); k2 = k2+1)
-	{
-		if (((nodeNames[k2]&&1)$"^NODE")[0] < 0)
-		{
-			thisLabel = sequenceLabels[nodeNames[k2]&&1];
-			if (thisLabel/"CRF*")
-			{
-				crfType [thisLabel[3][Abs(thisLabel)-1]] = 1;
-			}
-			else
-			{
-				pureType [thisLabel] = 1;
-			}
-		}
-	}
-	
-	_bufferString = ""; _bufferString * 128;
-	/* reduce CRF labels here */
-	_bufferCount = 0;
-	if (Abs(pureType) > 1)
-	{
-		pureType["buildINodeLabel"][""];
-		if (Abs (crfType))
-		{
-			_bufferCount = 0;
-			_bufferString * "/CRF";
-			crfType["buildINodeLabel"][""];
-		}
-	}
-	else
-	{
-		if (Abs(pureType) == 1)
-		{
-			nodeLabel = (Rows(pureType))[0];
-		}
-		else
-		{
-			_bufferString * "CRF";
-			crfType["buildINodeLabel"][""];
-		}
-	}
-	_bufferString * 0;
-	if (Abs(_bufferString))
-	{
-		sequenceLabels [nodeName&&1] = _bufferString;
-	}
-	else
-	{
-		sequenceLabels [nodeName&&1] = nodeLabel;
-	}
-}
+Tree exportT = givenTree;
+
+_doLabelGeneration ();
 
 fprintf (outFilter, CLEAR_FILE, "_subtypeAssignmentByNode = ", sequenceLabels, ";");
 
