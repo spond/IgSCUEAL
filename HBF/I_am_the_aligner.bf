@@ -180,13 +180,24 @@ if (alignmentType == 0 || alignmentType == 2)
         alignOptions ["SEQ_ALIGN_SCORE_MATRIX"] = 	_cdnaln_cdnScoreMatrix;
         maxScore = Max (protScoreMatrix,0);
         minScore = Min (protScoreMatrix,0);
-        
+ 
+        	
+	    alignOptions ["SEQ_ALIGN_GAP_OPEN"]		= 	2*Max(maxScore,-minScore);
+	    alignOptions ["SEQ_ALIGN_GAP_OPEN2"]	= 	2*Max(maxScore,-minScore);
+	    alignOptions ["SEQ_ALIGN_GAP_EXTEND"]	= 	1;
+	    alignOptions ["SEQ_ALIGN_GAP_EXTEND2"]	= 	1;
+	    alignOptions ["SEQ_ALIGN_FRAMESHIFT"]	= 	3*Max(maxScore,-minScore);
+	    alignOptions ["SEQ_ALIGN_CODON_ALIGN"]	= 	1;
+    
+        /*       
         alignOptions ["SEQ_ALIGN_GAP_OPEN"]		= 	-1*minScore;
         alignOptions ["SEQ_ALIGN_GAP_OPEN2"]	= 	-1*minScore;
         alignOptions ["SEQ_ALIGN_GAP_EXTEND"]	= 	1;
         alignOptions ["SEQ_ALIGN_GAP_EXTEND2"]	= 	1;
         alignOptions ["SEQ_ALIGN_FRAMESHIFT"]	= 	Max(maxScore,-minScore);
         alignOptions ["SEQ_ALIGN_CODON_ALIGN"]	= 	1;
+        */
+        
         alignOptions ["SEQ_ALIGN_CHARACTER_MAP"]=  "ACGT";
         alignOptions ["SEQ_ALIGN_NO_TP"]		=   1;
         alignOptions ["SEQ_ALIGN_AFFINE"]		=   1;
@@ -448,10 +459,10 @@ for (_currentSeqID = 0; _currentSeqID < ds_to_align.species; _currentSeqID = _cu
 		refProt = (AllTranslations[0])[0];
 		
 		if (alignmentType == 0) {
-			bestScore = Max(0,computeExpectedPerBaseScore (.15,alignOptions ["SEQ_ALIGN_SCORE_MATRIX"],_protBaseFrequencies))*Abs((AllTranslations[1])[0]);
+			bestScore = Max(0,computeExpectedPerBaseScore (.4,alignOptions ["SEQ_ALIGN_SCORE_MATRIX"],_protBaseFrequencies))*Abs((AllTranslations[1])[0]);
 		}
 		else {
-			bestScore = Max(0,computeExpectedPerBaseScore (.15,protScoreMatrix,_protBaseFrequencies))*Abs((AllTranslations[1])[0])$3;
+			bestScore = Max(0,computeExpectedPerBaseScore (.4,protScoreMatrix,_protBaseFrequencies))*Abs((AllTranslations[1])[0])$3;
 		}
 		
 		
@@ -464,7 +475,6 @@ for (_currentSeqID = 0; _currentSeqID < ds_to_align.species; _currentSeqID = _cu
 			if (alignmentType == 0 || k % 3 == 0)
 			{
 				AlignSequences(aligned, inStr, alignOptions);
-				//fprintf (stdout, "\n\n", k, "\n", inStr, "\n", aligned, "\n");
 				
 				aligned = aligned[0];
 				if (aligned[0] >= bestScore)
@@ -967,7 +977,7 @@ function computeExpectedPerBaseScore( _expectedIdentity, _cdnaln_scorematrix, _c
     for (_aa1 = 0; _aa1 < 20; _aa1 += 1) {
         for (_aa2 = 0; _aa2 < 20; _aa2 += 1) {
             if ( _aa1 != _aa2 ) {
-                meanScore += ( 1 - _expectedIdentity ) * _cdnaln_scorematrix[_aa1][_aa2] * _cdnaln_base_freqs[_aa1] * _cdnaln_base_freqs[_aa2] * _cdnaln_pair_norm;
+                meanScore += ( 1 - _expectedIdentity ) * _cdnaln_scorematrix[_aa1][_aa2] * _cdnaln_base_freqs[_aa1] * _cdnaln_base_freqs[_aa2];
             } else {
                 meanScore += _expectedIdentity * _cdnaln_scorematrix[_aa1][_aa1] * _cdnaln_base_freqs[_aa1];
             }

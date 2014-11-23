@@ -1,0 +1,38 @@
+<html>
+
+<head>
+    <title>
+        IgSCUEAL
+    </title>
+
+    <meta charset="utf-8">
+     
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet TYPE="text/css" href="../css/igscueal.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="../js/igscueal.js"></script>
+
+    <script>
+        $(document).ready (function () {
+            $.get ("../html/igscueal.html", 
+                    function (data) {
+                        $('body').append (data);
+                        load_file ("IgG.json", 'heavy');
+                   });
+    
+        });
+    </script>
+</head>
+
+
+
+
+<body>
+</body>
+
+</html>

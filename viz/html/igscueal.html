@@ -1,0 +1,68 @@
+    <div id = "b_cell_display" style = 'display:none'>
+        <div class = 'chart_box'>
+        <table id = 'summary_table' style='width:500px;font-family:courier;font-size:12px;' cellspacing = '0px'>
+        <caption class = 'table_caption'>B-cell read processing summary</caption>
+        </table> 
+        </div>   
+    
+        <div id = 'main_chart' class = 'chart_box'>
+            <p class = 'box_header'>Frequency distributions of read assignments to germline alleles. <br/><i>Click on circles or axis labels to "zoom in" on a subset</i></p>
+            <table border = '0'>
+            <tr>
+                <td>
+                    <svg id = "vj_chart"  height = '5'/>
+                </td>
+                <td>
+                    <svg id = "v2jchart"  height = '5'/>
+                </td>
+                <td>
+                    <svg id = "jdchart"  height = '5'/>
+                </td>
+            </tr>
+            <!--<tr>
+                <td style = 'text-align:center;' id = 'vj_chart_buttons'>
+                    <a id = 'chart1_button1' class = 'button' href = '#' style = 'display:inline';>Tabulate frequencies</a>
+                    <a id = 'chart1_button2' class = 'button' href = '#' style = 'display:inline'>Display CDR3 lengths</a>
+                </td>
+                <td style = 'text-align:center;' id = 'v2jchart_buttons'>
+                    <a id = 'chart2_button1' class = 'button' href = '#' style = 'display:inline'>Tabulate frequencies</a>
+                    <a id = 'chart2_button2' class = 'button' href = '#' style = 'display:inline'>Display CDR3 lengths</a>
+                </td>
+                <td style = 'text-align:center;' id = 'jdchart_buttons'>
+                    <a id = 'chart3_button1' class = 'button' href = '#' style = 'display:inline'>Tabulate frequencies</a>
+                    <a id = 'chart3_button2' class = 'button' href = '#' style = 'display:inline'>Display CDR3 lengths</a>
+                </td>
+            </tr>-->
+            </table>
+        </div>
+    
+        <table>
+        <tr><td style = 'vertical-align:top;'>
+        <div id = 'cdr3_box' class = 'chart_box' style = 'display:table;'>
+            <p class = 'box_header'>The histogram of CDR3 lengths.</p>
+            <svg id = "cdr3_chart"  height = '5'/>
+        </div>
+        </td><td style = 'vertical-align:top;'>
+        <div id = 'cdr3_stats' class = 'chart_box' style = 'display:table;'>
+            <table id = 'cdr3_table' style='width:300px;font-family:courier;font-size:12px;' cellspacing = '0px'>
+            <caption class = 'box_header' style = 'text-align: left;'>CDR3 length statistics.</caption>
+            </table> 
+        </div>
+        </td>
+        <td style = 'vertical-align:top;'>
+        <div id = 'allele_stats' class = 'chart_box' style = 'display:table; display: table;'>
+            <table id = 'freqs_table_x' style='width:300px;font-family:courier;font-size:12px;' cellspacing = '0px'>
+            <caption class = 'box_header' style = 'text-align: left;'>Frequency distribution.</caption>
+            </table> 
+        </div>
+        </td>
+        <td style = 'vertical-align:top;'>
+        <div id = 'allele_stats' class = 'chart_box' style = 'display:table; display: table;'>
+            <table id = 'freqs_table_y' style='width:300px;font-family:courier;font-size:12px;' cellspacing = '0px'>
+            <caption class = 'box_header' style = 'text-align: left;'>Frequency distribution.</caption>
+            </table> 
+        </div>
+        </td>
+        </tr>
+        </table>
+    </div>
