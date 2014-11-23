@@ -5,5 +5,5 @@ This collection of [HyPhy](https://github.com/veg/hyphy), Python, and JavaScript
 
 For optimal performance, IgSCUEAL should be run using the MPI version of HyPhy on a cluster.
 
-See the [wiki](https://github.com/spond/IgSCUEAL/wiki) for (some) documentation, and usage examples.
+See the [wiki](https://github.com/spond/IgSCUEAL/wiki/IgSCUEAL-usage) for (some) documentation, and usage examples.
 
