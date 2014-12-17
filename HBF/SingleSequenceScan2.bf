@@ -1253,11 +1253,15 @@ if (Abs(crf_for_grep) == 0)
 	crf_for_grep					  =   "(.+)_CRF_([0-9]+)(.*)$";
 }
 
+dataNames = {ds.species,1};
+GetString (_querySequenceName, ds,querySequenceID);
+validTaxonNames [_querySequenceName&&1] = 1;
+
 for (k=0; k<tbc; k=k+1)
 {
 	taxonName 				   = TipName(referenceTopology,k)&&1;
 	is_crf 					   = taxonName$crf_for_grep;
-	if (is_crf[0] >= 0) /* this is a CRF */
+	if (is_crf[0] >= 0 && taxonName != _querySequenceName) /* this is a CRF */
 	{
 		crf_tag = taxonName[is_crf[2]][is_crf[3]];
 		if (CRFTags[crf_tag] == 0)
@@ -1273,14 +1277,10 @@ for (k=0; k<tbc; k=k+1)
 
 
 
-if (verboseFlag)
-{
+if (verboseFlag) {
 	fprintf (stdout, "Fitting a baseline nucleotide model\n");
 }
 
-dataNames = {ds.species,1};
-GetString (h, ds,querySequenceID);
-validTaxonNames [h&&1] = 1;
 
 for (k=0; k<ds.species; k=k+1)
 {
@@ -1942,16 +1942,14 @@ if (Abs(_additionalStartingBreakpoints))
 			bySegment + {};
 			for (s = 0; s < upto; s+=1)
 			{
-				if ((allSeqs[s]$mxDef[whichBP])[0]>=0)
-				{
+				if ((allSeqs[s]$mxDef[whichBP])[0]>=0 && allSeqs[s] != _querySequenceName) {
 					(bySegment      [whichBP]) + allSeqs[s];
 				}
 			}
 		}
 		
 		totalCombinations = 1;
-		for (whichBP = 0; whichBP < howManyABP; whichBP += 1)
-		{
+		for (whichBP = 0; whichBP < howManyABP; whichBP += 1) {
 			totalCombinations = totalCombinations * Abs (bySegment[whichBP]);
 		}
 		
@@ -1961,10 +1959,10 @@ if (Abs(_additionalStartingBreakpoints))
 			while (totalAddedCRFGroups < _randomizedCRFGroups && addedThisTime < totalCombinations && totalTried < 1000)
 			{
 				individual	   = {howManyABP,2};	
-				for (whichBP = 0; whichBP < howManyABP; whichBP += 1)
-				{
+				for (whichBP = 0; whichBP < howManyABP; whichBP += 1){
+				    whichSegmentIndex = Random(0,Abs(bySegment[whichBP])-0.00000001)$1;
 					recStructure =CRFStructure[
-					(CRFGroups[(bySegment[whichBP])[Random(0,Abs(bySegment[whichBP])-0.00000001)$1]])[0]
+					(CRFGroups[(bySegment[whichBP])[whichSegmentIndex]])[0]
 					];
 					if (Abs(recStructure) != 1)
 					{
@@ -1974,8 +1972,7 @@ if (Abs(_additionalStartingBreakpoints))
 					individual[whichBP][1] = (recStructure[0])[1]-1;	
 				}	
 				totalTried 			+= 1;
-				if (whichBP  == howManyABP)
-				{
+				if (whichBP  == howManyABP) {
 					individual = encodeIndividual(individual % 1);
 					//fprintf (stdout, ConvertToPartString(individual), "\n");
 					
