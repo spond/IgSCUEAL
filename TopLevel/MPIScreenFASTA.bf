@@ -165,7 +165,12 @@ function ReceiveAJob (dummy)
 	if (Abs(subtypeFound) == 0) /* error */
 	{
 		fprintf (stdout, ": Error/ alignment failed\n");
-		fprintf (resultsFile, "\n", processedID+1, "\t", processedName, "\tError: alignment failed");
+		fprintf (resultsFile, "\n", processedID+1, "\t", processedName, "\tError: alignment failed\t\t\t\t\t\t");
+		if (Abs (_extraOutputColumns)) {
+            for (k = 0; k < Abs(_extraOutputColumns); k+=1){	
+                    fprintf (resultsFile, "\t");
+            }
+		}
 	}
 	else
 	{
