@@ -11,10 +11,15 @@ sequences = {};
 
 for (k = 0; k < Columns (imgt_aa); k+=2) {
     annotation = splitStringByTab (imgt_aa[k]);
+
+    if (Abs (annotation) < 6) {
+        fprintf (stdout, "[WARNING] Sequence description line ", imgt_aa[k], " does not contain 6 or more tab-separated fields and will be skipped\n");
+        continue;
+    }
     match = annotation[5] $ regExpFilter;
     if (match[0] == 0 && match[1] == Abs (annotation[5])-1) {
         v_region = imgt_aa[k+1]^{{"\\.",""}};
-        sequence = splitOnRegExp(v_region, "\ +");
+        sequence = splitOnRegExp(v_region, " +");
         if (Abs (sequence) == 11) {
             has_stops = (v_region $ "\\*");
             if ( has_stops [0] >= 0) {
@@ -38,12 +43,15 @@ for (k = 0; k < Columns (imgt_aa); k+=2) {
             if (Abs (sequences) == 1) {
                 regions = Rows (sequences [imgt_aa[k]]);
             }
+        } else {
+            fprintf (stdout, "Sequence ", imgt_aa[k+1], " contained ", Abs (sequences), " space-separated blocks (expected 11) and has been skipped\n");     
         }
+    } else {
+        fprintf (stdout, "Sequence ", imgt_aa[k], " did not match the functional filter and has been skipped\n");
     }
 }
 
 assert (Abs (sequences) > 0, "No 11-segment sequences matched the functional filter");
-
 
 fprintf (stdout, "Save partitioned alignments to this directory (no trailing slash necessary):");
 fscanf  (stdin, "String", outDirPath);
