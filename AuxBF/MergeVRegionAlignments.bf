@@ -11,6 +11,8 @@ for (k = 0; k < segments; k+=1) {
     filesIn [k] = base_directory + "/" + filesIn [k] + extension;
 }
 
+fprintf (stdout, "Loading ", filesIn[0], "\n");
+
 DataSet 			first 		= ReadDataFile (filesIn[0]);
 GetString			(masterOrdering, first, -1);
 
@@ -19,6 +21,7 @@ segment_lengths [0] = first.sites -1;
 
 for (fileID = 1; fileID < segments; fileID += 1)
 {
+    fprintf (stdout, "Loading ", filesIn[fileID], "\n");
 	DataSet 		current = ReadDataFile (filesIn[fileID]);
 	
 	if (fileID < segments-1) {
