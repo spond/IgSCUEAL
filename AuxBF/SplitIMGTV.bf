@@ -18,8 +18,8 @@ for (k = 0; k < Columns (imgt_aa); k+=2) {
     }
     match = annotation[5] $ regExpFilter;
     if (match[0] == 0 && match[1] == Abs (annotation[5])-1) {
-        v_region = imgt_aa[k+1]^{{"\\.",""}};
-        sequence = splitOnRegExp(v_region, " +");
+        v_region = (imgt_aa[k+1]^{{"\\.",""}})^{{"\\ +$",""}};
+        sequence = splitOnRegExp(v_region, "\\ +");
         if (Abs (sequence) == 11) {
             has_stops = (v_region $ "\\*");
             if ( has_stops [0] >= 0) {
@@ -44,7 +44,7 @@ for (k = 0; k < Columns (imgt_aa); k+=2) {
                 regions = Rows (sequences [imgt_aa[k]]);
             }
         } else {
-            fprintf (stdout, "Sequence ", imgt_aa[k+1], " contained ", Abs (sequences), " space-separated blocks (expected 11) and has been skipped\n");     
+            fprintf (stdout, "Sequence ", imgt_aa[k+1], " contained ", Abs (sequence), " space-separated blocks (expected 11) and has been skipped\n", sequence);     
         }
     } else {
         fprintf (stdout, "Sequence ", imgt_aa[k], " did not match the functional filter and has been skipped\n");
