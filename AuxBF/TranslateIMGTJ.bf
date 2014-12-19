@@ -20,10 +20,11 @@ for (k = 0; k < j_region_filter.species; k+=1) {
     }
     frame = Max (0, (-1) + seq_annotation [7]);
     GetDataInfo (nuc_sequence, j_region_filter, k);
-    coding_region = nuc_sequence[frame][frame+(Abs(nuc_sequence)$3*3)-1];
+    nuc_sequence  = nuc_sequence ^ {{"\\?+$", ""}};
+    coding_region = nuc_sequence[frame][frame+((Abs(nuc_sequence)-frame)$3*3)-1];
     aa_sequence   = translateCodonToAA (coding_region, codon_mapping, 0);
-    if (Abs (aa_sequence) == 0 || (aa_sequence $ "\\?")[0] >= 0) {
-        fprintf (stdout, "[WARNING] Sequence `seqName` appears to have premature stop codons or is empty and will be skipped\n");
+    if (Abs (aa_sequence) == 0 || (aa_sequence $ "X")[0] >= 0) {
+        fprintf (stdout, "[WARNING] Sequence '`seqName`' appears to have premature stop codons in frame " + frame + " or is empty and will be skipped\n");
         continue;
     }
     sequences [seqName] = aa_sequence;
