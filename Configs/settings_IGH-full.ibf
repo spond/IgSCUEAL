@@ -57,4 +57,4 @@ _validBreakpointStructure [1] = {"0":"^V[^\\,]+\\,J[^\\,]+\\ inter",
 								 };
 								 
 _annotateSequenceByAlignment	  = "MapIGH";
-ExecuteAFile ("Annotators/IGH.ibf");
+ExecuteAFile ("Annotators/IGH-full.ibf");
