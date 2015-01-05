@@ -30,7 +30,7 @@ BICMinLength			= 20;
 	*/
 
 
-referenceAlignmentFileName  = "HumanIGG.nex";
+referenceAlignmentFileName  = "HumanIGH.nex";
 
 	/* the name of the reference alignment file (MUST 
 	be in the 'data' directory and have a .labels 
@@ -56,5 +56,5 @@ _validBreakpointStructure = {};
 _validBreakpointStructure [1] = {"0":"^V[^\\,]+\\,J[^\\,]+\\ inter",
 								 };
 								 
-_annotateSequenceByAlignment	  = "MapIGG";
-ExecuteAFile ("Annotators/IGG.ibf");
+_annotateSequenceByAlignment	  = "MapIGH";
+ExecuteAFile ("Annotators/IGH.ibf");

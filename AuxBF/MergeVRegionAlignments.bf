@@ -22,7 +22,8 @@ segment_lengths [0] = first.sites -1;
 for (fileID = 1; fileID < segments; fileID += 1)
 {
     fprintf (stdout, "Loading ", filesIn[fileID], "\n");
-	DataSet 		current = ReadDataFile (filesIn[fileID]);
+    fscanf (filesIn[fileID], "Raw", fileIn);
+	DataSet 		current = ReadFromString ("$BASESET:BASE20\n"+fileIn);
 	
 	if (fileID < segments-1) {
         GetString		(currentOrdering, current, -1);
@@ -32,6 +33,8 @@ for (fileID = 1; fileID < segments; fileID += 1)
         DataSet 		current = ReadFromString (filterStr);
         DataSet			first	= Concatenate 	 (purge, first, current);
         segment_lengths [fileID] = first.sites;
+        assert (segment_lengths [fileID] != segment_lengths [fileID-1],
+                "Failed Concatenate on file '" + filesIn[fileID] + "'");
     } else {
         segment_lengths [fileID] = segment_lengths [fileID-1] + current.sites;
     }

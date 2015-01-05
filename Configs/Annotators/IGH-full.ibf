@@ -1,4 +1,4 @@
-IG_MRCA_sequence_length = 360;
+IG_MRCA_sequence_length = 375;
 _IG_nuc_annotation = {1,IG_MRCA_sequence_length};
 aa_breaks = 
 {{            24}
@@ -6,11 +6,12 @@ aa_breaks =
 {            52}
 {            62}
 {           100}
-{           100}
-{           120}
+{           104}
+{           125}
 }
 ;
 jMotifRegExp       = "[FW]G.G";
+
 
 _features           = {"0" : "FW1", "1": "CDR1", "2": "FW2", "3": "CDR2", "4": "FW3", "5": "CDR3", "6": "J"};
 _extraOutputColumns = {"0": "FW1", 
