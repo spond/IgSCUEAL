@@ -1,4 +1,5 @@
-IG_MRCA_sequence_length = 375;
+
+IG_MRCA_sequence_length = 372;
 _IG_nuc_annotation = {1,IG_MRCA_sequence_length};
 aa_breaks = 
 {{            24}
@@ -7,10 +8,11 @@ aa_breaks =
 {            62}
 {           100}
 {           104}
-{           125}
+{           124}
 }
 ;
 jMotifRegExp       = "[FW]G.G";
+
 
 
 _features           = {"0" : "FW1", "1": "CDR1", "2": "FW2", "3": "CDR2", "4": "FW3", "5": "CDR3", "6": "J"};
