@@ -42,7 +42,6 @@ fprintf (PROMPT_FOR_FILE, CLEAR_FILE, KEEP_OPEN);
 for (seq_id = 0; seq_id < protein.species; seq_id += 1) {
     GetString   (seqName, protein, seq_id);
     
-    
     if (is_j) {
         split_name = splitOnRegExp(seqName, "\\|");
          seqName = split_name[1] + "|" + split_name[0];

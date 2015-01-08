@@ -1,17 +1,17 @@
-
-IG_MRCA_sequence_length = 372;
+IG_MRCA_sequence_length = 375;
 _IG_nuc_annotation = {1,IG_MRCA_sequence_length};
 aa_breaks = 
 {{            24}
-{            35}
-{            52}
-{            62}
-{           100}
-{           104}
-{           124}
+{            37}
+{            54}
+{            64}
+{           102}
+{           105}
+{           125}
 }
 ;
 jMotifRegExp       = "[FW]G.G";
+
 
 
 
@@ -62,6 +62,13 @@ _D_sequences = {
 "D6_25" : "GGGTATAGCAGCGGCTAC",
 "D6_6"  : "GAGTATAGCAGCTCGTCC",
 "D7_7"  : "CTAACTGGGGA"};
+
+// make inverted D
+_D_names = Rows (_D_sequences);
+
+for (k = 0; k < Columns (_D_names); k+=1) {
+    _D_sequences [_D_names[k] + " (inverted)"] = Inverse (_D_sequences[_D_names[k]]);
+}
 
 
 curID   = 0;
