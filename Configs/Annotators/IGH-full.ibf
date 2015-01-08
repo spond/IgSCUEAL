@@ -1,3 +1,4 @@
+LoadFunctionLibrary ("GrabBag");
 IG_MRCA_sequence_length = 375;
 _IG_nuc_annotation = {1,IG_MRCA_sequence_length};
 aa_breaks = 
@@ -67,7 +68,7 @@ _D_sequences = {
 _D_names = Rows (_D_sequences);
 
 for (k = 0; k < Columns (_D_names); k+=1) {
-    _D_sequences [_D_names[k] + " (inverted)"] = Inverse (_D_sequences[_D_names[k]]);
+    _D_sequences [_D_names[k] + "/Inv"] = nucleotideReverseComplement (_D_sequences[_D_names[k]]);
 }
 
 

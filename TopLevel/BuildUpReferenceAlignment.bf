@@ -259,7 +259,7 @@ for (seqLoop = 0; seqLoop < ds_in.species; seqLoop = seqLoop + 1)
 				
 			fprintf (stdout, 		"\nAuto-generating internal node labels\n"); 
 			
-			_doLabelGeneration	();
+			_doLabelGeneration	(0);
 			
 			outLabels = "_subtypeAssignmentByNode  = " + sequenceLabels + ";\n\n_crfEquiv = " + _crfEquiv + ";";
 			

@@ -207,12 +207,10 @@ sequenceLabels = {};
 tc = TipCount (givenTree);
 LoadFunctionLibrary ("ReadDelimitedFiles");
 
-for (k=0; k < tc; k = k+1)
-{
+for (k=0; k < tc; k = k+1) {
 	nodeName 	  = TipName (givenTree,k);
 	subexp = extractAllExpressions (nodeName^ {{"^IG[A-Z]"}{""}}, "[^_]+", "");
 	sequenceLabels [nodeName&&1] = subexp[0]+"-"+subexp[1];
-	
 	fprintf (stdout, nodeName, "->", sequenceLabels [nodeName&&1], "\n");
 }
 
@@ -220,7 +218,7 @@ for (k=0; k < tc; k = k+1)
 fprintf (stdout, "Auto-generating internal node labels"); 
 Tree exportT = givenTree;
 
-_doLabelGeneration ();
+_doLabelGeneration (0);
 
 fprintf (outFilter, CLEAR_FILE, "_subtypeAssignmentByNode = ", sequenceLabels, ";");
 
