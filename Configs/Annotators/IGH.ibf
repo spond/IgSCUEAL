@@ -12,6 +12,7 @@ aa_breaks =
 }
 ;
 jMotifRegExp       = "[FW]G.G";
+jMotifFallBack     = 115 * 3;
 
 _features           = {"0" : "FW1", "1": "CDR1", "2": "FW2", "3": "CDR2", "4": "FW3", "5": "CDR3", "6": "J"};
 _extraOutputColumns = {"0": "FW1", 

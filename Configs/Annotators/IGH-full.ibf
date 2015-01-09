@@ -14,6 +14,7 @@ aa_breaks =
 }
 ;
 jMotifRegExp       = "[FW]G.G";
+jMotifFallBack     = 115 * 3;
 
 
 

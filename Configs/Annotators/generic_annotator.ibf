@@ -97,16 +97,34 @@ function MapIGH (ref,qry)
 	// replace all remaining gaps with N
 	qryNoGaps = (qry ^ {{"\\-\\-\\-",""}}) ^ {{"\\-","N"}};
 	
+	jRegionChunk = None;
 	
 	for (k = 1; k <= Abs (_features); k+=1) {
+	
 		thisSpan = coords[coords["_IG_nuc_annotation[_MATRIX_ELEMENT_VALUE_]==k__"]];
 		thisSpanL = Columns(thisSpan);
 		if (thisSpanL) {
 			subSeq = qryNoGaps[currentL][currentL+thisSpanL-1];
-			currentL += thisSpanL;
 			//fprintf (stdout, "\n\n", subSeq, "\n", translateCodonToAA (subSeq,_codonMappingIGHH,0), "\n");
 			_IGHHReport [_features[k-1]] = subSeq;
 			_IGHHReport [_features[k-1] + "_AA"] =  translateCodonToAA (subSeq,_codonMappingIGHH,0);
+			
+			if (_features[k-1] == "J") {
+                if (None != jMotifFallBack) {
+                    if (thisSpan[thisSpanL-1] >= jMotifFallBack) {
+                        jRegionChunk = jMotifFallBack - thisSpan[0] - 1;
+                        
+                        if (jRegionChunk > 0) {
+                            jRegionChunk = qryNoGaps[currentL][currentL + jRegionChunk];
+                        }
+                        else {
+                            jRegionChunk = None;
+                        }
+                    }
+                }
+            }
+            
+			currentL += thisSpanL;
 		}
 		else {
 			_IGHHReport [_features[k-1]] = "";
@@ -116,8 +134,9 @@ function MapIGH (ref,qry)
 	
 	// pull out the junction 
 	
-	_IGHHReport["JUNCTION"] = "";
+	_IGHHReport["JUNCTION"]    = "";
 	_IGHHReport["JUNCTION_AA"] = "";
+	
     if (Abs (_IGHHReport ["FW3_AA"]) && Abs (_IGHHReport ["J_AA"])) {
 	    // find the last "C" in FW3_AA
 	    whereAreTheC = _IGHHReport ["FW3_AA"] || "C";
@@ -129,6 +148,12 @@ function MapIGH (ref,qry)
 	            jMotif = jMotif[0];
 	            _IGHHReport ["JUNCTION"] = (_IGHHReport ["FW3"])[whereAreTheC*3][Abs(_IGHHReport ["FW3"])-1] + _IGHHReport["CDR3"] + (_IGHHReport["J"])[0][3*jMotif+2];
 	            _IGHHReport ["JUNCTION_AA"] =  translateCodonToAA (_IGHHReport["JUNCTION"],_codonMappingIGHH,0);
+	        } else {
+	            if (None != jRegionChunk) {
+	                _IGHHReport ["JUNCTION"] = (_IGHHReport ["FW3"])[whereAreTheC*3][Abs(_IGHHReport ["FW3"])-1] 
+	                                           + _IGHHReport["CDR3"] + jRegionChunk;
+	                _IGHHReport ["JUNCTION_AA"] =  translateCodonToAA (_IGHHReport["JUNCTION"],_codonMappingIGHH,0);
+	            }
 	        }
 	    }
 	}

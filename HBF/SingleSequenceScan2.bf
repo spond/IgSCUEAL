@@ -2636,7 +2636,7 @@ for (_s2 = 0; _s2 < tbc; _s2 = _s2 + 1) {
 	}
 }
 
-fprintf (stdout, "\n\n", significantBranches, "\n\n", bestModelBL, "\n\n"); 
+//fprintf (stdout, "\n\n", significantBranches, "\n\n", bestModelBL, "\n\n"); 
 
 stencil 			= branchSupport["significantBranches[_MATRIX_ELEMENT_COLUMN_]"];
 stencil	 			= branchSupport[stencil];
