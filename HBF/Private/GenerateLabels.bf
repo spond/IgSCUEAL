@@ -17,12 +17,14 @@ tc = TipCount (exportT);
 for (k=0; k < tc; k += 1) {
 	nodeName 	  = TipName (exportT,k);
 	subexp = extractAllExpressions (nodeName^ {{"^IG[A-Z]"}{""}}, "[^_]+", "");
-	sequenceLabels [nodeName&&1] = subexp[0]+"-"+subexp[1];
-    for (k2 = 2; k2 < Abs (subexp) - 3; k2 += 1) {
+	sequenceLabels [nodeName&&1] = subexp[0];
+	
+    for (k2 = 1; k2 < Abs (subexp) - 3; k2 += 1) {
         sequenceLabels [nodeName&&1] += "-" + subexp [k2];
     }
+    
     if (respect_allele) {
-        sequenceLabels [nodeName&&1] += "*" + subexp[k2];
+        sequenceLabels [nodeName&&1] += "*" + subexp[Abs (subexp) - 3];
     }
 	    
 	fprintf (stdout, nodeName, "->", sequenceLabels [nodeName&&1], "\n");
@@ -31,5 +33,5 @@ for (k=0; k < tc; k += 1) {
 _doLabelGeneration (respect_allele);
 
 fprintf (stdout, sequenceLabels, "\n");
-//fprintf (labels, CLEAR_FILE, "_subtypeAssignmentByNode = \n", sequenceLabels, ";\n");
+fprintf (labels, CLEAR_FILE, "_subtypeAssignmentByNode = \n", sequenceLabels, ";\n");
 
