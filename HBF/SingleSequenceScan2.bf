@@ -2192,12 +2192,11 @@ lastIMPBPC = 0;
 
 
 
-for (currentBPC = startBPC; currentBPC < maxBPP; currentBPC = currentBPC + 1)
-{
+for (currentBPC = startBPC; currentBPC < maxBPP; currentBPC += 1) {
 	totalModelCounter 		 = 1;
 	kf 						 = 1;
 	
-	for (k=1; k <= partCount; k=k+1)
+	for (k=1; k <= partCount; k += 1)
 	{
 		totalModelCounter = totalModelCounter * (Abs(bppMap)-k+1)*tbc;
 		kf 				  = kf * k;
@@ -2215,7 +2214,7 @@ for (currentBPC = startBPC; currentBPC < maxBPP; currentBPC = currentBPC + 1)
 	saveStopCriterion		= stoppingCriterion;
 	saveLocalMutInterval	= localMutationInterval;
 	
-	for (subpop = 0; subpop < runSubpopulations+1; subpop = subpop + 1)
+	for (subpop = 0; subpop < runSubpopulations+1; subpop += 1)
 	{
 		if (subpop < runSubpopulations)
 		{
@@ -2513,8 +2512,7 @@ for (_mc=totalTried-1; _mc>=0; _mc=_mc-1)
 	}	
 }
 
-if (verboseFlag)
-{
+if (verboseFlag) {
 	fprintf (stdout, Abs (credibleKeys), "/", totalTried, " credible models\n");
 }
 
@@ -2531,10 +2529,8 @@ v = Rows (modelSupportByType);
 typesWithSupport = {};
 
 
-for (k = 0; k < h; k = k + 1)
-{
-	if (modelSupportByType[v[k]]/totalSum >= 0.05)
-	{
+for (k = 0; k < h; k = k + 1) {
+	if (modelSupportByType[v[k]]/totalSum >= 0.05) {
 		typesWithSupport[v[k]] = modelSupportByType[v[k]]/totalSum;
 	}
 }
@@ -2555,11 +2551,15 @@ overallBestFound 		= ConvertFromPartString(masterKeys[bestByModelType[bestAssign
 
 overallBestFoundSisterNodes           = node_s;
 
-if (currentBEST_IC > 1e10)
-{
+/*
+fprintf (stdout, overallBestFound, "\n", 
+                 overallBestFoundSisterNodes, 
+                 "\n");
+*/
+
+if (currentBEST_IC > 1e10) {
 	fprintf (stdout,   "ERROR: \nAnalysis options and recombinants in the reference alignment created a situation where no valid models could be found\n");
-	if (runInMPIMode == 1)
-	{
+	if (runInMPIMode == 1) {
 		returnAVL = {};
 	}
 	return 1;
@@ -2568,6 +2568,7 @@ if (currentBEST_IC > 1e10)
 bestAssignment 			= AssembleSubtypeAssignment (overallBestFound,1);
 bestAssignmentSimple	= AssembleSubtypeAssignmentSimple (overallBestFound,1);
 runAModel			 	(PrepareSampleForARun(sortedBP, "is_banned"), branchOptionValue);
+
 bestModelIC				= 0-MasterList[ConvertToPartString(overallBestFound)];
 bestModelBL				= modelBLEstimates;
 bestPC					= GetBreakpoints (ConvertToPartString (overallBestFound));
@@ -2629,13 +2630,14 @@ breakPointSupport   	 = breakPointSupport * (1/matchingSum);
 significantBranches		 = {};
 
 branchThresh			 = 0.05;
-for (_s2 = 0; _s2 < tbc; _s2 = _s2 + 1)
-{
-	if (Max(branchSupport[-1][_s2],0)>=branchThresh)
-	{
+for (_s2 = 0; _s2 < tbc; _s2 = _s2 + 1) {
+	if (Max(branchSupport[-1][_s2],0)>=branchThresh) {
 		significantBranches[_s2] = 1;
 	}
 }
+
+fprintf (stdout, "\n\n", significantBranches, "\n\n", bestModelBL, "\n\n"); 
+
 stencil 			= branchSupport["significantBranches[_MATRIX_ELEMENT_COLUMN_]"];
 stencil	 			= branchSupport[stencil];
 
@@ -2651,8 +2653,7 @@ defColorCount = Rows(_hyDefaultPSColors);
 plotColors = {_s+1,3};
 branchColorMapAux = {_s,1};
 
-for (v=0; v<_s; v=v+1)
-{
+for (v=0; v<_s; v += 1) {
 	_s2 = (refTopAVL[1+h[v]])["Name"];
 	labeler[v][0] = reduceSubtype(_s2);
 	branchColorMapAux[v] = _s2;
@@ -2867,6 +2868,8 @@ postScriptOut * 0;
 postScriptOut = _HYPSPageHeader (totalPlotWidth+5, totalPlotHeight+10, "SCUEAL report for " + originalSeqName&&3) + "\n" + postScriptOut;
 
 GetDataInfo (refSequenceString, filteredData, querySequenceID);
+
+//fprintf (stdout, overallBestFoundSisterNodes, "\n");
 
 if (runInMPIMode == 1) {
 	returnAVL["SUBTYPE"] 		= bestAssignment;

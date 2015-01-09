@@ -10,9 +10,8 @@ if (alignmentType < 0)
 SetDialogPrompt ("POL sequence file:");
 DataSet ds_in = ReadDataFile (PROMPT_FOR_FILE);
 
-whichSeq = -1;
-if (ds_in.species > 1)
-{
+whichSeq = None;
+if (ds_in.species > 1) {
 	ChoiceList (whichSeq, "Sequence to screen", 1, SKIP_NONE, ds_in);
 }
 else
@@ -31,7 +30,7 @@ if (!rfp)
 	referenceFile = "data/"+referenceAlignmentFileName;
 }
 
-if (whichSeq >= 0)
+if (whichSeq != None)
 {
 	inOptions2 = {};
 	inOptions2["1"] = "../"+referenceFile;
@@ -49,8 +48,5 @@ if (whichSeq >= 0)
 
 	if (Abs(outputAlignment)) {
 		ExecuteAFile ("../HBF/SingleSequenceScan2.bf");
-		if (Abs (_annotateSequenceByAlignment)) {
-		
-		}
 	}
 }

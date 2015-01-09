@@ -31,9 +31,14 @@ _extraOutputColumns = {"0": "FW1",
                        "14": "D_ALLELE",
                        "15": "D",
                        "16" : "D_AA",
-                       "17" : "J",
-                       "18" : "J_AA",
-                       "19" : "Mapped Read"};
+                       "17" : "D_SCORE",
+                       "18" : "D/INV_ALLELE",
+                       "19" : "D/INV",
+                       "20" : "D/INV_AA",
+                       "21" : "D/INV_SCORE",
+                       "22" : "J",
+                       "23" : "J_AA",
+                       "24" : "Mapped Read"};
 
 
 _D_sequences = {
@@ -61,138 +66,8 @@ _D_sequences = {
 "D6_6"  : "GAGTATAGCAGCTCGTCC",
 "D7_7"  : "CTAACTGGGGA"};
 
-// make inverted D
-_D_names = Rows (_D_sequences);
 
-for (k = 0; k < Columns (_D_names); k+=1) {
-    _D_sequences [_D_names[k] + "/Inv"] = nucleotideReverseComplement (_D_sequences[_D_names[k]]);
-}
+_annotator_do_inverse_d = 1;
+_set_up_annotator ();
 
-
-
-curID   = 0;
-curCode = 1;
-breaks = (aa_breaks)*3+(-1);
-
-
-for (k = 0; k < IG_MRCA_sequence_length; k+=1) {
-	_IG_nuc_annotation [k] = curCode;
-	if (k == breaks[curID]) {
-		curCode += 1;
-		curID   += 1;
-	}
-}
-
-LoadFunctionLibrary ("chooseGeneticCode", {"0":"Universal"});
-LoadFunctionLibrary ("GrabBag");
-
-//--------------------------------------------------------------
-
-function MapIGH (ref,qry)
-{
-    qryWithN = "";
-    for (k = 0; k < Abs(qry); k+=1) {
-        if (k % 3 == 0) {
-            if (qry[k] == "-" && qry[k+1] == "-" && qry[k+2] == "-") {
-                qryWithN += "---";
-                k += 2;
-                continue;
-            }
-        }
-        if (qry[k] == "-") {
-            qryWithN += "N";
-        } else {
-            qryWithN += qry[k];
-        }
-    }
-	coords 	   = remapSequenceCoordinatesToReference (ref, qryWithN);
- 	//fprintf ("/Users/sergei/Desktop/igg.fas", CLEAR_FILE,">ref\n", ref, "\n>qry\n", qry, "\n>qryN\n", qryWithN, "\n");
-	_IGHHReport = {};
-	_IGHHReport ["Mapped Read"] = qryWithN;
-	_codonMappingIGHH = defineCodonToAA();
-	currentL         = 0;
-	// replace all triplet gaps with nothing
-	// replace all remaining gaps with N
-	qryNoGaps = (qry ^ {{"\\-\\-\\-",""}}) ^ {{"\\-","N"}};
-	
-	
-	for (k = 1; k <= Abs (_features); k+=1) {
-		thisSpan = coords[coords["_IG_nuc_annotation[_MATRIX_ELEMENT_VALUE_]==k__"]];
-		thisSpanL = Columns(thisSpan);
-		if (thisSpanL) {
-			subSeq = qryNoGaps[currentL][currentL+thisSpanL-1];
-			currentL += thisSpanL;
-			//fprintf (stdout, "\n\n", subSeq, "\n", translateCodonToAA (subSeq,_codonMappingIGHH,0), "\n");
-			_IGHHReport [_features[k-1]] = subSeq;
-			_IGHHReport [_features[k-1] + "_AA"] =  translateCodonToAA (subSeq,_codonMappingIGHH,0);
-		}
-		else {
-			_IGHHReport [_features[k-1]] = "";
-			_IGHHReport [_features[k-1] + "_AA"] = "";
-		}
-	}
-	
-	// pull out the junction 
-	
-	_IGHHReport["JUNCTION"] = "";
-	_IGHHReport["JUNCTION_AA"] = "";
-    if (Abs (_IGHHReport ["FW3_AA"]) && Abs (_IGHHReport ["J_AA"])) {
-	    // find the last "C" in FW3_AA
-	    whereAreTheC = _IGHHReport ["FW3_AA"] || "C";
-	    if (whereAreTheC[0] >= 0) {
-	        whereAreTheC = whereAreTheC[Rows(whereAreTheC)-1];
-	        // find the motif in "J"
-	        jMotif = _IGHHReport ["J_AA"] $ jMotifRegExp;
-	        if (jMotif[0] >= 0) {
-	            jMotif = jMotif[0];
-	            _IGHHReport ["JUNCTION"] = (_IGHHReport ["FW3"])[whereAreTheC*3][Abs(_IGHHReport ["FW3"])-1] + _IGHHReport["CDR3"] + (_IGHHReport["J"])[0][3*jMotif+2];
-	            _IGHHReport ["JUNCTION_AA"] =  translateCodonToAA (_IGHHReport["JUNCTION"],_codonMappingIGHH,0);
-	        }
-	    }
-	}
-	
-	
-	// try to pull out some "D" sequences
-	if (Abs (_IGHHReport["JUNCTION"]) > 0) {
-	    
-	    d_names = Rows (_D_sequences);
-	    scores  = {};
-	    inStr   = {{_IGHHReport ["JUNCTION"], ""}};
-	    
-	    //fprintf (stdout, _IGHHReport ["JUNCTION"], ":", Abs (_IGHHReport ["JUNCTION"]), "\n");
-	    
-	    _dAlignOptions = alignOptions;
-	    _dAlignOptions ["SEQ_ALIGN_GAP_EXTEND"]  = 0;
-	    _dAlignOptions ["SEQ_ALIGN_GAP_EXTEND2"] = 0;
-	    _dAlignOptions ["SEQ_ALIGN_FRAMESHIFT"] = 100;
-	    _dAlignOptions ["SEQ_ALIGN_LOCAL_ALIGNMENT"] = 1;
-	    
-	    max_score = -1e100;
-	    
-	    for (d_allele = 0; d_allele < Abs (_D_sequences); d_allele += 1) {
-	        inStr[1] = _D_sequences[d_names[d_allele]];
-	    	AlignSequences(aligned, inStr, _dAlignOptions);
-	    	//fprintf (stdout, d_names[d_allele], "=>", aligned, "\n");
-	    	if ((aligned[0])[0] > max_score) {
-	    	    max_score     = (aligned[0])[0];
-	    	    best_allele   = d_names[d_allele];
-	    	    best_sequence = (aligned[0])[1];
-	    	}
-	    }
-	}
-	
-	_IGHHReport ["D_ALLELE"] = best_allele;
-	_IGHHReport ["D"] = best_sequence;
-	_IGHHReport ["D_AA"] = translateCodonToAA (best_sequence,_codonMappingIGHH,0);
-	
-	for (k = 0; k < Abs (qry); k+=1) {
-		if (coords[k] < 0) {
-			break;
-		}
-	}
-	
-	//fprintf (stdout, _IGHHReport, "\n");
-	
-	return _IGHHReport;
-}
 
