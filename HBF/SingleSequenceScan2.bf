@@ -163,8 +163,7 @@ function reduceSubtype (in)
 
 function	AssembleSubtypeAssignment (theDatum,doConversion)
 {
-	if (doConversion)
-	{
+	if (doConversion) {
 		theDatumString = ConvertToPartString (theDatum);
 	}
 	else
@@ -220,17 +219,11 @@ function	AssembleSubtypeAssignment (theDatum,doConversion)
 	}
 	
 	classType = 0;
-	if (Abs (theDatumString) > 1 )
-	{
-		if (Abs (subtypeCounter) > 1)
-		{
-			subtypeString = subtypeString + " inter-subtype recombinant";
+	if (Abs (theDatumString) > 1 ) {
+		if (Abs (subtypeCounter) > 1) {
 			classType = 1;
 		}
-		else
-		{
-			subtypeString = reduceSubtype(theDatumString[0]) + " intra-subtype recombinant (" + 
-							 (Abs (theDatumString)-1) + " breakpoints)";
+		else {
 			classType = 2;
 		}
 	}
@@ -276,69 +269,7 @@ function isEqualOrSuperset (profBits, referenceBits)
 	return 0;
 }
 
-/*************************************************************************************/
 
-function	AssembleSubtypeAssignmentSimple (theDatum,doConversion)
-{
-	fullSubtypeString = AssembleSubtypeAssignment(theDatum, doConversion);
-	if (classType > 0)
-	{
-		if (classType == 2)
-		{
-			return (Rows(subtypeCounter))[0];
-		}
-		else
-		{
-			_fcrfC = Abs(_foundCRFs);
-			if (_fcrfC)
-			{
-				/* check for CRF-like structure */
-				tryTheseCRFs = Rows (_foundCRFs);
-				_crfLike	 = {};
-				
-				for (crfID = 0; crfID < _fcrfC; crfID = crfID+1)
-				{
-					_crfToTry = tryTheseCRFs[crfID];
-					crfStructureCounts = Abs(CRFMosaics[_crfToTry]);
-					for (crfID2 = 0; crfID2 < crfStructureCounts; crfID2 = crfID2+1)
-					{
-						if (verboseFlag)
-						{
-							fprintf (stdout, crfEquivCounter, "\n", ((CRFMosaics[_crfToTry])[crfID2]), "\n");
-						}
-						if (isEqualOrSuperset (crfEquivCounter, (CRFMosaics[_crfToTry])[crfID2]))
-						{
-							return _crfToTry + "-like";
-						}
-					}
-				}
-				if (Abs(_crfReducedCounter) == 1)
-				{
-					return (Rows(_crfReducedCounter))[0];
-				}
-				subtypeCounter = _crfReducedCounter;
-			}	
-		}
-		
-		if (Abs(subtypeCounter) > 2)
-		{
-			return "Complex";
-		}
-		if ((Rows(subtypeCounter))[0] < (Rows(subtypeCounter))[1])
-		{
-			return (Rows(subtypeCounter))[0] + "," + (Rows(subtypeCounter))[1] + " recombinant";
-		}
-		return (Rows(subtypeCounter))[1] + "," + (Rows(subtypeCounter))[0] + " recombinant";
-	}
-	return fullSubtypeString;
-}
-
-/*---------------------------------------------------------------------------------------------------------------------------------------------*/
-
-function StringToMatrix (zz)
-{
-	return zz;
-}
 
 _psTreePlots    = {};
 treeImageHeight = 0;
@@ -425,8 +356,7 @@ function DefineAPart (filterString,daTree,index,bls,mrca_name)
 
 /*---------------------------------------------------------------------------------------------------------------------------------------------*/
 
-function ExportAMatrix (rateMatrix,bestModelBL,plotRoot)
-{
+function ExportAMatrix (rateMatrix,bestModelBL,plotRoot) {
 	TREE_OUTPUT_OPTIONS = {};
 	TREE_OUTPUT_OPTIONS ["TREE_OUTPUT_LAYOUT"] = 0;
 	TREE_OUTPUT_OPTIONS ["TREE_OUTPUT_EMBED"]  = 1;
@@ -2482,30 +2412,39 @@ intraSupport		= 0;
 
 credibleKeys		= {};
 
-for (_mc=totalTried-1; _mc>=0; _mc=_mc-1)
+support_threshold = 0.01;
+
+support_by_branch = {};
+
+fprintf (stdout, refTopAVL, "\n");
+
+for (_mc=totalTried-1; _mc>=0; _mc = _mc - 1)
 {
 	aKey 								= masterKeys[_mc];
 	anIC 								= -MasterList[aKey];
 	aw	 								= Exp((currentBEST_IC-anIC)*0.5);
-	if (aw > 0.001 / totalTried)
-	{	
+	
+	if (aw > 0.0001 / totalTried) {	
 		_cmc								= Abs (credibleKeys);
 		credibleKeys[_cmc]					= aKey;
 		totalSum 							= totalSum + aw;
 		akaikeWeights[_cmc][0]   			= aw;
+		
 		thisModelType 						= AssembleSubtypeAssignment (aKey,0);
-		modelSupportByType[thisModelType] 	= modelSupportByType[thisModelType] + aw;
-		if (classType)
-		{
-			recombSupport = recombSupport + aw;
-			if (classType == 2)
-			{
-				intraSupport = intraSupport + aw;
+		
+		sscanf (aKey, "Lines", model_definition);
+		fprintf (stdout, aKey, "\n", model_definition[1], "\n");
+		
+		modelSupportByType[thisModelType] 	+= aw;
+		
+		if (classType) {
+			recombSupport += aw;
+			if (classType == 2) {
+				intraSupport += aw;
 			}
 		}
 	
-		if (aw > bestAWModelType[thisModelType])
-		{
+		if (aw > bestAWModelType[thisModelType]) {
 			bestAWModelType[thisModelType] = aw;
 			bestByModelType[thisModelType] = _cmc;
 		}		
@@ -2530,7 +2469,7 @@ typesWithSupport = {};
 
 
 for (k = 0; k < h; k = k + 1) {
-	if (modelSupportByType[v[k]]/totalSum >= 0.05) {
+	if (modelSupportByType[v[k]]/totalSum >= support_threshold) {
 		typesWithSupport[v[k]] = modelSupportByType[v[k]]/totalSum;
 	}
 }
@@ -2551,12 +2490,6 @@ overallBestFound 		= ConvertFromPartString(masterKeys[bestByModelType[bestAssign
 
 overallBestFoundSisterNodes           = node_s;
 
-/*
-fprintf (stdout, overallBestFound, "\n", 
-                 overallBestFoundSisterNodes, 
-                 "\n");
-*/
-
 if (currentBEST_IC > 1e10) {
 	fprintf (stdout,   "ERROR: \nAnalysis options and recombinants in the reference alignment created a situation where no valid models could be found\n");
 	if (runInMPIMode == 1) {
@@ -2566,7 +2499,7 @@ if (currentBEST_IC > 1e10) {
 }
 
 bestAssignment 			= AssembleSubtypeAssignment (overallBestFound,1);
-bestAssignmentSimple	= AssembleSubtypeAssignmentSimple (overallBestFound,1);
+bestAssignmentSimple	= bestAssignment;
 runAModel			 	(PrepareSampleForARun(sortedBP, "is_banned"), branchOptionValue);
 
 bestModelIC				= 0-MasterList[ConvertToPartString(overallBestFound)];
@@ -2602,6 +2535,7 @@ for (_mc=totalTried-1; _mc>=0; _mc=_mc-1)
 			otherBPSupport[aBPList[_s2]-1] = otherBPSupport[aBPList[_s2]-1] + aw; 
 		}	
 	}
+	
 	if (aw/totalSum > 0.1/totalTried)
 	{
 		splits   = splitOnRegExp (aKey[0][whereisTheSpace-1], ",");
@@ -2702,170 +2636,41 @@ Export					(lfExportString,lf_export);
 
 SetDialogPrompt ("Save the results to:");
 
-postScriptOut = ""; postScriptOut * 128;
-psTranslate   = {{0,310+treeImageHeight__}};
-postScriptOut * ("0 "+(treeImageHeight+10)+" translate\n");
-postScriptOut * SimpleGraph("sigBrSupport", {{1,filteredData.sites},{0,100}}, "Times-Roman", {{totalPlotWidth,300,8}}, plotColors, {{"Inferred Mosaic", "Nucleotide", "Model-averaged support"}},labeler, 2);
-postScriptOut * "0 300 translate\n";
-								  
 
-
-_mc 		  = Abs(typesWithSupport) - 1;
-ibp			  = Rows(bestPC);
-ibpt		  = (ibp+1)*18;
-
-if (ibpt>20)
-{
-	postScriptOut * ("50 "+ibpt+" translate\n");
-	psTranslate   = psTranslate + {{50,ibpt}};
+if (runInMPIMode == 0) {
+	fprintf (stdout, "\nPredicted rearrangement                : ", bestAssignment,
+    				 "\nModel averaged support                 : ", Format(matchingSum/totalSum*100,8,4), "%\n");
 }
 
-if (runInMPIMode == 0)
-{
-	fprintf (stdout, "\nPredicted subtype                      : ", bestAssignment,
-			 "\nPredicted simple subtype               : ",  bestAssignmentSimple,
-				 "\nModel averaged support                 : ", Format(matchingSum/totalSum*100,8,4), "%",
-				 "\nSupport for recombination              : ", Format(recombSupport*100,8,4), "%",
-				 "\nSupport for intra-subtype recombination: ", Format(intraSupport*100,8,4), "%\n"
-				 );
-}
-
-if (_mc > 0)
-{
-	if (runInMPIMode == 0)
-	{
-		fprintf (stdout, 	"\nThere are ", _mc, " other mosaic types with model-averaged support over 5%");
+if (_mc > 0) {
+	if (runInMPIMode == 0) {
+		fprintf (stdout, 	"\nThere are ", _mc, " other rearrangements with model-averaged support over ", Format (support_threshold*100,0,0), "%");
 	}
+	
 	keys 				= Rows(typesWithSupport);
 	summaryMatrix 		= {_mc+1,2};
-	summaryMatrix		[0][0] = "Alternative subtype";
+	
+	summaryMatrix		[0][0] = "Alternative rearrangements";
 	summaryMatrix		[0][1] = "Model averaged support";
 	
 	h					= 1;
-	for (_k = _mc; _k >= 0; _k=_k-1)
-	{
-		if (keys[wellSupported[_k][0]] != bestAssignment)
-		{
+	for (_k = _mc; _k >= 0; _k=_k-1) {
+		if (keys[wellSupported[_k][0]] != bestAssignment) {
 			if (runInMPIMode == 0)
 			{
-				fprintf (stdout, "\n\tAlternative subtype        :", keys[wellSupported[_k][0]],
-							 	"\n\tModel averaged support     :", Format(wellSupported[_k][1]*100,8,4), "%");
+				fprintf (stdout, "\n\tAlternative rearrangements :", keys[wellSupported[_k][0]],
+							 	 "\n\tModel averaged support     :", Format(wellSupported[_k][1]*100,8,4), "%");
 			}			 
 			summaryMatrix[h][0] = keys[wellSupported[_k][0]];					 
 			summaryMatrix[h][1] = Format(wellSupported[_k][1]*100,0,4) + "\\%";					 
 			h = h + 1;
 		}
 	}
-	if (runInMPIMode == 0)
-	{
+	if (runInMPIMode == 0) {
 		fprintf (stdout, "\n");
 	}
-	h = 16*(_mc+1);
-	if (psTranslate[0] == 0)
-	{
-		postScriptOut * ("50 0 translate\n");
-	}
-	postScriptOut * (_HYPSSetFont ("Courier",12)+"\n"+_HYPSTextTable (500,h,12,summaryMatrix,summaryMatrix["0+12*(_MATRIX_ELEMENT_ROW_==0)"]));
-	postScriptOut * ("0 "+h+" translate\n");
-	psTranslate = psTranslate + {{50*(psTranslate[0]==0),h}};
-}
-				 
-summaryMatrix = {4,2};
-summaryMatrix[0][0] = "Predicted subtype"; summaryMatrix[0][1] = bestAssignment;
-summaryMatrix[1][0] = "Model averaged support"; summaryMatrix[1][1] = Format(matchingSum/totalSum*100,0,4) + "\\%";
-summaryMatrix[2][0] = "Recombinant"; summaryMatrix[2][1] = Format(recombSupport*100,0,4) + "\\%";
-summaryMatrix[3][0] = "Intra-subtype recombinant"; summaryMatrix[3][1] = Format(intraSupport*100,0,4) + "\\%";
-
-if (psTranslate[0] == 0)
-{
-	postScriptOut * ("50 0 translate\n");
 }
 
-postScriptOut *( _HYPSSetFont ("Courier",12)+_HYPSTextTable (500,60,12,summaryMatrix,summaryMatrix["0"]));
-
-if (Abs(correctModel) && runInMPIMode == 0)
-{
-	fprintf (stdout, "IC difference with the", 
-					 "\ncorrect model         : ", correctModelAIC-currentBEST_IC, "\n"); 
-}
-
-psTranslate = psTranslate + {{50*(psTranslate[0]==0),0}};
-
-postScriptOut * ("-50 60 translate\n");
-postScriptOut * (_HYPSSetFont ("Times-Roman",18));
-if (Abs(originalSeqName)>30)
-{
-	originalSeqName = originalSeqName[0][26] + "...";
-}
-
-postScriptOut * ("0 10 translate " + totalPlotWidth/2 + " 0 " + totalPlotWidth + "(SCUEAL subtyping report for " + (originalSeqName&&3) + ") scalecentertext\n");
-psTranslate = psTranslate + {{-50,80}};
-
-summaryMatrix = {ibp+1,1};
-summaryMatrix[0][0] = "Breakpoint locations";
-
-bpSupport = {ibp,3};
-
-for (_mc=0; _mc<ibp; _mc+=1)
-{
-	lb = bestPC[_mc];
-	ub = bestPC[_mc];
-	s  = breakPointSupport[bestPC[_mc]-1];
-	while (s<0.95)
-	{
-		if (lb>=1) {
-		    lb = lb-1;
-			s+=breakPointSupport[lb];
-		}
-		if (ub<filteredData.sites-1) {
-		    ub = ub+1;
-			s+=breakPointSupport[ub];
-		}
-		if (lb == 0 && ub == filteredData.sites-1) {
-		    break;
-		}
-	}
-	
-	summaryMatrix [_mc+1] = Format(bestPC[_mc]+1,0,0) + "bp, 95\\% confidence range: " + (1+Max(lb,0)) +  "-" + (1+Min(ub,filteredData.sites-1)) + " bp.";
-	
-	if (runInMPIMode == 0)
-	{
-		fprintf (stdout, "Breakpoint ", Format(_mc+1,3,0), ": ", Format(bestPC[_mc]+1,8,0), 
-						 "bp, 95% confidence range: ",	
-						  1+Max(lb,0), "-", 1+Min(ub,filteredData.sites-1), " bp.\n");
-	}
-	else
-	{
-		bpSupport[_mc][0] = bestPC[_mc]+1;
-		bpSupport[_mc][1] = 1+Max(lb,0);
-		bpSupport[_mc][2] = 1+Min(ub,filteredData.sites-1);		
-	}
-}
-
-totalPlotHeight= psTranslate[1];
-if (ibpt>20)
-{
-	h = psTranslate[1]-treeImageHeight-325;
-	postScriptOut * ("50 -" + h + " translate\n");
-	psTranslate[1] = psTranslate[1] - h;
-	postScriptOut * (_HYPSSetFont ("Courier",12)+_HYPSTextTable (500,ibpt,12,summaryMatrix,summaryMatrix["0+12*(_MATRIX_ELEMENT_ROW_==0)"]));
-	postScriptOut * ("-50 0 translate\n");
-}
-h = totalPlotWidth/Abs(_psTreePlots);
-postScriptOut * ("0 " + (psTranslate[0]-5) +" sub 0 " + (psTranslate[1]-20) +" sub translate\n");
-
-for (k=0; k<Abs(_psTreePlots); k=k+1)
-{
-	 if (k)
-	 {
-		postScriptOut * (""+h +" 0 translate\n");
-	 }
-	 postScriptOut*_psTreePlots[k];
-	 
-}
-postScriptOut * "\nshowpage";
-postScriptOut * 0;
-postScriptOut = _HYPSPageHeader (totalPlotWidth+5, totalPlotHeight+10, "SCUEAL report for " + originalSeqName&&3) + "\n" + postScriptOut;
 
 GetDataInfo (refSequenceString, filteredData, querySequenceID);
 
@@ -2889,8 +2694,7 @@ if (runInMPIMode == 1) {
 		returnAVL["EXTRA"] = _extraResult;
 	}
 }
-else
-{
+else {
 	fprintf (PROMPT_FOR_FILE,CLEAR_FILE,s);
 	psOutFile = LAST_FILE_PATH;
 
