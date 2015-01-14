@@ -45,7 +45,7 @@ function GetBestHomology (junction, d) {
     for (d_allele = 0; d_allele < Abs (d); d_allele += 1) {
         inStr[1] = d[d_names[d_allele]];
         AlignSequences(aligned, inStr, _dAlignOptions);
-        local_score = (aligned[0])[0]; // / Abs ( d[d_names[d_allele]]);
+        local_score = (aligned[0])[0] / Abs ( d[d_names[d_allele]]);
         
         //fprintf (stdout, d_names[d_allele], "=>", local_score, "\n");
         

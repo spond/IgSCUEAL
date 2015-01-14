@@ -52,9 +52,9 @@ _allowNsInSequences             = 1;
 _additionalStartingBreakpoints	  = {};
 _additionalStartingBreakpoints[0] = {{"^V+","^J+"}};
 
-_validBreakpointStructure = {};
-_validBreakpointStructure [1] = {"0":"^V[^\\,]+\\,J[^\\,]+",
-								 };
+_validBreakpointStructure            = {};
+_validBreakpointStructure [1]        = {"0":"^V[^\\,]+\\,J[^\\,]+"};
+_do_not_enforce_gaps_in_initial_scan = "^IGHV";
 								 
 _annotateSequenceByAlignment	  = "MapIGH";
 ExecuteAFile ("Annotators/IGH-full.ibf");

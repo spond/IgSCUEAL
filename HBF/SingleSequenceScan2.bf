@@ -864,14 +864,12 @@ function ConvertToPart (pString)
 
 /*---------------------------------------------------------------------------------------------------------------------------------------------*/
 
-function PrepareSampleForARun (sortedBP, is_banned&)
-{
+function PrepareSampleForARun (sortedBP, is_banned&) {
 	paramSpec = sortedBP;
 	is_banned = 0;
 	my_size   = Rows(sortedBP);
 	
-	for (mpiNode=0; mpiNode < my_size; mpiNode = mpiNode+1)
-	{
+	for (mpiNode=0; mpiNode < my_size; mpiNode = mpiNode+1) {
 		seq = nodeIDMap[sortedBP[mpiNode][0]];
 		if (mpiNode < my_size-1)
 		{
@@ -882,8 +880,7 @@ function PrepareSampleForARun (sortedBP, is_banned&)
 			loc = filteredData.sites;
 		}
 		
-		if (hasBannedBP[seq])
-		{
+		if (hasBannedBP[seq]) {
 			spanEnd = loc;
 			if (mpiNode)
 			{
@@ -981,8 +978,7 @@ function RunASample (dummy,jobIndex)
 {	
 	myAIC	 = MasterList[ConvertToPartString (cString)];
 
-	if (myAIC<0)
-	{		
+	if (myAIC<0) {		
 		if (resultProcessingContext==0)
 		{
 			sortedScores[jobIndex][0] = myAIC;
@@ -1002,19 +998,17 @@ function RunASample (dummy,jobIndex)
 		return 0;
 	}
 
-	paramSpec = PrepareSampleForARun(sortedBP, "is_banned");
+	paramSpec = PrepareSampleForARun (sortedBP, "is_banned");
 	
-	if (is_banned)
-	{
+	if (is_banned) {
 		lf_MLES = {{-1e10, 3, 0}{0,0,0}};
 	}
-	else
-	{
+	else {
 		lf_MLES = runAModel (paramSpec,branchOptionValue);
 	}
 	mpiNode = ReceiveJobs (0,jobIndex);
 	
-	return 0;	
+	return is_banned;	
 }
 
 /*---------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -1232,22 +1226,18 @@ GetString	  (qsName,ds,querySequenceID);
 
 inverseBppMap = {filteredData.sites,1};
 
-for (h=0; h<filteredData.sites; h=h+1)
-{
+for (h=0; h<filteredData.sites; h += 1) {
 	filterString 			 = Format(h,20,0);
 	DataSetFilter siteFilter = CreateFilter (filteredData,1,filterString);
 	HarvestFrequencies 		   (f1, siteFilter, 1, 1, 0);
-	if (((Transpose(f1))["1"]*f1["_MATRIX_ELEMENT_VALUE_>0"])[0]>1)
-	{
+	if (+f1["_MATRIX_ELEMENT_VALUE_>0"] > 1) {
 		inverseBppMap[h] = Abs(bppMap);
 		bppMap[Abs(bppMap)] = h;
 	}
-	else
-	{
+	else {
 		inverseBppMap[h] = -1;
 	}
 }
-
 
 bppMapSize		= Abs(bppMap);
 bppSize 		= (Log(Abs(bppMapSize))/Log(2)+1)$1;
@@ -1255,8 +1245,7 @@ branchBits		= (Log(Abs(refTopAVL)-2)/Log(2)+1)$1;
 
 bitsPerPart		= bppSize + branchBits;
 
-if (verboseFlag)
-{
+if (verboseFlag) {
 	fprintf (stdout, "There are ",Abs(bppMap)," potential breakpoints and ", Abs(refTopAVL)-2," candidate branches. ",
 						   "\nBit size of the sample (per partition) is ", bitsPerPart,"\n");
 }
@@ -1264,8 +1253,7 @@ if (verboseFlag)
 partCount = 2;
 h 		  = Abs(bppMap);
 
-if (h <= partCount)
-{
+if (h <= partCount) {
 	fprintf (stdout,   "ERROR: \nThere are too few potential break points to support ", partCount-1, " recombination events.\n");
 	return 1;
 }
@@ -1421,8 +1409,7 @@ if (rvChoice)
 							{c*AT*t,c*CT*t,c*GT*t,*}};
 													
 }
-else
-{
+else {
 	NucleotideMatrix	 = {{*,AC*t,t,AT*t}{AC*t,*,CG*t,CT*t}{t,CG*t,*,GT*t}{AT*t,CT*t,GT*t,*}};
 }
 
@@ -1430,18 +1417,13 @@ Model nucModel   		= (NucleotideMatrix, nucEFV, 1);
 
 /* check parameter counts */
 
-if (verboseFlag)
-{
+if (verboseFlag) {
 	fprintf (stdout, "FITTING THE REFERENCE TREE TO OBTAIN INITIAL PARAMETER ESTIMATES\n");
 }
 
 Tree	baselineTree	= referenceTopologyString;
 LikelihoodFunction		baselineLF = (referenceData, baselineTree);
 
-/*
-LIKELIHOOD_FUNCTION_OUTPUT = 7;
-fprintf ("/Users/sergei/Desktop/SCUEAL.lf", CLEAR_FILE, baselineLF);
-*/
 
 GetString 				(varList, baselineLF, -1);
 baseParams 		   		= Columns(varList["Global Independent"])+3;
@@ -1678,6 +1660,7 @@ GetString 	(allSeqs, filteredData, -1);
 
 bannedBreakpointLocations = {};
 hasBannedBP				  = {};
+allowInInitialScan        = {};
 CRFStructure			  = {};
 
 gapStructureRegex		  = "(\\-){"+_contigGapThresh+"}\\-+";
@@ -1687,19 +1670,23 @@ for (h = 0; h < filteredData.species; h = h+1)
 {
 	crf_group = CRFGroups[allSeqs[h]];
 	
-	if (Rows(crf_group))
-	{
+	if (Rows(crf_group)) {
 		GetDataInfo (qS, filteredData, h);
-		if (Abs(CRFStructure[crf_group[0]]) == 0)
-		{
+		if (Abs(CRFStructure[crf_group[0]]) == 0) {
 			CRFStructure[crf_group[0]] = {};
 		}
 		
 		haveGaps    = qS||gapStructureRegex;
 		seq = (-1) + nodeNameToAVL[allSeqs[h]];
 		
-		if (haveGaps[0]>=0)
-		{
+		if (Type (_do_not_enforce_gaps_in_initial_scan) == "String") {
+		    if ((allSeqs[h] $ _do_not_enforce_gaps_in_initial_scan)[0] >= 0) {
+		        //fprintf (stdout, "##", allSeqs[h], "\n");
+		        allowInInitialScan [nodeIDMap[seq+1]] = 1;
+		    }
+		}
+		
+		if (haveGaps[0]>=0) {
 			bannedSites = stencil;
 			for (k = Rows (haveGaps)-1; k > 0 ; k=k-2)
 			{
@@ -1965,39 +1952,41 @@ for (_h=1; _h<Abs(refTopAVL)-1; _h=_h+1)
 					
 	treeStringCache[_h]   = Format (suppliedTree,1,0);
 
-	if (hasBannedBP[nodeIDMap[_h]] == 0)
-	{
+	if (hasBannedBP[nodeIDMap[_h]] == 0 || allowInInitialScan [nodeIDMap[_h]] ) {
 		paramSpec = {{filteredData.sites,nodeIDMap[_h]}};
 		outRes    = runAModel (paramSpec,branchOptionValue);
 		
 		myDF  = perPartParameterCount + baseParams + 2;
-		if (icOption == 0)
-		{
+		
+		if (icOption == 0) {
 			myAIC = -2*(outRes[0]-myDF*(baseSites/(baseSites-myDF-1)));
 		}
-		else
-		{
+		else {
 			myAIC = -2*outRes[0]+myDF*Log(baseSites);	
 		}
+		
+		if (hasBannedBP[nodeIDMap[_h]]) {
+		    //fprintf (stdout, myAIC, "\n");
+		    myAIC = myAIC + 1000;
+		}
+		
 		thisSample   				 = {branchBits,1};
-		decimalToBinary ("thisSample",0,branchBits, _h-1);
+		decimalToBinary                ("thisSample",0,branchBits, _h-1);
 		ConvertToPartString			   (thisSample);
 		MasterList [_ModelKeyString] = -myAIC;
 	
 	
-		if (myAIC < bestAIC)
-		{
+		if (myAIC < bestAIC) {
 			overallBestFound	= thisSample;
 			bestAIC 			= myAIC;
 			bestSBP 			= _h;
 			baseLL				= outRes[0];
 		}
 	}
-	else
-	{
+	else {
+		//fprintf (stdout, "Skipping branch ",(refTopAVL[_h])["Name"], "\n"); 
 		/*if (verboseFlag)
 		{
-			fprintf (stdout, "Skipping branch ",(refTopAVL[_h])["Name"], "\n"); 
 			fprintf (stdout, bannedBreakpointLocations[nodeIDMap[_h]],"\n");
 		}*/
 	}
@@ -2073,12 +2062,10 @@ if (stepByStepLogging) {
 
 currentSubtypeAssignment = _subtypeAssignmentByNode[branchAttach];
 
-if (runInMPIMode == 0)
-{
-	fprintf (stdout, "Initial subtype assignment: ", currentSubtypeAssignment, "\n");
+if (runInMPIMode == 0) {
+	fprintf (stdout, "\nInitial germline: `currentSubtypeAssignment`\n");
 }
-else
-{
+else {
 	returnAVL = {};
 	if (stepByStepLogging)
 	{
@@ -2276,13 +2263,11 @@ for (currentBPC = startBPC; currentBPC < maxBPP; currentBPC += 1) {
 			
 	kf						 = -sortedScores[populationSize-1][0];
 	
-	if (tryBreakpointFusion && currentBPC > 1)
-	{
+	if (tryBreakpointFusion && currentBPC > 1) {
 		saveCurrentBestAIC		 = -sortedScores[populationSize-1][0];
 		if (currentBEST_IC > saveCurrentBestAIC)
 		{
-			if (verboseFlag)
-			{
+			if (verboseFlag) {
 				fprintf (stdout, "\nTRYING BREAKPOINT FUSION\n");
 			}		
 			saveOldBestAIC			 = currentBEST_IC;
@@ -2416,7 +2401,11 @@ support_threshold = 0.01;
 
 support_by_branch = {};
 
-fprintf (stdout, refTopAVL, "\n");
+//fprintf (stdout, refTopAVL, "\n");
+
+function support_by_branch_populate (key, value) {
+    support_by_branch [value] += aw;
+}
 
 for (_mc=totalTried-1; _mc>=0; _mc = _mc - 1)
 {
@@ -2424,16 +2413,17 @@ for (_mc=totalTried-1; _mc>=0; _mc = _mc - 1)
 	anIC 								= -MasterList[aKey];
 	aw	 								= Exp((currentBEST_IC-anIC)*0.5);
 	
-	if (aw > 0.0001 / totalTried) {	
+	if (aw > 0.001 / totalTried) {	
 		_cmc								= Abs (credibleKeys);
 		credibleKeys[_cmc]					= aKey;
-		totalSum 							= totalSum + aw;
+		totalSum 							+= aw;
 		akaikeWeights[_cmc][0]   			= aw;
 		
 		thisModelType 						= AssembleSubtypeAssignment (aKey,0);
 		
-		sscanf (aKey, "Lines", model_definition);
-		fprintf (stdout, aKey, "\n", model_definition[1], "\n");
+		sscanf  (aKey, REWIND, "Lines", scueal_model_definition);
+		(splitOnRegExp (scueal_model_definition[1], ","))["support_by_branch_populate"][""];
+
 		
 		modelSupportByType[thisModelType] 	+= aw;
 		
@@ -2450,6 +2440,8 @@ for (_mc=totalTried-1; _mc>=0; _mc = _mc - 1)
 		}		
 	}	
 }
+
+fprintf (stdout, support_by_branch, "\n");
 
 if (verboseFlag) {
 	fprintf (stdout, Abs (credibleKeys), "/", totalTried, " credible models\n");
@@ -2468,7 +2460,7 @@ v = Rows (modelSupportByType);
 typesWithSupport = {};
 
 
-for (k = 0; k < h; k = k + 1) {
+for (k = 0; k < h; k+=1) {
 	if (modelSupportByType[v[k]]/totalSum >= support_threshold) {
 		typesWithSupport[v[k]] = modelSupportByType[v[k]]/totalSum;
 	}
@@ -2478,8 +2470,7 @@ h 				   = Abs	(typesWithSupport);
 v				   = Rows 	(typesWithSupport);
 
 wellSupported = {h,2};
-for (k = 0; k < h; k = k+1)
-{
+for (k = 0; k < h; k = k+1) {
 	wellSupported[k][0] = k;
 	wellSupported[k][1] = typesWithSupport[v[k]];
 }
@@ -2498,8 +2489,10 @@ if (currentBEST_IC > 1e10) {
 	return 1;
 }
 
+
 bestAssignment 			= AssembleSubtypeAssignment (overallBestFound,1);
 bestAssignmentSimple	= bestAssignment;
+
 runAModel			 	(PrepareSampleForARun(sortedBP, "is_banned"), branchOptionValue);
 
 bestModelIC				= 0-MasterList[ConvertToPartString(overallBestFound)];
@@ -2641,6 +2634,8 @@ if (runInMPIMode == 0) {
 	fprintf (stdout, "\nPredicted rearrangement                : ", bestAssignment,
     				 "\nModel averaged support                 : ", Format(matchingSum/totalSum*100,8,4), "%\n");
 }
+
+_mc 		  = Abs(typesWithSupport) - 1;
 
 if (_mc > 0) {
 	if (runInMPIMode == 0) {
