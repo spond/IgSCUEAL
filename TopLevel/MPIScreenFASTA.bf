@@ -29,80 +29,41 @@ GetString				(sequenceNames, ds_fil, -1);
 
 
 fprintf 						(stdout, "\nRead ", ds_in.species, " sequences\n");
-SetDialogPrompt					("Write a tab-separated file to:");
+SetDialogPrompt					("Write a tsv file to:");
 
 /* check if the output file already exists */
-fprintf 						(PROMPT_FOR_FILE,"");
+fprintf 						(PROMPT_FOR_FILE,CLEAR_FILE,KEEP_OPEN);
 resultsFile				= 		LAST_FILE_PATH;
 
-headerString			= 		"Index\tName\tSubtype\tSimplified Subtype\tSupport\tRecombination Support\tIntra-subtype Support\tReading Frame\tBreakpoints\tSequence";
+SetDialogPrompt					("Write a tsv file with all significantly supported rearrangements for each sequence:");
 
-for (k = 0; k < Abs(_extraOutputColumns); k+=1)
-{	
+fprintf 						(PROMPT_FOR_FILE,CLEAR_FILE,KEEP_OPEN);
+rearrangementFile	   = 		LAST_FILE_PATH;
+
+headerString			= 		"Index\tName\tBest Rearrangement\tSupport\tSequence";
+
+for (k = 0; k < Abs(_extraOutputColumns); k+=1) {	
 	headerString += "\t"+_extraOutputColumns[k];
 }
 
 
-fscanf							(resultsFile, "Lines", testMe);
-
-alreadyDoneIDs = {};
-fprintf 						(resultsFile,CLEAR_FILE,headerString);
-
-if (Rows(testMe))
-{
-	ExecuteAFile			(HYPHY_LIB_DIRECTORY+"TemplateBatchFiles"+DIRECTORY_SEPARATOR+"Utility"+DIRECTORY_SEPARATOR+"ReadDelimitedFiles.bf");
-	if (testMe[0] == headerString)
-	{
-		previouslyProcessedIDs = 0;
-		for (lineID = 1; lineID < Columns (testMe); lineID = lineID + 1)
-		{
-			thisLine = splitStringByTab(testMe[lineID]);
-			if (Abs (thisLine) == 9)
-			{
-				previouslyProcessedIDs = previouslyProcessedIDs + 1;
-				fprintf (resultsFile, "\n", testMe[lineID]);
-				alreadyDoneIDs [thisLine[1] && 1] = 1;
-			}
-		}
-		
-		fprintf (stdout, "Read ", previouslyProcessedIDs, " previously processed seqeuences\n");
-	}
-}
+fprintf 						(resultsFile,headerString);
+fprintf                         (rearrangementFile, KEEP_OPEN, "Name\tRearrangement\tSupport")l
 
 fprintf (stdout, "\n");
 
-ChoiceList (resultType, "Result output option", 1, SKIP_NONE,  "Summary", 		"Only write out a summary for the run",
-															   "Summary+Detail", "Generate a PostScript report and a likelihood function with the best fitting model for each sequence (2 files per query sequence).");
-
-if (resultType < 0)
-{
-	return 0;
-}
-
-detailedResults = 0;
-
-if (resultType)
-{
-	fprintf 					(stdout, "Write detailed results to this path:");
-	fscanf 						(stdin,"String", detailedResults);	
-}
-
-
 jobsFinished = 0;
 
-for (seqID = 0; seqID < ds_in.species; seqID = seqID + 1)
-{
+for (seqID = 0; seqID < ds_in.species; seqID += 1) {
 	SendAJob (seqID);
 }
 
 /* clean up MPI jobs */
 
 howManyPending = 0;
-for (mpiNode = 0; mpiNode < MPI_NODE_COUNT-1; mpiNode = mpiNode+1)
-{
-	if (MPI_NODE_STATUS[mpiNode])
-	{
-		howManyPending = howManyPending + 1;
+for (mpiNode = 0; mpiNode < MPI_NODE_COUNT-1; mpiNode = mpiNode+1){
+	if (MPI_NODE_STATUS[mpiNode]) {
+		howManyPending += 1;
 	}
 }
 
@@ -111,19 +72,13 @@ for (; howManyPending; howManyPending = howManyPending-1)
 	ReceiveAJob (0);
 }
 
-
+fprintf                         (rearrangementFile, CLOSE_FILE);
+fprintf                         (resultsFile, CLOSE_FILE);
 
 /*------------------------------------------------------------------------*/
 
 function SendAJob (sequenceID)
 {
-	if (alreadyDoneIDs[sequenceNames[sequenceID]&&1])
-	{
-		fprintf (stdout, "[SKIP] Sequence ", sequenceNames[sequenceID], " has been subtyped previously\n");
-		jobsFinished = jobsFinished + 1;
-		return 0;
-	}
-
 	inOptions 	   = {};
 	inOptions["0"] = sequenceNames[sequenceID];
 	GetDataInfo (theSeq, ds_fil, sequenceID);
@@ -160,12 +115,11 @@ function ReceiveAJob (dummy)
 	ExecuteCommands	("returnAVL = " + returnValue);
 	jobsFinished    = jobsFinished + 1;
 	fprintf (stdout, "[RECEIVE] Sequence ", processedName, " from node ", whichNode + 1, " (", (ds_in.species-jobsFinished), " alignments remaining)");
-	subtypeFound = returnAVL["SUBTYPE"];
-	simpleSubtype = returnAVL["SIMPLE_SUBTYPE"];
-	if (Abs(subtypeFound) == 0) /* error */
+	rearr_found = returnAVL["BEST_REARRANGEMENT"];
+	if (Abs(rearr_found) == 0) /* error */
 	{
 		fprintf (stdout, ": Error/ alignment failed\n");
-		fprintf (resultsFile, "\n", processedID+1, "\t", processedName, "\tError: alignment failed\t\t\t\t\t\t");
+		fprintf (resultsFile, "\n", processedID+1, "\t", processedName, "\tError: alignment failed\t\t");
 		if (Abs (_extraOutputColumns)) {
             for (k = 0; k < Abs(_extraOutputColumns); k+=1){	
                     fprintf (resultsFile, "\t");
@@ -174,52 +128,27 @@ function ReceiveAJob (dummy)
 	}
 	else
 	{
-		fprintf (stdout, ": ", subtypeFound, " (simple subtype ",simpleSubtype,")\n");
-		supp 			= returnAVL["SUPPORT"];
-		seq 		    = returnAVL["SEQUENCE"];
-		bps	 			= returnAVL["BREAKPOINTS"];
-		recs 			= returnAVL["RECOMB"];
-		recsi 			= returnAVL["INTRA"];
-		readFrame       = returnAVL["FRAME"];
+		fprintf (stdout, ": ", rearr_found, "\n");
 		
-		fprintf (resultsFile, "\n", processedID+1, "\t", processedName, "\t", subtypeFound, "\t", simpleSubtype, "\t", supp, "\t", recs, "\t", recsi,"\t", readFrame);
-		if (Abs(seq))
-		{
-			fprintf (resultsFile, "\t");
-			for (bpID = 0; bpID < Rows (bps); bpID = bpID + 1)
-			{
-				if (bpID > 0)
-				{
-					fprintf (resultsFile, ";");
-				}
-				fprintf (resultsFile, bps[bpID][0], "(", bps[bpID][1], "-", bps[bpID][2], ")");
-			}
-			fprintf (resultsFile, "\t", seq);
-		}
-		else
-		{
-			fprintf (resultsFile, "\t");		
-		}
+		fprintf (resultsFile,   "\n", processedID+1, 
+		                        "\t", processedName, 
+		                        "\t", rearr_found, 
+		                        "\t", returnAVL["SUPPORT"], 
+		                        "\t", returnAVL["SEQUENCE"]);
+		                        
+	    (returnAVL["REARRANGEMENTS"])["_write_rearrangements"][""];
 		
 		extra			= returnAVL["EXTRA"];
 		
-		if (Abs(extra))
-		{
-			for (k = 0; k < Abs(_extraOutputColumns); k+=1)
-			{	
+		if (Abs(extra)) {
+			for (k = 0; k < Abs(_extraOutputColumns); k+=1) {	
 				fprintf (resultsFile, "\t", extra[_extraOutputColumns[k]]);
 			}
 		}
-		
-		if (resultType)
-		{
-			outPath = detailedResults + (processedID+1) + ".ps";
-			ps 		= returnAVL["PS"];
-			fprintf (outPath,CLEAR_FILE,ps);
-			outPath = detailedResults + (processedID+1) + ".lf";
-			ps 		= returnAVL["LF"];
-			fprintf (outPath,CLEAR_FILE,ps);
-		}
 	}
 	return 			whichNode;
+}
+
+function _write_rearrangements (key, value) {
+    fprintf (rearrangementFile, "\n", processedName, "\t", key, "\t", value);
 }

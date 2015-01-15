@@ -1,11 +1,11 @@
-populationSize  		= 128;
+populationSize  		= 32;
 	/* the number of models in a GA population;
 	   reasonable range 16-128
 	   smaller values result in faster run times,
 	   but could also cause premature termination
 	   */
 
-stoppingCriterion		= 50;
+stoppingCriterion		= 64;
 	/* 
 	  how many generations without score improvement
 	before the GA decides it has converged;
@@ -50,11 +50,12 @@ _bannedStartAdjust				= 1;
 _allowNsInSequences             = 1;
 
 _additionalStartingBreakpoints	  = {};
-_additionalStartingBreakpoints[0] = {{"^V+","^J+"}};
+_additionalStartingBreakpoints[0] = {{"^IGHV+","^IGHJ+"}};
+_try_resampling_rejections        = 50;
 
-_validBreakpointStructure = {};
-_validBreakpointStructure [1] = {"0":"^V[^\\,]+\\,J[^\\,]+\\ inter",
-								 };
+_validBreakpointStructure            = {};
+_validBreakpointStructure [1]        = {"0":"^V[^\\,]+\\,J[^\\,]+"};
+_do_not_enforce_gaps_in_initial_scan = "^IGHV";
 								 
 _annotateSequenceByAlignment	  = "MapIGH";
 ExecuteAFile ("Annotators/IGH.ibf");

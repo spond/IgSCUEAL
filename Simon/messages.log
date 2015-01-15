@@ -1,0 +1,667 @@
+
+Loaded 'GrabBag' from /usr/local/lib/hyphy/TemplateBatchFiles/Utility/GrabBag.bf
+Loaded 'generic_annotator.ibf' from /Volumes/sergei-raid/Coding/IgSCUEAL/Simon/../Configs/Annotators/generic_annotator.ibf
+Loaded 'chooseGeneticCode' from /usr/local/lib/hyphy/TemplateBatchFiles/TemplateModels/chooseGeneticCode.def
+Variable 'skipCodeSelectionStep' was not initialized prior to being used
+Already loaded 'GrabBag' from /usr/local/lib/hyphy/TemplateBatchFiles/Utility/GrabBag.bf
+Row and/or column partition is empty. All the data will be used by default.
+Overwritten previously defined function:'nucleotideReverseComplement'
+Overwritten previously defined function:'mapStrings'
+Already loaded 'chooseGeneticCode' from /usr/local/lib/hyphy/TemplateBatchFiles/TemplateModels/chooseGeneticCode.def
+Already loaded 'GrabBag' from /usr/local/lib/hyphy/TemplateBatchFiles/Utility/GrabBag.bf
+Variable '_RUN_ALIGNER_AS_A_LIBRARY' was not initialized prior to being used
+Variable 'PROMPT_FOR_FILE' was not initialized prior to being used
+Variable 'verboseFlag' was not initialized prior to being used
+Row and/or column partition is empty. All the data will be used by default.
+Row and/or column partition is empty. All the data will be used by default.
+Row and/or column partition is empty. All the data will be used by default.
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:1
+	Gap extend cost 2:1
+	Codon frameshift cost:36
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: No
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:1
+	Gap extend cost 2:1
+	Codon frameshift cost:36
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: No
+	Affine gap costs: Yes
+	Use linear space routines: No
+Loaded 'chooseGeneticCode' from /usr/local/lib/hyphy/TemplateBatchFiles/TemplateModels/chooseGeneticCode.def
+Overwritten previously defined function:'CountSenseCodons'
+Overwritten previously defined function:'ApplyGeneticCodeTable'
+Overwritten previously defined function:'mapCodonsToAAGivenMappingAux'
+Overwritten previously defined function:'mapCodonsToAAGivenMapping'
+Overwritten previously defined function:'mapCodonsToAA'
+Overwritten previously defined function:'mapCodonsToAAFuzzy'
+Overwritten previously defined function:'CompareCodonProperties'
+Overwritten previously defined function:'defineCodonToAA'
+Overwritten previously defined function:'defineCodonToAAGivenCode'
+Overwritten previously defined function:'findAllCodonsForAA'
+Overwritten previously defined function:'RawToSense'
+Overwritten previously defined function:'IsTransition'
+Overwritten previously defined function:'IsStop'
+Overwritten previously defined function:'translateCodonToAA'
+Overwritten previously defined function:'ComputeCodonCodeToStringMap'
+Overwritten previously defined function:'ComputeCodonCodeToStringMapStop'
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Running sequence alignment with the following options:
+	Gap character:-
+	Gap open cost:24
+	Gap open cost 2:24
+	Gap extend cost:0
+	Gap extend cost 2:0
+	Codon frameshift cost:100
+	Ignore terminal gaps: Yes
+	Use codon alignment with frameshift routines: Yes
+	 Linear space routines  are not implemented
+	Local alignment: Yes
+	Affine gap costs: Yes
+	Use linear space routines: No
+Variable 'KEEP_ALL_GAPS_IN' was not initialized prior to being used
+Loaded 'PS_Plotters.bf' from /usr/local/lib/hyphy/TemplateBatchFiles/Utility/PS_Plotters.bf
+Already loaded 'GrabBag.bf' from /usr/local/lib/hyphy/TemplateBatchFiles/Utility/GrabBag.bf
+Loaded 'ReadDelimitedFiles.bf' from /usr/local/lib/hyphy/TemplateBatchFiles/Utility/ReadDelimitedFiles.bf
+Overwritten previously defined function:'splitOnRegExp'
+Variable 'runInMPIMode' was not initialized prior to being used
+Variable 'MPI_NODE_COUNT' was not initialized prior to being used
+Already loaded 'GrabBag' from /usr/local/lib/hyphy/TemplateBatchFiles/Utility/GrabBag.bf
+Already loaded 'generic_annotator.ibf' from /Volumes/sergei-raid/Coding/IgSCUEAL/Simon/../Configs/Annotators/generic_annotator.ibf

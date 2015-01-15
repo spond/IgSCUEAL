@@ -49,6 +49,7 @@ for (seq_id = 0; seq_id < nucleotides.species; seq_id += 1) {
     }
 }
 
+
 used_names = {};
 
 SetDialogPrompt ("Save the V-region nucleotide alignment (as FASTA) to:");
@@ -76,7 +77,6 @@ for (seq_id = 0; seq_id < protein.species; seq_id += 1) {
     }
     idx = matchStringToSetOfPatterns (seqName, nucleotideAccessions);
     
-
     assert (idx >= 0, "No nucleotide sequence for `seqName`");
         
     GetDataInfo (nucsequence,nucleotidesF,valid_nuc_sequences[idx]);
@@ -106,11 +106,12 @@ if (Abs (matched_accessions) < Abs (nucleotideAccessions)) {
                 if (Type (simple) == "String") {
                     GetDataInfo (nucsequence,nucleotidesF,valid_nuc_sequences[si]);
                     nucsequence = nucsequence^{{"[^A-Z]",""}};
-                    nucsequence = mapCodonsToAAFuzzy (nucsequence,simple,3);
-                    if (None != nucsequence) {
+                    nucsequence_mapped = mapCodonsToAAFuzzy (nucsequence,simple,10);
+                    if (None != nucsequence_mapped) {
                         normalized_name = normalizeSequenceID (allelename[si] + "_CRF_1", "used_names");
-                        
-                        fprintf (LAST_FILE_PATH, ">", normalized_name, "\n", nucsequence, pad_to_length (Abs (nucsequence), Abs(protsequence)), "\n");
+                        fprintf (LAST_FILE_PATH, ">", normalized_name, "\n", nucsequence_mapped, pad_to_length (Abs (nucsequence_mapped), Abs(protsequence)), "\n");
+                    } else {
+                        fprintf (stdout, "Failed to map ", allelename[si], "\n");
                     }
                 }
             }

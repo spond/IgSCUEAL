@@ -163,8 +163,7 @@ function reduceSubtype (in)
 
 function	AssembleSubtypeAssignment (theDatum,doConversion)
 {
-	if (doConversion)
-	{
+	if (doConversion) {
 		theDatumString = ConvertToPartString (theDatum);
 	}
 	else
@@ -220,17 +219,11 @@ function	AssembleSubtypeAssignment (theDatum,doConversion)
 	}
 	
 	classType = 0;
-	if (Abs (theDatumString) > 1 )
-	{
-		if (Abs (subtypeCounter) > 1)
-		{
-			subtypeString = subtypeString + " inter-subtype recombinant";
+	if (Abs (theDatumString) > 1 ) {
+		if (Abs (subtypeCounter) > 1) {
 			classType = 1;
 		}
-		else
-		{
-			subtypeString = reduceSubtype(theDatumString[0]) + " intra-subtype recombinant (" + 
-							 (Abs (theDatumString)-1) + " breakpoints)";
+		else {
 			classType = 2;
 		}
 	}
@@ -276,69 +269,7 @@ function isEqualOrSuperset (profBits, referenceBits)
 	return 0;
 }
 
-/*************************************************************************************/
 
-function	AssembleSubtypeAssignmentSimple (theDatum,doConversion)
-{
-	fullSubtypeString = AssembleSubtypeAssignment(theDatum, doConversion);
-	if (classType > 0)
-	{
-		if (classType == 2)
-		{
-			return (Rows(subtypeCounter))[0];
-		}
-		else
-		{
-			_fcrfC = Abs(_foundCRFs);
-			if (_fcrfC)
-			{
-				/* check for CRF-like structure */
-				tryTheseCRFs = Rows (_foundCRFs);
-				_crfLike	 = {};
-				
-				for (crfID = 0; crfID < _fcrfC; crfID = crfID+1)
-				{
-					_crfToTry = tryTheseCRFs[crfID];
-					crfStructureCounts = Abs(CRFMosaics[_crfToTry]);
-					for (crfID2 = 0; crfID2 < crfStructureCounts; crfID2 = crfID2+1)
-					{
-						if (verboseFlag)
-						{
-							fprintf (stdout, crfEquivCounter, "\n", ((CRFMosaics[_crfToTry])[crfID2]), "\n");
-						}
-						if (isEqualOrSuperset (crfEquivCounter, (CRFMosaics[_crfToTry])[crfID2]))
-						{
-							return _crfToTry + "-like";
-						}
-					}
-				}
-				if (Abs(_crfReducedCounter) == 1)
-				{
-					return (Rows(_crfReducedCounter))[0];
-				}
-				subtypeCounter = _crfReducedCounter;
-			}	
-		}
-		
-		if (Abs(subtypeCounter) > 2)
-		{
-			return "Complex";
-		}
-		if ((Rows(subtypeCounter))[0] < (Rows(subtypeCounter))[1])
-		{
-			return (Rows(subtypeCounter))[0] + "," + (Rows(subtypeCounter))[1] + " recombinant";
-		}
-		return (Rows(subtypeCounter))[1] + "," + (Rows(subtypeCounter))[0] + " recombinant";
-	}
-	return fullSubtypeString;
-}
-
-/*---------------------------------------------------------------------------------------------------------------------------------------------*/
-
-function StringToMatrix (zz)
-{
-	return zz;
-}
 
 _psTreePlots    = {};
 treeImageHeight = 0;
@@ -425,8 +356,7 @@ function DefineAPart (filterString,daTree,index,bls,mrca_name)
 
 /*---------------------------------------------------------------------------------------------------------------------------------------------*/
 
-function ExportAMatrix (rateMatrix,bestModelBL,plotRoot)
-{
+function ExportAMatrix (rateMatrix,bestModelBL,plotRoot) {
 	TREE_OUTPUT_OPTIONS = {};
 	TREE_OUTPUT_OPTIONS ["TREE_OUTPUT_LAYOUT"] = 0;
 	TREE_OUTPUT_OPTIONS ["TREE_OUTPUT_EMBED"]  = 1;
@@ -523,19 +453,16 @@ function adjustAICScore (theLL,bpMatrix)
 		}
 		else
 		{
-			if (thisSpan < BICMinLength)
-			{
-				daAICScore = daAICScore + 1000000;
+			if (thisSpan < BICMinLength) {
+				daAICScore += 1000000;
 			}
 			else
 			{
-				if (excludeSameSequence && bpMatrix[_pid][0] == bpMatrix[_pid-1][0])
-				{
-					daAICScore = daAICScore + 1000000;
+				if (excludeSameSequence && bpMatrix[_pid][0] == bpMatrix[_pid-1][0]) {
+					daAICScore += 1000000;
 				}
-				else
-				{
-					daAICScore = daAICScore + 3*Log(thisSpan);
+				else {
+					daAICScore += + 3*Log(thisSpan);
 				}
 			}
 		}
@@ -556,11 +483,11 @@ function adjustAICScore (theLL,bpMatrix)
 	}
 	if (thisSpan < BICMinLength)
 	{
-		daAICScore = daAICScore + 1000000;
+		daAICScore += 1000000;
 	}
 	else
 	{
-		daAICScore = daAICScore + 3*Log(thisSpan) /*- allTheSame * Log(baseSites)*/;
+		daAICScore += 3*Log(thisSpan) /*- allTheSame * Log(baseSites)*/;
 	}
 	
 	/*
@@ -836,19 +763,16 @@ function  swapBreakpoints (indString)
 {
 	ind_matrix = decodeIndividual (indString);
 	_hh = Rows(ind_matrix);
-	if (_hh > 1)
-	{
+	if (_hh > 1) {
 		swapPoint   			   = Random (1,_hh)$1;
 		t						   = ind_matrix[swapPoint][0];
 		ind_matrix[swapPoint][0]   = ind_matrix[swapPoint-1][0];
 		ind_matrix[swapPoint-1][0] = t;
 		
-		if (swapPoint > 1)
-		{
+		if (swapPoint > 1) {
 			from_seg				= ind_matrix[swapPoint-1][1];
 		}
-		else
-		{
+		else {
 			from_seg				= 0;
 		}
 		if (swapPoint < _hh-2)
@@ -934,14 +858,12 @@ function ConvertToPart (pString)
 
 /*---------------------------------------------------------------------------------------------------------------------------------------------*/
 
-function PrepareSampleForARun (sortedBP, is_banned&)
-{
+function PrepareSampleForARun (sortedBP, is_banned&) {
 	paramSpec = sortedBP;
 	is_banned = 0;
 	my_size   = Rows(sortedBP);
 	
-	for (mpiNode=0; mpiNode < my_size; mpiNode = mpiNode+1)
-	{
+	for (mpiNode=0; mpiNode < my_size; mpiNode = mpiNode+1) {
 		seq = nodeIDMap[sortedBP[mpiNode][0]];
 		if (mpiNode < my_size-1)
 		{
@@ -952,8 +874,7 @@ function PrepareSampleForARun (sortedBP, is_banned&)
 			loc = filteredData.sites;
 		}
 		
-		if (hasBannedBP[seq])
-		{
+		if (hasBannedBP[seq]) {
 			spanEnd = loc;
 			if (mpiNode)
 			{
@@ -1051,8 +972,7 @@ function RunASample (dummy,jobIndex)
 {	
 	myAIC	 = MasterList[ConvertToPartString (cString)];
 
-	if (myAIC<0)
-	{		
+	if (myAIC<0) {		
 		if (resultProcessingContext==0)
 		{
 			sortedScores[jobIndex][0] = myAIC;
@@ -1072,19 +992,17 @@ function RunASample (dummy,jobIndex)
 		return 0;
 	}
 
-	paramSpec = PrepareSampleForARun(sortedBP, "is_banned");
+	paramSpec = PrepareSampleForARun (sortedBP, "is_banned");
 	
-	if (is_banned)
-	{
+	if (is_banned) {
 		lf_MLES = {{-1e10, 3, 0}{0,0,0}};
 	}
-	else
-	{
+	else {
 		lf_MLES = runAModel (paramSpec,branchOptionValue);
 	}
 	mpiNode = ReceiveJobs (0,jobIndex);
 	
-	return 0;	
+	return is_banned;	
 }
 
 /*---------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -1104,12 +1022,10 @@ function SpawnRandomString (clsCnt)
 function IsChildViable (putativeChild)
 {
 	sampleString = 	ConvertToPartString (putativeChild);
-	if (strictViableCheck)
-	{
+	if (strictViableCheck) {
 		myAIC		 = MasterList[sampleString];
 	}
-	else
-	{
+	else {
 		myAIC 		 = 0;
 	}
 	testChild 	 = putativeChild;
@@ -1117,8 +1033,7 @@ function IsChildViable (putativeChild)
 	myAIC = -populationStrings [sampleString];
 	
 	
-	if (myAIC<(-0.1))
-	{
+	if (myAIC<(-0.1)) {
 		ordering = {1,stateVectorDimension};
 		ordering = Random(ordering["_MATRIX_ELEMENT_COLUMN_"],0);
 		
@@ -1127,16 +1042,13 @@ function IsChildViable (putativeChild)
 			testChild [ordering[_lc2]]	 = 1-testChild [ordering[_lc2]];
 			testChild					 = MakeStringCanonical(testChild,1);
 			sampleString 				 = ConvertToPartString (testChild);
-			if (strictViableCheck)
-			{
+			if (strictViableCheck) {
 				myAIC 						 = MasterList		   [sampleString];			
 			}
-			else
-			{
+			else {
 				myAIC 						 = 0;
 			}	
-			if (myAIC > (-0.1))
-			{
+			if (myAIC > (-0.1)) {
 				myAIC = -populationStrings [sampleString];
 			}
 		}
@@ -1302,22 +1214,18 @@ GetString	  (qsName,ds,querySequenceID);
 
 inverseBppMap = {filteredData.sites,1};
 
-for (h=0; h<filteredData.sites; h=h+1)
-{
+for (h=0; h<filteredData.sites; h += 1) {
 	filterString 			 = Format(h,20,0);
 	DataSetFilter siteFilter = CreateFilter (filteredData,1,filterString);
 	HarvestFrequencies 		   (f1, siteFilter, 1, 1, 0);
-	if (((Transpose(f1))["1"]*f1["_MATRIX_ELEMENT_VALUE_>0"])[0]>1)
-	{
+	if (+f1["_MATRIX_ELEMENT_VALUE_>0"] > 1) {
 		inverseBppMap[h] = Abs(bppMap);
 		bppMap[Abs(bppMap)] = h;
 	}
-	else
-	{
+	else {
 		inverseBppMap[h] = -1;
 	}
 }
-
 
 bppMapSize		= Abs(bppMap);
 bppSize 		= (Log(Abs(bppMapSize))/Log(2)+1)$1;
@@ -1325,8 +1233,7 @@ branchBits		= (Log(Abs(refTopAVL)-2)/Log(2)+1)$1;
 
 bitsPerPart		= bppSize + branchBits;
 
-if (verboseFlag)
-{
+if (verboseFlag) {
 	fprintf (stdout, "There are ",Abs(bppMap)," potential breakpoints and ", Abs(refTopAVL)-2," candidate branches. ",
 						   "\nBit size of the sample (per partition) is ", bitsPerPart,"\n");
 }
@@ -1334,8 +1241,7 @@ if (verboseFlag)
 partCount = 2;
 h 		  = Abs(bppMap);
 
-if (h <= partCount)
-{
+if (h <= partCount) {
 	fprintf (stdout,   "ERROR: \nThere are too few potential break points to support ", partCount-1, " recombination events.\n");
 	return 1;
 }
@@ -1491,8 +1397,7 @@ if (rvChoice)
 							{c*AT*t,c*CT*t,c*GT*t,*}};
 													
 }
-else
-{
+else {
 	NucleotideMatrix	 = {{*,AC*t,t,AT*t}{AC*t,*,CG*t,CT*t}{t,CG*t,*,GT*t}{AT*t,CT*t,GT*t,*}};
 }
 
@@ -1500,18 +1405,13 @@ Model nucModel   		= (NucleotideMatrix, nucEFV, 1);
 
 /* check parameter counts */
 
-if (verboseFlag)
-{
+if (verboseFlag) {
 	fprintf (stdout, "FITTING THE REFERENCE TREE TO OBTAIN INITIAL PARAMETER ESTIMATES\n");
 }
 
 Tree	baselineTree	= referenceTopologyString;
 LikelihoodFunction		baselineLF = (referenceData, baselineTree);
 
-/*
-LIKELIHOOD_FUNCTION_OUTPUT = 7;
-fprintf ("/Users/sergei/Desktop/SCUEAL.lf", CLEAR_FILE, baselineLF);
-*/
 
 GetString 				(varList, baselineLF, -1);
 baseParams 		   		= Columns(varList["Global Independent"])+3;
@@ -1748,6 +1648,7 @@ GetString 	(allSeqs, filteredData, -1);
 
 bannedBreakpointLocations = {};
 hasBannedBP				  = {};
+allowInInitialScan        = {};
 CRFStructure			  = {};
 
 gapStructureRegex		  = "(\\-){"+_contigGapThresh+"}\\-+";
@@ -1757,19 +1658,23 @@ for (h = 0; h < filteredData.species; h = h+1)
 {
 	crf_group = CRFGroups[allSeqs[h]];
 	
-	if (Rows(crf_group))
-	{
+	if (Rows(crf_group)) {
 		GetDataInfo (qS, filteredData, h);
-		if (Abs(CRFStructure[crf_group[0]]) == 0)
-		{
+		if (Abs(CRFStructure[crf_group[0]]) == 0) {
 			CRFStructure[crf_group[0]] = {};
 		}
 		
 		haveGaps    = qS||gapStructureRegex;
 		seq = (-1) + nodeNameToAVL[allSeqs[h]];
 		
-		if (haveGaps[0]>=0)
-		{
+		if (Type (_do_not_enforce_gaps_in_initial_scan) == "String") {
+		    if ((allSeqs[h] $ _do_not_enforce_gaps_in_initial_scan)[0] >= 0) {
+		        //fprintf (stdout, "##", allSeqs[h], "\n");
+		        allowInInitialScan [nodeIDMap[seq+1]] = 1;
+		    }
+		}
+		
+		if (haveGaps[0]>=0) {
 			bannedSites = stencil;
 			for (k = Rows (haveGaps)-1; k > 0 ; k=k-2)
 			{
@@ -1781,16 +1686,13 @@ for (h = 0; h < filteredData.species; h = h+1)
 				}
 				else
 				{
-					if (_bannedEndAdjust)
-					{
+					if (_bannedEndAdjust) {
 						bannedSites = bannedSites - stencil["_MATRIX_ELEMENT_COLUMN_>=haveGaps[k__-1]&&_MATRIX_ELEMENT_COLUMN_<haveGaps[k__-1]+_contigGapThresh-1"];
 					}
 				}
 				
-				if (haveGaps[k-1] == 0)
-				{
-					if (_bannedStartAdjust)
-					{
+				if (haveGaps[k-1] == 0) {
+					if (_bannedStartAdjust) {
 						bannedSites = bannedSites - stencil["_MATRIX_ELEMENT_COLUMN_<=haveGaps[k__]&&_MATRIX_ELEMENT_COLUMN_>=haveGaps[k__]-_contigGapThresh+1"];
 					}
 				
@@ -1808,12 +1710,13 @@ for (h = 0; h < filteredData.species; h = h+1)
 			bannedBreakpointLocations [seq] = bannedSites;
 			hasBannedBP				  [seq] = 1;
 		}
-		else
-		{
+		else {
 			(CRFStructure[crf_group[0]])[0] = {{seq__,1}};
 		}
 	}
 }
+
+
 
 
 CRFMosaics				  = {};
@@ -1902,8 +1805,7 @@ for (k=1; k<=tbc; k=k+1)
 
 crf_count = Abs (CRFStructure);
 
-for (k = 1; k <= crf_count; k=k+1)
-{
+for (k = 1; k <= crf_count; k+=1) {
 	thisCRF 	   = CRFStructure [k];
 	h 			   = Abs (thisCRF)-1;
 	if (h>0)
@@ -1926,22 +1828,18 @@ for (k = 1; k <= crf_count; k=k+1)
 
 totalAddedCRFGroups = 0;
 
-if (Abs(_additionalStartingBreakpoints))
-{
+if (Abs(_additionalStartingBreakpoints)) {
 	upto = Columns (allSeqs);
 	
-	for (k = 0; k < Abs(_additionalStartingBreakpoints); k+=1)
-	{
+	for (k = 0; k < Abs(_additionalStartingBreakpoints); k+=1) {
 		mxDef 		= _additionalStartingBreakpoints[k];
 		howManyABP	= Columns (mxDef);
 		
 		bySegment = {};
 		
-		for (whichBP = 0; whichBP < howManyABP; whichBP += 1)
-		{
+		for (whichBP = 0; whichBP < howManyABP; whichBP += 1) {
 			bySegment + {};
-			for (s = 0; s < upto; s+=1)
-			{
+			for (s = 0; s < upto; s+=1) {
 				if ((allSeqs[s]$mxDef[whichBP])[0]>=0 && allSeqs[s] != _querySequenceName) {
 					(bySegment      [whichBP]) + allSeqs[s];
 				}
@@ -1953,8 +1851,9 @@ if (Abs(_additionalStartingBreakpoints))
 			totalCombinations = totalCombinations * Abs (bySegment[whichBP]);
 		}
 		
-		if (totalCombinations)
-		{
+		//fprintf (stdout, "\n## ", mxDef, "\n", bySegment, "\n", totalCombinations, " ##\n");
+		
+		if (totalCombinations) {
 			addedThisTime = 0; totalTried = 0;
 			while (totalAddedCRFGroups < _randomizedCRFGroups && addedThisTime < totalCombinations && totalTried < 1000)
 			{
@@ -1964,8 +1863,7 @@ if (Abs(_additionalStartingBreakpoints))
 					recStructure =CRFStructure[
 					(CRFGroups[(bySegment[whichBP])[whichSegmentIndex]])[0]
 					];
-					if (Abs(recStructure) != 1)
-					{
+					if (Abs(recStructure) != 1) {
 						break;
 					}
 					individual[whichBP][0] = (recStructure[0])[0];
@@ -1976,8 +1874,7 @@ if (Abs(_additionalStartingBreakpoints))
 					individual = encodeIndividual(individual % 1);
 					//fprintf (stdout, ConvertToPartString(individual), "\n");
 					
-					if (Abs(initialPops[howManyABP-1])==0)
-					{
+					if (Abs(initialPops[howManyABP-1])==0) {
 						initialPops[howManyABP-1] = {};
 					}
 					(initialPops[howManyABP-1]) + individual;
@@ -2035,39 +1932,41 @@ for (_h=1; _h<Abs(refTopAVL)-1; _h=_h+1)
 					
 	treeStringCache[_h]   = Format (suppliedTree,1,0);
 
-	if (hasBannedBP[nodeIDMap[_h]] == 0)
-	{
+	if (hasBannedBP[nodeIDMap[_h]] == 0 || allowInInitialScan [nodeIDMap[_h]] ) {
 		paramSpec = {{filteredData.sites,nodeIDMap[_h]}};
 		outRes    = runAModel (paramSpec,branchOptionValue);
 		
 		myDF  = perPartParameterCount + baseParams + 2;
-		if (icOption == 0)
-		{
+		
+		if (icOption == 0) {
 			myAIC = -2*(outRes[0]-myDF*(baseSites/(baseSites-myDF-1)));
 		}
-		else
-		{
+		else {
 			myAIC = -2*outRes[0]+myDF*Log(baseSites);	
 		}
+		
+		if (hasBannedBP[nodeIDMap[_h]]) {
+		    //fprintf (stdout, myAIC, "\n");
+		    myAIC = myAIC + 1000;
+		}
+		
 		thisSample   				 = {branchBits,1};
-		decimalToBinary ("thisSample",0,branchBits, _h-1);
+		decimalToBinary                ("thisSample",0,branchBits, _h-1);
 		ConvertToPartString			   (thisSample);
 		MasterList [_ModelKeyString] = -myAIC;
 	
 	
-		if (myAIC < bestAIC)
-		{
+		if (myAIC < bestAIC) {
 			overallBestFound	= thisSample;
 			bestAIC 			= myAIC;
 			bestSBP 			= _h;
 			baseLL				= outRes[0];
 		}
 	}
-	else
-	{
+	else {
+		//fprintf (stdout, "Skipping branch ",(refTopAVL[_h])["Name"], "\n"); 
 		/*if (verboseFlag)
 		{
-			fprintf (stdout, "Skipping branch ",(refTopAVL[_h])["Name"], "\n"); 
 			fprintf (stdout, bannedBreakpointLocations[nodeIDMap[_h]],"\n");
 		}*/
 	}
@@ -2143,29 +2042,11 @@ if (stepByStepLogging) {
 
 currentSubtypeAssignment = _subtypeAssignmentByNode[branchAttach];
 
-if (runInMPIMode == 0)
-{
-	fprintf (stdout, "Initial subtype assignment: ", currentSubtypeAssignment, "\n");
+if (runInMPIMode == 0) {
+	fprintf (stdout, "\nInitial germline: `currentSubtypeAssignment`\n");
 }
-else
-{
+else {
 	returnAVL = {};
-	if (stepByStepLogging)
-	{
-		if (Type(currentSubtypeAssignment) == "String")
-		{
-		    if (Type (overallBestFound) == "Number") {
-		        bestAssignment      = "None";
-		    } else {
-			    bestAssignment 		= AssembleSubtypeAssignment (overallBestFound,1);
-			}
-			
-	
-			fprintf (MESSAGE_LOG, "\nStep :",0,
-							 "\nIC: ", bestAIC,
-							 "\nPredicted subtype     : ", bestAssignment);
-		}
-	}		
 }
 
 currentPopulation  = {};
@@ -2346,13 +2227,11 @@ for (currentBPC = startBPC; currentBPC < maxBPP; currentBPC += 1) {
 			
 	kf						 = -sortedScores[populationSize-1][0];
 	
-	if (tryBreakpointFusion && currentBPC > 1)
-	{
+	if (tryBreakpointFusion && currentBPC > 1) {
 		saveCurrentBestAIC		 = -sortedScores[populationSize-1][0];
 		if (currentBEST_IC > saveCurrentBestAIC)
 		{
-			if (verboseFlag)
-			{
+			if (verboseFlag) {
 				fprintf (stdout, "\nTRYING BREAKPOINT FUSION\n");
 			}		
 			saveOldBestAIC			 = currentBEST_IC;
@@ -2482,35 +2361,51 @@ intraSupport		= 0;
 
 credibleKeys		= {};
 
-for (_mc=totalTried-1; _mc>=0; _mc=_mc-1)
+support_threshold = 0.01;
+
+support_by_branch = {};
+
+//fprintf (stdout, refTopAVL, "\n");
+
+function support_by_branch_populate (key, value) {
+    support_by_branch [value] += aw;
+}
+
+for (_mc=totalTried-1; _mc>=0; _mc = _mc - 1)
 {
 	aKey 								= masterKeys[_mc];
 	anIC 								= -MasterList[aKey];
 	aw	 								= Exp((currentBEST_IC-anIC)*0.5);
-	if (aw > 0.001 / totalTried)
-	{	
+	
+	if (aw > 0.001 / totalTried) {	
 		_cmc								= Abs (credibleKeys);
 		credibleKeys[_cmc]					= aKey;
-		totalSum 							= totalSum + aw;
+		totalSum 							+= aw;
 		akaikeWeights[_cmc][0]   			= aw;
+		
 		thisModelType 						= AssembleSubtypeAssignment (aKey,0);
-		modelSupportByType[thisModelType] 	= modelSupportByType[thisModelType] + aw;
-		if (classType)
-		{
-			recombSupport = recombSupport + aw;
-			if (classType == 2)
-			{
-				intraSupport = intraSupport + aw;
+		
+		sscanf  (aKey, REWIND, "Lines", scueal_model_definition);
+		(splitOnRegExp (scueal_model_definition[1], ","))["support_by_branch_populate"][""];
+
+		
+		modelSupportByType[thisModelType] 	+= aw;
+		
+		if (classType) {
+			recombSupport += aw;
+			if (classType == 2) {
+				intraSupport += aw;
 			}
 		}
 	
-		if (aw > bestAWModelType[thisModelType])
-		{
+		if (aw > bestAWModelType[thisModelType]) {
 			bestAWModelType[thisModelType] = aw;
 			bestByModelType[thisModelType] = _cmc;
 		}		
 	}	
 }
+
+//fprintf (stdout, support_by_branch, "\n");
 
 if (verboseFlag) {
 	fprintf (stdout, Abs (credibleKeys), "/", totalTried, " credible models\n");
@@ -2529,8 +2424,8 @@ v = Rows (modelSupportByType);
 typesWithSupport = {};
 
 
-for (k = 0; k < h; k = k + 1) {
-	if (modelSupportByType[v[k]]/totalSum >= 0.05) {
+for (k = 0; k < h; k+=1) {
+	if (modelSupportByType[v[k]]/totalSum >= support_threshold) {
 		typesWithSupport[v[k]] = modelSupportByType[v[k]]/totalSum;
 	}
 }
@@ -2539,8 +2434,7 @@ h 				   = Abs	(typesWithSupport);
 v				   = Rows 	(typesWithSupport);
 
 wellSupported = {h,2};
-for (k = 0; k < h; k = k+1)
-{
+for (k = 0; k < h; k = k+1) {
 	wellSupported[k][0] = k;
 	wellSupported[k][1] = typesWithSupport[v[k]];
 }
@@ -2551,12 +2445,6 @@ overallBestFound 		= ConvertFromPartString(masterKeys[bestByModelType[bestAssign
 
 overallBestFoundSisterNodes           = node_s;
 
-/*
-fprintf (stdout, overallBestFound, "\n", 
-                 overallBestFoundSisterNodes, 
-                 "\n");
-*/
-
 if (currentBEST_IC > 1e10) {
 	fprintf (stdout,   "ERROR: \nAnalysis options and recombinants in the reference alignment created a situation where no valid models could be found\n");
 	if (runInMPIMode == 1) {
@@ -2565,8 +2453,10 @@ if (currentBEST_IC > 1e10) {
 	return 1;
 }
 
+
 bestAssignment 			= AssembleSubtypeAssignment (overallBestFound,1);
-bestAssignmentSimple	= AssembleSubtypeAssignmentSimple (overallBestFound,1);
+bestAssignmentSimple	= bestAssignment;
+
 runAModel			 	(PrepareSampleForARun(sortedBP, "is_banned"), branchOptionValue);
 
 bestModelIC				= 0-MasterList[ConvertToPartString(overallBestFound)];
@@ -2602,6 +2492,7 @@ for (_mc=totalTried-1; _mc>=0; _mc=_mc-1)
 			otherBPSupport[aBPList[_s2]-1] = otherBPSupport[aBPList[_s2]-1] + aw; 
 		}	
 	}
+	
 	if (aw/totalSum > 0.1/totalTried)
 	{
 		splits   = splitOnRegExp (aKey[0][whereisTheSpace-1], ",");
@@ -2625,295 +2516,85 @@ for (_mc=totalTried-1; _mc>=0; _mc=_mc-1)
 	}
 }
 
-otherBPSupport			 = (otherBPSupport+breakPointSupport)*(1/totalSum);
-breakPointSupport   	 = breakPointSupport * (1/matchingSum);
-significantBranches		 = {};
-
-branchThresh			 = 0.05;
-for (_s2 = 0; _s2 < tbc; _s2 = _s2 + 1) {
-	if (Max(branchSupport[-1][_s2],0)>=branchThresh) {
-		significantBranches[_s2] = 1;
-	}
-}
-
-//fprintf (stdout, "\n\n", significantBranches, "\n\n", bestModelBL, "\n\n"); 
-
-stencil 			= branchSupport["significantBranches[_MATRIX_ELEMENT_COLUMN_]"];
-stencil	 			= branchSupport[stencil];
-
-_s					= Abs(significantBranches);
-sigBrSupport 		= {filteredData.sites,_s+2};
-labeler				= {_s+1,2};
-
-h 		  = Rows (significantBranches);
-plotRGB   = {_s,3};
-
-//plotColors = _hyDefaultPSColors;
-defColorCount = Rows(_hyDefaultPSColors);
-plotColors = {_s+1,3};
-branchColorMapAux = {_s,1};
-
-for (v=0; v<_s; v += 1) {
-	_s2 = (refTopAVL[1+h[v]])["Name"];
-	labeler[v][0] = reduceSubtype(_s2);
-	branchColorMapAux[v] = _s2;
-	plotColors[v][0] = _hyDefaultPSColors[v%defColorCount][0];
-	plotColors[v][1] = _hyDefaultPSColors[v%defColorCount][1];
-	plotColors[v][2] = _hyDefaultPSColors[v%defColorCount][2];
-	if (Abs(labeler[v][0])>10)
-	{
-		labeler[v][0] = (labeler[v][0])[0][9] + "...";
-		labeler[v][1] = "";
-	}
-}
-branchColorMap = stringMatrixToAVL("branchColorMapAux");
 
 
-labeler[v][0] = "Breakpoints";
-labeler[v][1] = "Impulse";
-plotColors[v][0] = 0; plotColors[v][1] = 0; plotColors[v][2] = 0;
 
-_s2 	= 0;
-for (h=0; h<filteredData.sites; h=h+1)
-{
-	sigBrSupport[h][0] = h+1;
-	for (v=1; v<=_s; v=v+1)
-	{
-		sigBrSupport[h][v] = 100*stencil[_s2];
-		_s2 			   = _s2 + 1;
-	}
-	sigBrSupport[h][v] = 100*otherBPSupport[h];
-}
 
 									  
 branchSupport = 	0; 	stencil = 0;
 
-
-LoadFunctionLibrary ("TreeTools.ibf");
-
-refTopAVL				=   referenceTopology^0;
-mrca 		  		    = _findMRCA (refTopAVL, avlKeysToMatrix (significantBranches)%0 + 1);
-
-totalPlotWidth			= 600;
-ExecuteCommands			(ExportAMatrix(overallBestFound,bestModelBL,(refTopAVL[mrca])["Name"]));
-exportedPartCount		= Rows (sortedBp);
-Export					(lfExportString,lf_export);
-
-
 SetDialogPrompt ("Save the results to:");
 
-postScriptOut = ""; postScriptOut * 128;
-psTranslate   = {{0,310+treeImageHeight__}};
-postScriptOut * ("0 "+(treeImageHeight+10)+" translate\n");
-postScriptOut * SimpleGraph("sigBrSupport", {{1,filteredData.sites},{0,100}}, "Times-Roman", {{totalPlotWidth,300,8}}, plotColors, {{"Inferred Mosaic", "Nucleotide", "Model-averaged support"}},labeler, 2);
-postScriptOut * "0 300 translate\n";
-								  
 
-
-_mc 		  = Abs(typesWithSupport) - 1;
-ibp			  = Rows(bestPC);
-ibpt		  = (ibp+1)*18;
-
-if (ibpt>20)
-{
-	postScriptOut * ("50 "+ibpt+" translate\n");
-	psTranslate   = psTranslate + {{50,ibpt}};
+if (runInMPIMode == 0) {
+	fprintf (stdout, "\nPredicted rearrangement                : ", bestAssignment,
+    				 "\nModel averaged support                 : ", Format(matchingSum/totalSum*100,8,4), "%\n");
 }
 
-if (runInMPIMode == 0)
-{
-	fprintf (stdout, "\nPredicted subtype                      : ", bestAssignment,
-			 "\nPredicted simple subtype               : ",  bestAssignmentSimple,
-				 "\nModel averaged support                 : ", Format(matchingSum/totalSum*100,8,4), "%",
-				 "\nSupport for recombination              : ", Format(recombSupport*100,8,4), "%",
-				 "\nSupport for intra-subtype recombination: ", Format(intraSupport*100,8,4), "%\n"
-				 );
-}
+_mc 		              = Abs(typesWithSupport) - 1;
 
-if (_mc > 0)
-{
-	if (runInMPIMode == 0)
-	{
-		fprintf (stdout, 	"\nThere are ", _mc, " other mosaic types with model-averaged support over 5%");
+//USE_JSON_FOR_MATRIX = 1;
+
+_supported_rearrangements = {};
+_supported_rearrangements [bestAssignment] = matchingSum/totalSum;
+
+if (_mc > 0) {
+	if (runInMPIMode == 0) {
+		fprintf (stdout, 	"\nThere are ", _mc, " other rearrangements with model-averaged support over ", Format (support_threshold*100,0,0), "%");
 	}
+	
 	keys 				= Rows(typesWithSupport);
-	summaryMatrix 		= {_mc+1,2};
-	summaryMatrix		[0][0] = "Alternative subtype";
-	summaryMatrix		[0][1] = "Model averaged support";
 	
 	h					= 1;
-	for (_k = _mc; _k >= 0; _k=_k-1)
-	{
-		if (keys[wellSupported[_k][0]] != bestAssignment)
-		{
+	for (_k = _mc; _k >= 0; _k=_k-1) {
+		if (keys[wellSupported[_k][0]] != bestAssignment) {
 			if (runInMPIMode == 0)
 			{
-				fprintf (stdout, "\n\tAlternative subtype        :", keys[wellSupported[_k][0]],
-							 	"\n\tModel averaged support     :", Format(wellSupported[_k][1]*100,8,4), "%");
+				fprintf (stdout, "\n\tAlternative rearrangements :", keys[wellSupported[_k][0]],
+							 	 "\n\tModel averaged support     :", Format(wellSupported[_k][1]*100,8,4), "%");
 			}			 
-			summaryMatrix[h][0] = keys[wellSupported[_k][0]];					 
-			summaryMatrix[h][1] = Format(wellSupported[_k][1]*100,0,4) + "\\%";					 
-			h = h + 1;
+			_supported_rearrangements [keys[wellSupported[_k][0]]] = wellSupported[_k][1];			 
+			h += 1;
 		}
 	}
-	if (runInMPIMode == 0)
-	{
+	if (runInMPIMode == 0) {
 		fprintf (stdout, "\n");
 	}
-	h = 16*(_mc+1);
-	if (psTranslate[0] == 0)
-	{
-		postScriptOut * ("50 0 translate\n");
-	}
-	postScriptOut * (_HYPSSetFont ("Courier",12)+"\n"+_HYPSTextTable (500,h,12,summaryMatrix,summaryMatrix["0+12*(_MATRIX_ELEMENT_ROW_==0)"]));
-	postScriptOut * ("0 "+h+" translate\n");
-	psTranslate = psTranslate + {{50*(psTranslate[0]==0),h}};
-}
-				 
-summaryMatrix = {4,2};
-summaryMatrix[0][0] = "Predicted subtype"; summaryMatrix[0][1] = bestAssignment;
-summaryMatrix[1][0] = "Model averaged support"; summaryMatrix[1][1] = Format(matchingSum/totalSum*100,0,4) + "\\%";
-summaryMatrix[2][0] = "Recombinant"; summaryMatrix[2][1] = Format(recombSupport*100,0,4) + "\\%";
-summaryMatrix[3][0] = "Intra-subtype recombinant"; summaryMatrix[3][1] = Format(intraSupport*100,0,4) + "\\%";
-
-if (psTranslate[0] == 0)
-{
-	postScriptOut * ("50 0 translate\n");
 }
 
-postScriptOut *( _HYPSSetFont ("Courier",12)+_HYPSTextTable (500,60,12,summaryMatrix,summaryMatrix["0"]));
-
-if (Abs(correctModel) && runInMPIMode == 0)
-{
-	fprintf (stdout, "IC difference with the", 
-					 "\ncorrect model         : ", correctModelAIC-currentBEST_IC, "\n"); 
-}
-
-psTranslate = psTranslate + {{50*(psTranslate[0]==0),0}};
-
-postScriptOut * ("-50 60 translate\n");
-postScriptOut * (_HYPSSetFont ("Times-Roman",18));
-if (Abs(originalSeqName)>30)
-{
-	originalSeqName = originalSeqName[0][26] + "...";
-}
-
-postScriptOut * ("0 10 translate " + totalPlotWidth/2 + " 0 " + totalPlotWidth + "(SCUEAL subtyping report for " + (originalSeqName&&3) + ") scalecentertext\n");
-psTranslate = psTranslate + {{-50,80}};
-
-summaryMatrix = {ibp+1,1};
-summaryMatrix[0][0] = "Breakpoint locations";
-
-bpSupport = {ibp,3};
-
-for (_mc=0; _mc<ibp; _mc+=1)
-{
-	lb = bestPC[_mc];
-	ub = bestPC[_mc];
-	s  = breakPointSupport[bestPC[_mc]-1];
-	while (s<0.95)
-	{
-		if (lb>=1) {
-		    lb = lb-1;
-			s+=breakPointSupport[lb];
-		}
-		if (ub<filteredData.sites-1) {
-		    ub = ub+1;
-			s+=breakPointSupport[ub];
-		}
-		if (lb == 0 && ub == filteredData.sites-1) {
-		    break;
-		}
-	}
-	
-	summaryMatrix [_mc+1] = Format(bestPC[_mc]+1,0,0) + "bp, 95\\% confidence range: " + (1+Max(lb,0)) +  "-" + (1+Min(ub,filteredData.sites-1)) + " bp.";
-	
-	if (runInMPIMode == 0)
-	{
-		fprintf (stdout, "Breakpoint ", Format(_mc+1,3,0), ": ", Format(bestPC[_mc]+1,8,0), 
-						 "bp, 95% confidence range: ",	
-						  1+Max(lb,0), "-", 1+Min(ub,filteredData.sites-1), " bp.\n");
-	}
-	else
-	{
-		bpSupport[_mc][0] = bestPC[_mc]+1;
-		bpSupport[_mc][1] = 1+Max(lb,0);
-		bpSupport[_mc][2] = 1+Min(ub,filteredData.sites-1);		
-	}
-}
-
-totalPlotHeight= psTranslate[1];
-if (ibpt>20)
-{
-	h = psTranslate[1]-treeImageHeight-325;
-	postScriptOut * ("50 -" + h + " translate\n");
-	psTranslate[1] = psTranslate[1] - h;
-	postScriptOut * (_HYPSSetFont ("Courier",12)+_HYPSTextTable (500,ibpt,12,summaryMatrix,summaryMatrix["0+12*(_MATRIX_ELEMENT_ROW_==0)"]));
-	postScriptOut * ("-50 0 translate\n");
-}
-h = totalPlotWidth/Abs(_psTreePlots);
-postScriptOut * ("0 " + (psTranslate[0]-5) +" sub 0 " + (psTranslate[1]-20) +" sub translate\n");
-
-for (k=0; k<Abs(_psTreePlots); k=k+1)
-{
-	 if (k)
-	 {
-		postScriptOut * (""+h +" 0 translate\n");
-	 }
-	 postScriptOut*_psTreePlots[k];
-	 
-}
-postScriptOut * "\nshowpage";
-postScriptOut * 0;
-postScriptOut = _HYPSPageHeader (totalPlotWidth+5, totalPlotHeight+10, "SCUEAL report for " + originalSeqName&&3) + "\n" + postScriptOut;
 
 GetDataInfo (refSequenceString, filteredData, querySequenceID);
 
 //fprintf (stdout, overallBestFoundSisterNodes, "\n");
+returnAVL = {};
 
-if (runInMPIMode == 1) {
-	returnAVL["SUBTYPE"] 		= bestAssignment;
-	returnAVL["SIMPLE_SUBTYPE"] = bestAssignmentSimple;
-	returnAVL["SUPPORT"] 		= matchingSum/totalSum;
-	returnAVL["SCORE"]			= currentBEST_IC;
-	returnAVL["DELTA_IC"]		= correctModelAIC-currentBEST_IC;
-	returnAVL["RECOMB"] 		= recombSupport;
-	returnAVL["INTRA"] 			= intraSupport;
-	returnAVL["LF"]				= lfExportString;
-	returnAVL["PS"]				= postScriptOut;
-	returnAVL["TERMINATOR"]		= prematureTermination;
-	returnAVL["SEQUENCE"] 		= refSequenceString;
-	returnAVL["SISTER_SEQUENCES"] = overallBestFoundSisterNodes;
-	if (Abs(_extraResult))
-	{
-		returnAVL["EXTRA"] = _extraResult;
-	}
-}
-else
-{
-	fprintf (PROMPT_FOR_FILE,CLEAR_FILE,s);
-	psOutFile = LAST_FILE_PATH;
+returnAVL["BEST_REARRANGEMENT"] 		= bestAssignment;
+returnAVL["SUPPORT"] 		            = matchingSum/totalSum;
+returnAVL["SCORE"]			            = currentBEST_IC;
+returnAVL["DELTA_IC"]		            = correctModelAIC-currentBEST_IC;
+returnAVL["TERMINATOR"]		            = prematureTermination;
+returnAVL["SEQUENCE"] 		            = refSequenceString;
+returnAVL["SISTER_SEQUENCES"]           = overallBestFoundSisterNodes;
 
-	fprintf (psOutFile, CLEAR_FILE, postScriptOut);
-	psOutFile = psOutFile + ".lf";
-	fprintf (psOutFile, CLEAR_FILE, lfExportString);
-}	
+returnAVL["BRANCH_LENGTHS"]             = { "TO_SISTER" : bestModelBL[-1][0],
+                                            "TO_PARENT" : bestModelBL[-1][1],
+                                            "TO_QUERY"  : bestModelBL[-1][2]
+                                          };
 
-				 
-if (runInMPIMode) {
-	returnAVL["BREAKPOINTS"] = bpSupport;
+returnAVL["REARRANGEMENTS"]             = _supported_rearrangements;
+returnAVL["MODELS_TRIED"]               = Rows(akaikeWeights);
+if (Abs(_extraResult)) {
+    returnAVL["EXTRA"] = _extraResult;
 }
 
 
-if (Rows(bestPC)) {
-	if (runInMPIMode == 0) {
-		if (Abs (_extraResult)) {
-		    fprintf (stdout, "\nAdditional sequence annotation\n");
-			for (k = 0; k < Abs(_extraOutputColumns); k+=1) {	
-				fprintf (stdout, _extraOutputColumns[k], "\t", _extraResult[_extraOutputColumns[k]],"\n");
-			}		
-		}
-	}
+returnAVL["BREAKPOINTS"] = bpSupport;
+
+if (runInMPIMode == 0) {
+    USE_JSON_FOR_MATRIX = 1;
+    SetDialogPrompt ("Save the resulting JSON file to:");
+    fprintf (PROMPT_FOR_FILE, CLEAR_FILE, returnAVL);
+    USE_JSON_FOR_MATRIX = 0;
 }
 
 
