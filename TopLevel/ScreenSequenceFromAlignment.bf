@@ -2,36 +2,31 @@ ChoiceList (alignmentType, "Codons or Nucleotides", 1, SKIP_NONE, "Codon", 		"In
 																  "Nucleotide", "Nucleotide alignment",
 																  "Codon-direct", "Directly align codons (good for frameshift detection)");
 
-if (alignmentType < 0)
-{
+if (alignmentType < 0) {
 	return 0;
 }
 
-SetDialogPrompt ("POL sequence file:");
+SetDialogPrompt ("Immunoglobulin sequence file:");
 DataSet ds_in = ReadDataFile (PROMPT_FOR_FILE);
 
 whichSeq = None;
 if (ds_in.species > 1) {
 	ChoiceList (whichSeq, "Sequence to screen", 1, SKIP_NONE, ds_in);
 }
-else
-{
-	if (ds_in.species == 1)
-	{
+else {
+	if (ds_in.species == 1) {
 		whichSeq = 0;
 	}
 }
 
 referenceFile = "data/reference.nex";
 rfp		      = "../Configs/settings.ibf";
-if (!rfp)
-{
+if (!rfp) {
 	ExecuteAFile ("../Configs/settings.ibf");
 	referenceFile = "data/"+referenceAlignmentFileName;
 }
 
-if (whichSeq != None)
-{
+if (whichSeq != None) {
 	inOptions2 = {};
 	inOptions2["1"] = "../"+referenceFile;
 	inOptions2["0"] = "Universal";
