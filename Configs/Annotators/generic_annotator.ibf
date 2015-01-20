@@ -68,8 +68,9 @@ function GetBestHomology (junction, d) {
 function MapIGH (ref,qry)
 {
     qryWithN = "";
-    for (k = 0; k < Abs(qry); k+=1) {
-        if (k % 3 == 0) {
+    qlen = Abs (qry);
+    for (k = 0; k < qlen; k+=1) {
+        if (k % 3 == 0 && k + 2 < qlen) {
             if (qry[k] == "-" && qry[k+1] == "-" && qry[k+2] == "-") {
                 qryWithN += "---";
                 k += 2;
@@ -83,7 +84,6 @@ function MapIGH (ref,qry)
         }
     }
 	coords 	   = remapSequenceCoordinatesToReference (ref, qryWithN);
- 	//fprintf ("/Volumes/sergei-raid/Desktop/igg.fas", CLEAR_FILE,">ref\n", ref, "\n>qry\n", qry, "\n>qryN\n", qryWithN, "\n");
 	_IGHHReport = {};
 	
 	for (k = 0; k < Abs (_extraOutputColumns); k+=1) {
@@ -93,19 +93,34 @@ function MapIGH (ref,qry)
 	_IGHHReport ["Mapped Read"] = qryWithN;
 	_codonMappingIGHH = defineCodonToAA();
 	currentL         = 0;
+	
 	// replace all triplet gaps with nothing
 	// replace all remaining gaps with N
 	qryNoGaps = (qry ^ {{"\\-\\-\\-",""}}) ^ {{"\\-","N"}};
-	
+
+    
 	jRegionChunk = None;
 	
+	gapped_spans = {Abs (_features) + 1, 1};
+		
 	for (k = 1; k <= Abs (_features); k+=1) {
 	
 		thisSpan = coords[coords["_IG_nuc_annotation[_MATRIX_ELEMENT_VALUE_]==k__"]];
+		
 		thisSpanL = Columns(thisSpan);
 		if (thisSpanL) {
-			subSeq = qryNoGaps[currentL][currentL+thisSpanL-1];
-			//fprintf (stdout, "\n\n", subSeq, "\n", translateCodonToAA (subSeq,_codonMappingIGHH,0), "\n");
+			subSeq        = qryNoGaps[currentL][currentL+thisSpanL-1];
+			
+			non_gap_count = 0;
+			for (k2 = gapped_spans[k-1]; k2 < qlen && non_gap_count < thisSpanL; k2+=1) {
+			    if (qryWithN[k2] != "-") {
+			        non_gap_count += 1;
+			    }
+			}
+			gapped_spans [k] = k2;
+			
+			//fprintf (stdout, subSeq, "\n",  qryWithN[gapped_spans[k-1]][gapped_spans[k]-1], "\n\n");
+			
 			_IGHHReport [_features[k-1]] = subSeq;
 			_IGHHReport [_features[k-1] + "_AA"] =  translateCodonToAA (subSeq,_codonMappingIGHH,0);
 			
@@ -132,8 +147,10 @@ function MapIGH (ref,qry)
 		}
 	}
 	
+	
 	// pull out the junction 
 	
+	_IGHHReport["ALIGNMENT_SPANS"] = gapped_spans;
 	_IGHHReport["JUNCTION"]    = "";
 	_IGHHReport["JUNCTION_AA"] = "";
 	

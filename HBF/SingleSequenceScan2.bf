@@ -2439,11 +2439,10 @@ for (k = 0; k < h; k = k+1) {
 	wellSupported[k][1] = typesWithSupport[v[k]];
 }
 
-wellSupported    		= wellSupported%1;
-bestAssignment   		= v[wellSupported[h-1][0]];
-overallBestFound 		= ConvertFromPartString(masterKeys[bestByModelType[bestAssignment]]);
-
-overallBestFoundSisterNodes           = node_s;
+wellSupported    		                = wellSupported%1;
+bestAssignment   		                = v[wellSupported[h-1][0]];
+overallBestFound 		                = ConvertFromPartString(masterKeys[bestByModelType[bestAssignment]]);
+overallBestFoundSisterNodes             = node_s;
 
 if (currentBEST_IC > 1e10) {
 	fprintf (stdout,   "ERROR: \nAnalysis options and recombinants in the reference alignment created a situation where no valid models could be found\n");
@@ -2480,15 +2479,13 @@ for (_mc=totalTried-1; _mc>=0; _mc=_mc-1)
 	if (bestAssignment == thisModelType)
 	{
 		matchingSum 		= matchingSum + aw;
-		for (_s2 = 0; _s2 < Rows(aBPList); _s2 = _s2+1)
-		{
+		for (_s2 = 0; _s2 < Rows(aBPList); _s2 += 1) {
 			breakPointSupport[aBPList[_s2]-1] = breakPointSupport[aBPList[_s2]-1] + aw; 
 		}
 	}
 	else
 	{
-		for (_s2 = 0; _s2 < Rows(aBPList); _s2 = _s2+1)
-		{
+		for (_s2 = 0; _s2 < Rows(aBPList); _s2 += 1) {
 			otherBPSupport[aBPList[_s2]-1] = otherBPSupport[aBPList[_s2]-1] + aw; 
 		}	
 	}
@@ -2565,7 +2562,6 @@ if (_mc > 0) {
 
 GetDataInfo (refSequenceString, filteredData, querySequenceID);
 
-//fprintf (stdout, overallBestFoundSisterNodes, "\n");
 returnAVL = {};
 
 returnAVL["BEST_REARRANGEMENT"] 		= bestAssignment;
@@ -2583,12 +2579,14 @@ returnAVL["BRANCH_LENGTHS"]             = { "TO_SISTER" : bestModelBL[-1][0],
 
 returnAVL["REARRANGEMENTS"]             = _supported_rearrangements;
 returnAVL["MODELS_TRIED"]               = Rows(akaikeWeights);
+
 if (Abs(_extraResult)) {
     returnAVL["EXTRA"] = _extraResult;
 }
 
 
-returnAVL["BREAKPOINTS"] = bpSupport;
+returnAVL["BREAKPOINTS"]                = bestPC;
+returnAVL["BREAKPOINT_SUPPORT"]         = bpSupport;
 
 if (runInMPIMode == 0) {
     USE_JSON_FOR_MATRIX = 1;
