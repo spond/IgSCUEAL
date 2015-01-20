@@ -147,21 +147,25 @@ function MapIGH (ref,qry)
 	        if (jMotif[0] >= 0) {
 	            jMotif = jMotif[0];
 	            _IGHHReport ["JUNCTION"] = (_IGHHReport ["FW3"])[whereAreTheC*3][Abs(_IGHHReport ["FW3"])-1] + _IGHHReport["CDR3"] + (_IGHHReport["J"])[0][3*jMotif+2];
-	            _IGHHReport ["JUNCTION_AA"] =  translateCodonToAA (_IGHHReport["JUNCTION"],_codonMappingIGHH,0);
+	            _IGHHReport ["J"] = (_IGHHReport ["J"])[0][3*jMotif-1];
 	        } else {
 	            if (None != jRegionChunk) {
 	                _IGHHReport ["JUNCTION"] = (_IGHHReport ["FW3"])[whereAreTheC*3][Abs(_IGHHReport ["FW3"])-1] 
 	                                           + _IGHHReport["CDR3"] + jRegionChunk;
-	                _IGHHReport ["JUNCTION_AA"] =  translateCodonToAA (_IGHHReport["JUNCTION"],_codonMappingIGHH,0);
+	                _IGHHReport ["J"] = (_IGHHReport ["J"])[Abs (jRegionChunk)][Abs ((_IGHHReport ["J"])-1)];
 	            }
+	        }
+	        if (Abs (_IGHHReport["JUNCTION"])) {
+	            _IGHHReport ["CDR3"] = (_IGHHReport ["JUNCTION"])[3][Abs (_IGHHReport ["JUNCTION"]) - 4];           
+	            _IGHHReport ["JUNCTION_AA"] =  translateCodonToAA (_IGHHReport["JUNCTION"],_codonMappingIGHH,0);
+	            _IGHHReport ["CDR3_AA"]     =  translateCodonToAA (_IGHHReport["CDR3"],_codonMappingIGHH,0);
+	            _IGHHReport ["J_AA"]        =  translateCodonToAA (_IGHHReport["J"],_codonMappingIGHH,0);
 	        }
 	    }
 	}
 	
-	
 	// try to pull out some "D" sequences
-	
-	
+		
 	if (Abs (_IGHHReport["JUNCTION"]) > 0) {
 	    direct_d = GetBestHomology (_IGHHReport["JUNCTION"], _D_sequences);
 	    _IGHHReport ["D_ALLELE"] = direct_d["ALLELE"];

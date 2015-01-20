@@ -182,8 +182,8 @@ if (alignmentType == 0 || alignmentType == 2)
         minScore = Min (protScoreMatrix,0);
  
         	
-	    alignOptions ["SEQ_ALIGN_GAP_OPEN"]		= 	2*Max(maxScore,-minScore);
-	    alignOptions ["SEQ_ALIGN_GAP_OPEN2"]	= 	2*Max(maxScore,-minScore);
+	    alignOptions ["SEQ_ALIGN_GAP_OPEN"]		= 	Max(maxScore,-minScore);
+	    alignOptions ["SEQ_ALIGN_GAP_OPEN2"]	= 	Max(maxScore,-minScore);
 	    alignOptions ["SEQ_ALIGN_GAP_EXTEND"]	= 	1;
 	    alignOptions ["SEQ_ALIGN_GAP_EXTEND2"]	= 	1;
 	    alignOptions ["SEQ_ALIGN_FRAMESHIFT"]	= 	3*Max(maxScore,-minScore);

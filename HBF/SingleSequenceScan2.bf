@@ -1,4 +1,4 @@
-RequireVersion			("2.0");
+RequireVersion			("2.2");
 LoadFunctionLibrary		("PS_Plotters.bf");
 LoadFunctionLibrary		("GrabBag.bf");
 LoadFunctionLibrary		("ReadDelimitedFiles.bf");
@@ -7,8 +7,7 @@ verboseFlag				   = 0;
 timeLimit				   = 1000000;
 
 
-if (runInMPIMode && MPI_NODE_COUNT>1)
-{
+if (runInMPIMode && MPI_NODE_COUNT>1) {
 	verboseFlag = 0;
 	timeLimit   = 3600;
 }
@@ -1085,12 +1084,10 @@ fscanf		(stdin, "String", correctModelFile);
 */
 
 
-if (EXISTING_ALIGNMENT_RUN == 1)
-{
+if (EXISTING_ALIGNMENT_RUN == 1) {
 	querySequenceID 			= whichSeq;
 }
-else
-{
+else {
 	DataSet 	  ds 		    = ReadFromString (outputAlignment);
 	querySequenceID 			= ds.species-1;
 }
@@ -1945,10 +1942,10 @@ for (_h=1; _h<Abs(refTopAVL)-1; _h=_h+1)
 			myAIC = -2*outRes[0]+myDF*Log(baseSites);	
 		}
 		
-		if (hasBannedBP[nodeIDMap[_h]]) {
-		    //fprintf (stdout, myAIC, "\n");
+		/*if (hasBannedBP[nodeIDMap[_h]]) {
+		    fprintf (stdout,(refTopAVL[_h])["Name"], "\n");
 		    myAIC = myAIC + 1000;
-		}
+		}*/
 		
 		thisSample   				 = {branchBits,1};
 		decimalToBinary                ("thisSample",0,branchBits, _h-1);
@@ -1957,6 +1954,8 @@ for (_h=1; _h<Abs(refTopAVL)-1; _h=_h+1)
 	
 	
 		if (myAIC < bestAIC) {
+		    //fprintf (stdout,(refTopAVL[_h])["Name"], ":", myAIC, "\n", modelBLEstimates,"\n\n");
+		    
 			overallBestFound	= thisSample;
 			bestAIC 			= myAIC;
 			bestSBP 			= _h;
@@ -2043,7 +2042,7 @@ if (stepByStepLogging) {
 currentSubtypeAssignment = _subtypeAssignmentByNode[branchAttach];
 
 if (runInMPIMode == 0) {
-	fprintf (stdout, "\nInitial germline: `currentSubtypeAssignment`\n");
+	fprintf (stdout, "\nInitial germline: `currentSubtypeAssignment` (`branchAttach`)\n");
 }
 else {
 	returnAVL = {};
@@ -2371,6 +2370,7 @@ function support_by_branch_populate (key, value) {
     support_by_branch [value] += aw;
 }
 
+
 for (_mc=totalTried-1; _mc>=0; _mc = _mc - 1)
 {
 	aKey 								= masterKeys[_mc];
@@ -2403,6 +2403,11 @@ for (_mc=totalTried-1; _mc>=0; _mc = _mc - 1)
 			bestByModelType[thisModelType] = _cmc;
 		}		
 	}	
+}
+
+keys = Rows (support_by_branch);
+for (k = 0; k < Abs (support_by_branch); k+=1) {
+    support_by_branch[keys[k]] = support_by_branch[keys[k]] / totalSum;
 }
 
 //fprintf (stdout, support_by_branch, "\n");
@@ -2477,11 +2482,9 @@ for (_mc=totalTried-1; _mc>=0; _mc=_mc-1)
 	thisModelType 			= AssembleSubtypeAssignment (aKey,0);
 	
 	aBPList = GetBreakpoints (aKey);
-	if (bestAssignment == thisModelType)
-	{
+	if (bestAssignment == thisModelType) {
 		matchingSum 		= matchingSum + aw;
-		for (_s2 = 0; _s2 < Rows(aBPList); _s2 = _s2+1)
-		{
+		for (_s2 = 0; _s2 < Rows(aBPList); _s2 = _s2+1) {
 			breakPointSupport[aBPList[_s2]-1] = breakPointSupport[aBPList[_s2]-1] + aw; 
 		}
 	}
@@ -2568,6 +2571,8 @@ GetDataInfo (refSequenceString, filteredData, querySequenceID);
 //fprintf (stdout, overallBestFoundSisterNodes, "\n");
 returnAVL = {};
 
+returnAVL["SEQUENCE_NAME"]              = _querySequenceName;
+returnAVL["REFERENCE"]                  = referenceAlignmentDescriptiveName; 
 returnAVL["BEST_REARRANGEMENT"] 		= bestAssignment;
 returnAVL["SUPPORT"] 		            = matchingSum/totalSum;
 returnAVL["SCORE"]			            = currentBEST_IC;
@@ -2587,8 +2592,8 @@ if (Abs(_extraResult)) {
     returnAVL["EXTRA"] = _extraResult;
 }
 
-
-returnAVL["BREAKPOINTS"] = bpSupport;
+returnAVL["BREAKPOINTS"]    = Transpose(breakPointSupport);
+returnAVL["BRANCH_SUPPORT"] = support_by_branch;
 
 if (runInMPIMode == 0) {
     USE_JSON_FOR_MATRIX = 1;
