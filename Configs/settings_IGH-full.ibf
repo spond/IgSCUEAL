@@ -5,7 +5,7 @@ populationSize  		= 32;
 	   but could also cause premature termination
 	   */
 
-stoppingCriterion		= 64;
+stoppingCriterion		= 96;
 	/* 
 	  how many generations without score improvement
 	before the GA decides it has converged;
@@ -32,6 +32,7 @@ BICMinLength			= 20;
 
 referenceAlignmentFileName  = "HumanIGH-full.nex";
 
+
 	/* the name of the reference alignment file (MUST 
 	be in the 'data' directory and have a .labels 
 	counterpart mapping taxon names to subtype labels
@@ -40,6 +41,9 @@ referenceAlignmentFileName  = "HumanIGH-full.nex";
 	or built up recursively using 'TopLevel/BuildUpReferenceAlignment.bf'
 	
 	*/
+
+referenceAlignmentDescriptiveName  = "Human IgG (heavy chain) with all unique functional alleles";
+
 
 frameSelectByAlignment			= 1;
 tryReverseComplement			= 1;

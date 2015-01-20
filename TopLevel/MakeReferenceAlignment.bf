@@ -1,7 +1,6 @@
 ExecuteAFile ("../HBF/utils.ibf");
-ExecuteAFile (HYPHY_LIB_DIRECTORY + "TemplateBatchFiles" + DIRECTORY_SEPARATOR 
-								   + "Utility" + DIRECTORY_SEPARATOR + 
-								   "GrabBag.bf");
+LoadFunctionLibrary ("GrabBag");
+LoadFunctionLibrary ("TreeTools");
 								   
 SetDialogPrompt ("Reference sequences?");
 
@@ -193,8 +192,9 @@ DataSet			ancestralSequences = ReconstructAncestors (lf);
 DataSet			jointDS			   = Combine (ds,ancestralSequences);
 DataSetFilter	referenceFilter	   = CreateFilter (jointDS,1,"",speciesIndex <= filteredData.species);
 
+
 IS_TREE_PRESENT_IN_DATA 		   = 1;
-DATAFILE_TREE					   = Format(givenTree,1,1);
+DATAFILE_TREE					   = KillInternalZeroBranchLengths (givenTree ^ 0);
 DATA_FILE_PRINT_FORMAT			   = 6;
 
 SetDialogPrompt ("Save reference alignment and tree to:");
@@ -216,8 +216,9 @@ for (k=0; k < tc; k = k+1) {
 
 
 fprintf (stdout, "Auto-generating internal node labels"); 
-Tree exportT = givenTree;
 
+UseModel (USE_NO_MODEL);
+Tree exportT = DATAFILE_TREE;
 _doLabelGeneration (0);
 
 fprintf (outFilter, CLEAR_FILE, "_subtypeAssignmentByNode = ", sequenceLabels, ";");
