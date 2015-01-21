@@ -169,7 +169,7 @@ function MapIGH (ref,qry)
 	            if (None != jRegionChunk) {
 	                _IGHHReport ["JUNCTION"] = (_IGHHReport ["FW3"])[whereAreTheC*3][Abs(_IGHHReport ["FW3"])-1] 
 	                                           + _IGHHReport["CDR3"] + jRegionChunk;
-	                _IGHHReport ["J"] = (_IGHHReport ["J"])[Abs (jRegionChunk)][Abs ((_IGHHReport ["J"])-1)];
+	                _IGHHReport ["J"] = (_IGHHReport ["J"])[Abs (jRegionChunk)][Abs (_IGHHReport ["J"])-1];
 	            }
 	        }
 	        if (Abs (_IGHHReport["JUNCTION"])) {
