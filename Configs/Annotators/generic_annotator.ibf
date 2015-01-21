@@ -164,7 +164,7 @@ function MapIGH (ref,qry)
 	        if (jMotif[0] >= 0) {
 	            jMotif = jMotif[0];
 	            _IGHHReport ["JUNCTION"] = (_IGHHReport ["FW3"])[whereAreTheC*3][Abs(_IGHHReport ["FW3"])-1] + _IGHHReport["CDR3"] + (_IGHHReport["J"])[0][3*jMotif+2];
-	            _IGHHReport ["J"] = (_IGHHReport ["J"])[0][3*jMotif-1];
+	            _IGHHReport ["J"] = (_IGHHReport ["J"])[3*(jMotif+1)][Abs (_IGHHReport ["J"])];
 	        } else {
 	            if (None != jRegionChunk) {
 	                _IGHHReport ["JUNCTION"] = (_IGHHReport ["FW3"])[whereAreTheC*3][Abs(_IGHHReport ["FW3"])-1] 
@@ -180,7 +180,7 @@ function MapIGH (ref,qry)
 	        }
 	    }
 	}
-	
+		
 	// try to pull out some "D" sequences
 		
 	if (Abs (_IGHHReport["JUNCTION"]) > 0) {
