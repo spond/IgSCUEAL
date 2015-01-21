@@ -2457,6 +2457,7 @@ if (currentBEST_IC > 1e10) {
 bestAssignment 			= AssembleSubtypeAssignment (overallBestFound,1);
 bestAssignmentSimple	= bestAssignment;
 
+hasBannedBP = {}; // HACK
 _bestModelSpecCheck     = PrepareSampleForARun(sortedBP, "is_banned");
 
 if (is_banned) {
