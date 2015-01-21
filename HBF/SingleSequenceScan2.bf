@@ -1591,8 +1591,7 @@ TRY_NUMERIC_SEQUENCE_MATCH	 = 1;
 		categoryShifter = Rows (probMatrix["Values"])/siteRateClasses;
 	}
 	nodeToID = {};
-	for (k=0; k<treeS; k=k+1)
-	{
+	for (k=0; k<treeS; k=k+1) {
 		nodeToID[(probMatrix["Nodes"])[k]] = k;
 	}
 
@@ -2451,9 +2450,6 @@ overallBestFoundSisterNodes             = node_s;
 
 if (currentBEST_IC > 1e10) {
 	fprintf (stdout,   "ERROR: \nAnalysis options and recombinants in the reference alignment created a situation where no valid models could be found\n");
-	if (runInMPIMode == 1) {
-		returnAVL = {};
-	}
 	return 1;
 }
 
@@ -2461,7 +2457,14 @@ if (currentBEST_IC > 1e10) {
 bestAssignment 			= AssembleSubtypeAssignment (overallBestFound,1);
 bestAssignmentSimple	= bestAssignment;
 
-runAModel			 	(PrepareSampleForARun(sortedBP, "is_banned"), branchOptionValue);
+_bestModelSpecCheck     = PrepareSampleForARun(sortedBP, "is_banned");
+
+if (is_banned) {
+	fprintf (stdout,   "ERROR: \nInternal error (banned breakpoints in the best model)\n");
+	return 1;
+}
+
+runAModel			 	(, branchOptionValue);
 
 bestModelIC				= 0-MasterList[ConvertToPartString(overallBestFound)];
 bestModelBL				= modelBLEstimates;
