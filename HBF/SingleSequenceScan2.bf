@@ -2464,7 +2464,7 @@ if (is_banned) {
 	return 1;
 }
 
-runAModel			 	(, branchOptionValue);
+runAModel			 	(_bestModelSpecCheck, branchOptionValue);
 
 bestModelIC				= 0-MasterList[ConvertToPartString(overallBestFound)];
 bestModelBL				= modelBLEstimates;
