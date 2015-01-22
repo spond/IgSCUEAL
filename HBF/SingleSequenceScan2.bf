@@ -419,14 +419,12 @@ function CleanUpMPI (dummy)
 function adjustAICScore (theLL,bpMatrix)
 {
 	myDF	     = baseParams + tbc2 + (Rows (bpMatrix)-1); 
-	if (icOption == 0)
-	{
+	if (icOption == 0) {
 		daAICScore   = 2*(myDF*(baseSites/(baseSites-myDF-1)) - theLL) ;
 		allDF	     = myDF + 3*Rows(bpMatrix);
 		baseAICScore = 2*(allDF*(baseSites/(baseSites-allDF-1)) - theLL);
 	}
-	else
-	{
+	else {
 		daAICScore   = myDF*Log(baseSites) - 2*theLL ;
 		baseAICScore = (myDF + 3*Rows(bpMatrix))*Log(baseSites) - 2*theLL;	
 	}
@@ -434,19 +432,15 @@ function adjustAICScore (theLL,bpMatrix)
 	
 	allTheSame 	 = 1;
 	
-	for (_pid = 1; _pid < Rows(bpMatrix); _pid = _pid+1)
-	{
+	for (_pid = 1; _pid < Rows(bpMatrix); _pid += 1) {
 		thisSpan = bppMap[bpMatrix[_pid][1]] - lastBpos+1;
 		lastBpos = bppMap[bpMatrix[_pid][1]];
 		allTheSame = allTheSame && (bpMatrix[_pid][0] == bpMatrix[_pid-1][0]);
-		if (icOption == 0)
-		{
-			if (thisSpan > tbc2)
-			{
+		if (icOption == 0) {
+			if (thisSpan > tbc2) {
 				daAICScore = daAICScore + 6*(thisSpan/(thisSpan-tbc2-1));
 			}
-			else
-			{
+			else {
 				daAICScore = daAICScore + 6*cAICPenaltyPerSite;
 			}
 		}
@@ -480,12 +474,10 @@ function adjustAICScore (theLL,bpMatrix)
 		}
 		return -Max(daAICScore,baseAICScore);
 	}
-	if (thisSpan < BICMinLength)
-	{
+	if (thisSpan < BICMinLength) {
 		daAICScore += 1000000;
 	}
-	else
-	{
+	else {
 		daAICScore += 3*Log(thisSpan) /*- allTheSame * Log(baseSites)*/;
 	}
 	
@@ -523,8 +515,7 @@ function ReceiveJobs (sendOrNot, ji)
 		if (ji>=0)
 		{
 			jobPrint = ConvertToPartString (currentPopulation[ji]);
-			if (adjustAICScores)
-			{
+			if (adjustAICScores) {
 				myAIC	 = adjustAICScore (myLL, sortedBP);
 			}
 			v 		 = Rows (sortedBP);
@@ -542,8 +533,7 @@ function ReceiveJobs (sendOrNot, ji)
 		if (ji>=0)
 		{
 			jobPrint = ConvertToPartString (children[ji-populationSize]);
-			if (adjustAICScores)
-			{
+			if (adjustAICScores) {
 				myAIC	 = adjustAICScore (myLL, sortedBP);
 			}
 			v = Rows (sortedBP);
@@ -917,12 +907,10 @@ function PrepareSampleForARun (sortedBP, is_banned&) {
 		seq = nodeIDMap[sortedBP[mpiNode][0]];
 		if (hasBannedBP[seq])
 		{
-			if ((bannedBreakpointLocations[seq])[filteredData.sites-1])
-			{
+			if ((bannedBreakpointLocations[seq])[filteredData.sites-1]) {
 				is_banned = 1;
 			}
-			else
-			{
+			else {
 				if (mpiNode)
 				{
 					loc = bppMap[sortedBP[mpiNode][1]+1];
@@ -1672,8 +1660,7 @@ for (h = 0; h < filteredData.species; h = h+1)
 		
 		if (haveGaps[0]>=0) {
 			bannedSites = stencil;
-			for (k = Rows (haveGaps)-1; k > 0 ; k=k-2)
-			{
+			for (k = Rows (haveGaps)-1; k > 0 ; k=k-2) {
 				bannedSites = bannedSites + stencil["_MATRIX_ELEMENT_COLUMN_>=haveGaps[k__-1]&&_MATRIX_ELEMENT_COLUMN_<=haveGaps[k__]"]; 
 				if (haveGaps[k] != filteredData.sites - 1) // NOT the last site
 				{
@@ -1694,17 +1681,18 @@ for (h = 0; h < filteredData.species; h = h+1)
 				
 				}
 			}
-			if (haveGaps[0] > 0)
-			{
+			
+			if (haveGaps[0] > 0) {
 				(CRFStructure[crf_group[0]])[Abs(CRFStructure[crf_group[0]])] = {{seq__,1}};
 			}
-			if (verboseFlag)
-			{
+			
+			if (verboseFlag) {
 				fprintf (stdout, allSeqs[h], " has ", +bannedSites, " banned sites\n");
 			}
+			
 			seq 							= nodeIDMap[seq+1];
 			bannedBreakpointLocations [seq] = bannedSites;
-			hasBannedBP				  [seq] = 1;
+			hasBannedBP				  [seq] = +bannedSites;
 		}
 		else {
 			(CRFStructure[crf_group[0]])[0] = {{seq__,1}};
@@ -1941,10 +1929,10 @@ for (_h=1; _h<Abs(refTopAVL)-1; _h=_h+1)
 			myAIC = -2*outRes[0]+myDF*Log(baseSites);	
 		}
 		
-		/*if (hasBannedBP[nodeIDMap[_h]]) {
-		    fprintf (stdout,(refTopAVL[_h])["Name"], "\n");
-		    myAIC = myAIC + 1000;
-		}*/
+		if (hasBannedBP[nodeIDMap[_h]]) {
+		    //fprintf (stdout,(refTopAVL[_h])["Name"], "\n");
+		    myAIC += hasBannedBP[nodeIDMap[_h]] * cAICPenaltyPerSite;
+		}
 		
 		thisSample   				 = {branchBits,1};
 		decimalToBinary                ("thisSample",0,branchBits, _h-1);
@@ -1998,8 +1986,7 @@ if (Abs(correctModel))
 	myLL  = lf_MLES[0];
 	myDF  = baseParams+lf_MLES[1]+tbc-1;	
 
-	if (adjustAICScores)
-	{
+	if (adjustAICScores) {
 		correctModelAIC = bppMap;
 		bppMap = {1,baseSites}["_MATRIX_ELEMENT_COLUMN_-1"];
 		myAIC = adjustAICScore (myLL, correctBP);
