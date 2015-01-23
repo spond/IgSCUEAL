@@ -22,8 +22,7 @@ if (alignmentType == 0 || alignmentType == 2)
 	alignOptions ["SEQ_ALIGN_CHARACTER_MAP"]="ARNDCQEGHILKMFPSTWYV";
 	
 	
-	if (useBlosum62)
-	{
+	if (useBlosum62) {
 		scoreMatrix = 
 		{
 		{                 6,                -3,                -4,                -4,                -2,                -2,                -2,                -1,                -3,                -3,                -3,                -2,                -2,                -4,                -2,                 0,                -1,                -5,                -3,                -1,                -4,                -2,                -2,                -7}
@@ -182,8 +181,8 @@ if (alignmentType == 0 || alignmentType == 2)
         minScore = Min (protScoreMatrix,0);
  
         	
-	    alignOptions ["SEQ_ALIGN_GAP_OPEN"]		= 	Max(maxScore,-minScore);
-	    alignOptions ["SEQ_ALIGN_GAP_OPEN2"]	= 	Max(maxScore,-minScore);
+	    alignOptions ["SEQ_ALIGN_GAP_OPEN"]		= 	1.25*Max(maxScore,-minScore);
+	    alignOptions ["SEQ_ALIGN_GAP_OPEN2"]	= 	1.25*Max(maxScore,-minScore);
 	    alignOptions ["SEQ_ALIGN_GAP_EXTEND"]	= 	1;
 	    alignOptions ["SEQ_ALIGN_GAP_EXTEND2"]	= 	1;
 	    alignOptions ["SEQ_ALIGN_FRAMESHIFT"]	= 	3*Max(maxScore,-minScore);
