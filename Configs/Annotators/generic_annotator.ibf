@@ -35,10 +35,10 @@ function GetBestHomology (junction, d) {
     
     
     _dAlignOptions = alignOptions;
-    _dAlignOptions ["SEQ_ALIGN_GAP_EXTEND"]  = 0;
-    _dAlignOptions ["SEQ_ALIGN_GAP_EXTEND2"] = 0;
-    _dAlignOptions ["SEQ_ALIGN_FRAMESHIFT"] = 100;
-    _dAlignOptions ["SEQ_ALIGN_LOCAL_ALIGNMENT"] = 1;
+    _dAlignOptions ["SEQ_ALIGN_GAP_EXTEND"]      = 0;
+    _dAlignOptions ["SEQ_ALIGN_GAP_EXTEND2"]     = 0;
+    _dAlignOptions ["SEQ_ALIGN_FRAMESHIFT"]      = 30;
+    _dAlignOptions ["SEQ_ALIGN_LOCAL_ALIGNMENT"] = 0;
     
     max_score = -1e100;
     
@@ -209,7 +209,7 @@ function MapIGH (ref,qry)
 		}
 	}
 	
-	//fprintf (stdout, _IGHHReport, "\n");
+	fprintf (stdout, _IGHHReport, "\n");
 	
 	return _IGHHReport;
 }
