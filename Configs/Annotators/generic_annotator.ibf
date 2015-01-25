@@ -67,13 +67,18 @@ function GetBestHomology (junction, d) {
         AlignSequences(aligned, inStr, _dAlignOptions);
         local_score = (aligned[0])[0];// / Abs ( d[d_names[d_allele]]);
         
-        fprintf (stdout, d_names[d_allele], "=>", local_score, "\n");
+        //fprintf (stdout, d_names[d_allele], "=>", local_score, "\n");
         
         if (local_score > max_score) {
             max_score     = local_score;
             best_allele   = d_names[d_allele];
             best_sequence = (aligned[0])[1];
+        } else {
+            if (local_score == max_score) {
+                best_allele += "|" + d_names[d_allele];
+            }
         }
+        
     }    
     
     
