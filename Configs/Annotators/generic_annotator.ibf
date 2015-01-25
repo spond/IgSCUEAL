@@ -229,7 +229,7 @@ function MapIGH (ref,qry)
 		}
 	}
 	
-	//fprintf (stdout, _IGHHReport, "\n");
+	fprintf (stdout, _IGHHReport, "\n");
 	
 	return _IGHHReport;
 }
