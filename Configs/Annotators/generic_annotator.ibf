@@ -38,8 +38,8 @@ function GetBestHomology (junction, d) {
     _dAlignOptions ["SEQ_ALIGN_GAP_EXTEND"]      = 0;
     _dAlignOptions ["SEQ_ALIGN_GAP_EXTEND2"]     = 0;
     //_dAlignOptions ["SEQ_ALIGN_FRAMESHIFT"]      = 20
-    _dAlignOptions ["SEQ_ALIGN_LOCAL_ALIGNMENT"] = 0;
-    _dAlignOptions ["SEQ_ALIGN_NO_TP"]		     = 0;
+    _dAlignOptions ["SEQ_ALIGN_LOCAL_ALIGNMENT"] = 1;
+    _dAlignOptions ["SEQ_ALIGN_NO_TP"]		     = 1;
     
     /*_dAlignOptions = {};
     _dAlignOptions ["SEQ_ALIGN_CHARACTER_MAP"]="ACGT";
@@ -67,7 +67,7 @@ function GetBestHomology (junction, d) {
         AlignSequences(aligned, inStr, _dAlignOptions);
         local_score = (aligned[0])[0];// / Abs ( d[d_names[d_allele]]);
         
-        //fprintf (stdout, d_names[d_allele], "=>", local_score, "\n");
+        fprintf (stdout, d_names[d_allele], "=>", local_score, "\n");
         
         if (local_score > max_score) {
             max_score     = local_score;
@@ -229,7 +229,8 @@ function MapIGH (ref,qry)
 		}
 	}
 	
-	fprintf (stdout, _IGHHReport, "\n");
+	//fprintf (stdout, _IGHHReport, "\n");
+	//assert (0);
 	
 	return _IGHHReport;
 }
