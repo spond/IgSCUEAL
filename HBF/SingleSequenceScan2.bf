@@ -1941,7 +1941,7 @@ for (_h=1; _h<Abs(refTopAVL)-1; _h=_h+1)
 	
 	
 		if (myAIC < bestAIC) {
-		    fprintf (stdout,(refTopAVL[_h])["Name"], ":", myAIC, "\n", modelBLEstimates,"\n\n");
+		    //fprintf (stdout,(refTopAVL[_h])["Name"], ":", myAIC, "\n", modelBLEstimates,"\n\n");
 		    
 			overallBestFound	= thisSample;
 			bestAIC 			= myAIC;
