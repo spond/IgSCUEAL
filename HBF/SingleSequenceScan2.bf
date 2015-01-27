@@ -589,6 +589,13 @@ function MakeStringCanonical (someString, dummy)
 		}
 		return reordered;
 		
+	} else {
+	    if (None != _v_and_j_are_sequential) {
+	        bpOrdering = decodeIndividual (someString);
+	        bpOrdering [0][0] = (bpOrdering[0][0] - 1) %_v_and_j_are_sequential[0][1] + _v_and_j_are_sequential[0][0];
+	        bpOrdering [1][0] = (bpOrdering[1][0] - 1) %_v_and_j_are_sequential[1][1] + _v_and_j_are_sequential[1][0];
+	        return encodeIndividual (bpOrdering);
+	    }
 	}
 	return someString;
 }
@@ -801,7 +808,7 @@ function decodeIndividual (indString)
 	
 	_hh = branchBits;
 	
-	if (localPartCount == 1 && None != _v_and_j_are_sequential) {
+	/*if (localPartCount == 1 && None != _v_and_j_are_sequential) {
 	    //fprintf (stdout, "Trim\n");
 	    
 	    spliceLocations [0][0] = binaryToDecimal(indString,0,branchBits)%_v_and_j_are_sequential[0][1] + _v_and_j_are_sequential[0][0] + 1;
@@ -810,7 +817,7 @@ function decodeIndividual (indString)
         spliceLocations [1][1] = binaryToDecimal(indString,_hh,bppSize)%bppMapSize;
         spliceLocations [1][0] = binaryToDecimal(indString,_hh+bppSize,branchBits)%_v_and_j_are_sequential[1][1] + _v_and_j_are_sequential[1][0] + 1;
 	
-	} else {
+	} else */ {
     	aBP = binaryToDecimal(indString,0,branchBits)%tbc;
 	
 	    spliceLocations [0][0] = aBP+1;
@@ -2175,7 +2182,7 @@ for (currentBPC = startBPC; currentBPC < maxBPP; currentBPC += 1) {
 				{
 					for (k=0; k<populationSize$3; k=k+1)
 					{
-						cString			 = addOne (currentPopulation[populationSize-1],Random(0,1)>0.5);
+						cString			 = MakeStringCanonical (addOne (currentPopulation[populationSize-1],Random(0,1)>0.5), 0);
 						currentPopulation[k] = IsChildViable(cString);
 						populationStrings[sampleString] = 1;
 						if (verboseFlag > 1)
@@ -2184,10 +2191,10 @@ for (currentBPC = startBPC; currentBPC < maxBPP; currentBPC += 1) {
 						}
 					}
 					
-					cString			 = addOne (currentPopulation[populationSize-1],Random(0,1)>0.5);
+					cString			 = MakeStringCanonical (addOne (currentPopulation[populationSize-1],Random(0,1)>0.5), 0);
 					currentPopulation[populationSize$3] = IsChildViable(cString);
 					populationStrings[sampleString] = 1;
-					cString			 = addOne (currentPopulation[populationSize-1],Random(0,1)>0.5);
+					cString			 = MakeStringCanonical (addOne (currentPopulation[populationSize-1],Random(0,1)>0.5), 0);
 					currentPopulation[populationSize$3+1] = IsChildViable(cString);
 					populationStrings[sampleString] = 1;
 					
@@ -2498,7 +2505,7 @@ bestModelBL				= modelBLEstimates;
 bestPC					= GetBreakpoints (ConvertToPartString (overallBestFound));
 matchingSum	   			= 0;
 
-fprintf  (stdout, bestModelIC, "\n");
+//fprintf  (stdout, bestModelIC, "\n");
 
 breakPointSupport 		= {filteredData.sites,1};
 otherBPSupport			= {filteredData.sites,1};
