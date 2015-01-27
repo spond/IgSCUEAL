@@ -1,4 +1,4 @@
-RequireVersion			("2.0");
+RequireVersion			("2.2");
 LoadFunctionLibrary		("PS_Plotters.bf");
 LoadFunctionLibrary		("GrabBag.bf");
 LoadFunctionLibrary		("ReadDelimitedFiles.bf");
@@ -7,8 +7,7 @@ verboseFlag				   = 0;
 timeLimit				   = 1000000;
 
 
-if (runInMPIMode && MPI_NODE_COUNT>1)
-{
+if (runInMPIMode && MPI_NODE_COUNT>1) {
 	verboseFlag = 0;
 	timeLimit   = 3600;
 }
@@ -420,14 +419,12 @@ function CleanUpMPI (dummy)
 function adjustAICScore (theLL,bpMatrix)
 {
 	myDF	     = baseParams + tbc2 + (Rows (bpMatrix)-1); 
-	if (icOption == 0)
-	{
+	if (icOption == 0) {
 		daAICScore   = 2*(myDF*(baseSites/(baseSites-myDF-1)) - theLL) ;
 		allDF	     = myDF + 3*Rows(bpMatrix);
 		baseAICScore = 2*(allDF*(baseSites/(baseSites-allDF-1)) - theLL);
 	}
-	else
-	{
+	else {
 		daAICScore   = myDF*Log(baseSites) - 2*theLL ;
 		baseAICScore = (myDF + 3*Rows(bpMatrix))*Log(baseSites) - 2*theLL;	
 	}
@@ -435,19 +432,15 @@ function adjustAICScore (theLL,bpMatrix)
 	
 	allTheSame 	 = 1;
 	
-	for (_pid = 1; _pid < Rows(bpMatrix); _pid = _pid+1)
-	{
+	for (_pid = 1; _pid < Rows(bpMatrix); _pid += 1) {
 		thisSpan = bppMap[bpMatrix[_pid][1]] - lastBpos+1;
 		lastBpos = bppMap[bpMatrix[_pid][1]];
 		allTheSame = allTheSame && (bpMatrix[_pid][0] == bpMatrix[_pid-1][0]);
-		if (icOption == 0)
-		{
-			if (thisSpan > tbc2)
-			{
+		if (icOption == 0) {
+			if (thisSpan > tbc2) {
 				daAICScore = daAICScore + 6*(thisSpan/(thisSpan-tbc2-1));
 			}
-			else
-			{
+			else {
 				daAICScore = daAICScore + 6*cAICPenaltyPerSite;
 			}
 		}
@@ -481,12 +474,10 @@ function adjustAICScore (theLL,bpMatrix)
 		}
 		return -Max(daAICScore,baseAICScore);
 	}
-	if (thisSpan < BICMinLength)
-	{
+	if (thisSpan < BICMinLength) {
 		daAICScore += 1000000;
 	}
-	else
-	{
+	else {
 		daAICScore += 3*Log(thisSpan) /*- allTheSame * Log(baseSites)*/;
 	}
 	
@@ -524,8 +515,7 @@ function ReceiveJobs (sendOrNot, ji)
 		if (ji>=0)
 		{
 			jobPrint = ConvertToPartString (currentPopulation[ji]);
-			if (adjustAICScores)
-			{
+			if (adjustAICScores) {
 				myAIC	 = adjustAICScore (myLL, sortedBP);
 			}
 			v 		 = Rows (sortedBP);
@@ -543,8 +533,7 @@ function ReceiveJobs (sendOrNot, ji)
 		if (ji>=0)
 		{
 			jobPrint = ConvertToPartString (children[ji-populationSize]);
-			if (adjustAICScores)
-			{
+			if (adjustAICScores) {
 				myAIC	 = adjustAICScore (myLL, sortedBP);
 			}
 			v = Rows (sortedBP);
@@ -918,12 +907,10 @@ function PrepareSampleForARun (sortedBP, is_banned&) {
 		seq = nodeIDMap[sortedBP[mpiNode][0]];
 		if (hasBannedBP[seq])
 		{
-			if ((bannedBreakpointLocations[seq])[filteredData.sites-1])
-			{
+			if ((bannedBreakpointLocations[seq])[filteredData.sites-1]) {
 				is_banned = 1;
 			}
-			else
-			{
+			else {
 				if (mpiNode)
 				{
 					loc = bppMap[sortedBP[mpiNode][1]+1];
@@ -1085,12 +1072,10 @@ fscanf		(stdin, "String", correctModelFile);
 */
 
 
-if (EXISTING_ALIGNMENT_RUN == 1)
-{
+if (EXISTING_ALIGNMENT_RUN == 1) {
 	querySequenceID 			= whichSeq;
 }
-else
-{
+else {
 	DataSet 	  ds 		    = ReadFromString (outputAlignment);
 	querySequenceID 			= ds.species-1;
 }
@@ -1594,8 +1579,7 @@ TRY_NUMERIC_SEQUENCE_MATCH	 = 1;
 		categoryShifter = Rows (probMatrix["Values"])/siteRateClasses;
 	}
 	nodeToID = {};
-	for (k=0; k<treeS; k=k+1)
-	{
+	for (k=0; k<treeS; k=k+1) {
 		nodeToID[(probMatrix["Nodes"])[k]] = k;
 	}
 
@@ -1676,8 +1660,7 @@ for (h = 0; h < filteredData.species; h = h+1)
 		
 		if (haveGaps[0]>=0) {
 			bannedSites = stencil;
-			for (k = Rows (haveGaps)-1; k > 0 ; k=k-2)
-			{
+			for (k = Rows (haveGaps)-1; k > 0 ; k=k-2) {
 				bannedSites = bannedSites + stencil["_MATRIX_ELEMENT_COLUMN_>=haveGaps[k__-1]&&_MATRIX_ELEMENT_COLUMN_<=haveGaps[k__]"]; 
 				if (haveGaps[k] != filteredData.sites - 1) // NOT the last site
 				{
@@ -1698,17 +1681,18 @@ for (h = 0; h < filteredData.species; h = h+1)
 				
 				}
 			}
-			if (haveGaps[0] > 0)
-			{
+			
+			if (haveGaps[0] > 0) {
 				(CRFStructure[crf_group[0]])[Abs(CRFStructure[crf_group[0]])] = {{seq__,1}};
 			}
-			if (verboseFlag)
-			{
+			
+			if (verboseFlag) {
 				fprintf (stdout, allSeqs[h], " has ", +bannedSites, " banned sites\n");
 			}
+			
 			seq 							= nodeIDMap[seq+1];
 			bannedBreakpointLocations [seq] = bannedSites;
-			hasBannedBP				  [seq] = 1;
+			hasBannedBP				  [seq] = +bannedSites;
 		}
 		else {
 			(CRFStructure[crf_group[0]])[0] = {{seq__,1}};
@@ -1946,8 +1930,8 @@ for (_h=1; _h<Abs(refTopAVL)-1; _h=_h+1)
 		}
 		
 		if (hasBannedBP[nodeIDMap[_h]]) {
-		    //fprintf (stdout, myAIC, "\n");
-		    myAIC = myAIC + 1000;
+		    //fprintf (stdout,(refTopAVL[_h])["Name"], "\n");
+		    myAIC += hasBannedBP[nodeIDMap[_h]] * cAICPenaltyPerSite;
 		}
 		
 		thisSample   				 = {branchBits,1};
@@ -1957,6 +1941,8 @@ for (_h=1; _h<Abs(refTopAVL)-1; _h=_h+1)
 	
 	
 		if (myAIC < bestAIC) {
+		    //fprintf (stdout,(refTopAVL[_h])["Name"], ":", myAIC, "\n", modelBLEstimates,"\n\n");
+		    
 			overallBestFound	= thisSample;
 			bestAIC 			= myAIC;
 			bestSBP 			= _h;
@@ -2000,8 +1986,7 @@ if (Abs(correctModel))
 	myLL  = lf_MLES[0];
 	myDF  = baseParams+lf_MLES[1]+tbc-1;	
 
-	if (adjustAICScores)
-	{
+	if (adjustAICScores) {
 		correctModelAIC = bppMap;
 		bppMap = {1,baseSites}["_MATRIX_ELEMENT_COLUMN_-1"];
 		myAIC = adjustAICScore (myLL, correctBP);
@@ -2043,7 +2028,7 @@ if (stepByStepLogging) {
 currentSubtypeAssignment = _subtypeAssignmentByNode[branchAttach];
 
 if (runInMPIMode == 0) {
-	fprintf (stdout, "\nInitial germline: `currentSubtypeAssignment`\n");
+	fprintf (stdout, "\nInitial germline: `currentSubtypeAssignment` (`branchAttach`)\n");
 }
 else {
 	returnAVL = {};
@@ -2371,6 +2356,7 @@ function support_by_branch_populate (key, value) {
     support_by_branch [value] += aw;
 }
 
+
 for (_mc=totalTried-1; _mc>=0; _mc = _mc - 1)
 {
 	aKey 								= masterKeys[_mc];
@@ -2403,6 +2389,11 @@ for (_mc=totalTried-1; _mc>=0; _mc = _mc - 1)
 			bestByModelType[thisModelType] = _cmc;
 		}		
 	}	
+}
+
+keys = Rows (support_by_branch);
+for (k = 0; k < Abs (support_by_branch); k+=1) {
+    support_by_branch[keys[k]] = support_by_branch[keys[k]] / totalSum;
 }
 
 //fprintf (stdout, support_by_branch, "\n");
@@ -2446,9 +2437,6 @@ overallBestFoundSisterNodes             = node_s;
 
 if (currentBEST_IC > 1e10) {
 	fprintf (stdout,   "ERROR: \nAnalysis options and recombinants in the reference alignment created a situation where no valid models could be found\n");
-	if (runInMPIMode == 1) {
-		returnAVL = {};
-	}
 	return 1;
 }
 
@@ -2456,7 +2444,15 @@ if (currentBEST_IC > 1e10) {
 bestAssignment 			= AssembleSubtypeAssignment (overallBestFound,1);
 bestAssignmentSimple	= bestAssignment;
 
-runAModel			 	(PrepareSampleForARun(sortedBP, "is_banned"), branchOptionValue);
+hasBannedBP = {}; // HACK
+_bestModelSpecCheck     = PrepareSampleForARun(sortedBP, "is_banned");
+
+if (is_banned) {
+	fprintf (stdout,   "ERROR: \nInternal error (banned breakpoints in the best model)\n");
+	return 1;
+}
+
+runAModel			 	(_bestModelSpecCheck, branchOptionValue);
 
 bestModelIC				= 0-MasterList[ConvertToPartString(overallBestFound)];
 bestModelBL				= modelBLEstimates;
@@ -2476,8 +2472,7 @@ for (_mc=totalTried-1; _mc>=0; _mc=_mc-1)
 	thisModelType 			= AssembleSubtypeAssignment (aKey,0);
 	
 	aBPList = GetBreakpoints (aKey);
-	if (bestAssignment == thisModelType)
-	{
+	if (bestAssignment == thisModelType) {
 		matchingSum 		= matchingSum + aw;
 		for (_s2 = 0; _s2 < Rows(aBPList); _s2 += 1) {
 			breakPointSupport[aBPList[_s2]-1] = breakPointSupport[aBPList[_s2]-1] + aw; 
@@ -2564,6 +2559,8 @@ GetDataInfo (refSequenceString, filteredData, querySequenceID);
 
 returnAVL = {};
 
+returnAVL["SEQUENCE_NAME"]              = _querySequenceName;
+returnAVL["REFERENCE"]                  = referenceAlignmentDescriptiveName; 
 returnAVL["BEST_REARRANGEMENT"] 		= bestAssignment;
 returnAVL["SUPPORT"] 		            = matchingSum/totalSum;
 returnAVL["SCORE"]			            = currentBEST_IC;
@@ -2584,9 +2581,9 @@ if (Abs(_extraResult)) {
     returnAVL["EXTRA"] = _extraResult;
 }
 
-
 returnAVL["BREAKPOINTS"]                = bestPC;
-returnAVL["BREAKPOINT_SUPPORT"]         = bpSupport;
+returnAVL["BREAKPOINT_SUPPORT"]    = Transpose(breakPointSupport);
+returnAVL["BRANCH_SUPPORT"] = support_by_branch;
 
 if (runInMPIMode == 0) {
     USE_JSON_FOR_MATRIX = 1;

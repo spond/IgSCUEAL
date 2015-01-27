@@ -1,7 +1,6 @@
 ExecuteAFile ("../HBF/utils.ibf");
-ExecuteAFile (HYPHY_LIB_DIRECTORY + "TemplateBatchFiles" + DIRECTORY_SEPARATOR 
-								   + "Utility" + DIRECTORY_SEPARATOR + 
-								   "GrabBag.bf");
+LoadFunctionLibrary ("GrabBag");
+LoadFunctionLibrary ("TreeTools");
 								   
 SetDialogPrompt ("Reference sequences?");
 
@@ -196,6 +195,7 @@ GetString (ancestral_sequence_names, ancestralSequences,-1);
 DataSet			jointDS			        = Combine (ds,ancestralSequences);
 DataSetFilter	referenceFilter	        = CreateFilter (jointDS,1,"",speciesIndex <= filteredData.species);
 
+
 IS_TREE_PRESENT_IN_DATA 		   = 1;
 DATAFILE_TREE					   = KillInternalZeroBranchLengths (givenTree ^ 0);
 DATA_FILE_PRINT_FORMAT			   = 6;
@@ -216,7 +216,6 @@ DataSetFilter   ancestralSequenceFilter = CreateFilter (ancestralSequences,1,"",
 
 SetDialogPrompt ("Save reference alignment and tree to:");
 fprintf (PROMPT_FOR_FILE,CLEAR_FILE,referenceFilter);
-
 spoolAncestors  = LAST_FILE_PATH + ".ancestors";
 outFilter       = LAST_FILE_PATH + ".labels";
 outJSON         = LAST_FILE_PATH + ".json";
@@ -237,10 +236,21 @@ for (k=0; k < tc; k = k+1) {
 	fprintf (stdout, nodeName, "->", sequenceLabels [nodeName&&1], "\n");
 }
 
+json = {};
+
+for (k = 0; k < referenceFilter.species; k+=1) {
+    GetString (sname, referenceFilter, k);
+    GetDataInfo (sdata, referenceFilter, k);
+    json [sname] = sdata;
+}
+
+fprintf (outJSON, CLEAR_FILE, json);
+
 
 fprintf (stdout, "Auto-generating internal node labels"); 
-Tree exportT = givenTree;
 
+UseModel (USE_NO_MODEL);
+Tree exportT = DATAFILE_TREE;
 _doLabelGeneration (0);
 
 fprintf (outFilter, CLEAR_FILE, "_subtypeAssignmentByNode = ", sequenceLabels, ";");
