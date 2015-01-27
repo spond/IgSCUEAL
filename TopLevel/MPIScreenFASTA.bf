@@ -7,14 +7,6 @@ if (MPI_NODE_COUNT <= 1)
 }
 
 
-ChoiceList (alignmentType, "Codons or Nucleotides", 1, SKIP_NONE, "Codon", 		"In-frame (universal code) codon alignment",
-																  "Nucleotide", "Nucleotide alignment",
-																  "Codon-direct", "Directly align codons (good for frameshift detection)");
-
-if (alignmentType < 0)
-{
-	return 0;
-}
 
 
 

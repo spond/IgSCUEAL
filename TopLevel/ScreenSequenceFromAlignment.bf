@@ -1,11 +1,3 @@
-ChoiceList (alignmentType, "Codons or Nucleotides", 1, SKIP_NONE, "Codon", 		"In-frame (universal code) codon alignment",
-																  "Nucleotide", "Nucleotide alignment",
-																  "Codon-direct", "Directly align codons (good for frameshift detection)");
-
-if (alignmentType < 0) {
-	return 0;
-}
-
 SetDialogPrompt ("Immunoglobulin sequence file:");
 DataSet ds_in = ReadDataFile (PROMPT_FOR_FILE);
 
@@ -21,6 +13,7 @@ else {
 
 referenceFile = "data/reference.nex";
 rfp		      = "../Configs/settings.ibf";
+
 if (!rfp) {
 	ExecuteAFile ("../Configs/settings.ibf");
 	referenceFile = "data/"+referenceAlignmentFileName;

@@ -411,22 +411,25 @@ gappedSeqN_Stripped * 0;
 outputAlignment * 256;
 
 
+
 for (k=0; k< ref_ds.species-1; k=k+1) {
     GetString (refName, ref_ds,k);
     outputAlignment *( ">"+ refName+ "\n"+ outSeqs[k]+ "\n");
 }	
 
-if (KEEP_ALL_GAPS_IN == 1)
-{
+if (KEEP_ALL_GAPS_IN == 1) {
     alignedQuerySeq = gappedSeqN_Stripped;
     outputAlignment * (">" + qryName + "\n" + alignedQuerySeq[startFrom][endAt-1] + "\n" + refTree + "\n");	
-    
 }
-else
-{		
+else {		
     alignedQuerySeq = gappedSeqN_Stripped ^ {{"\\-"}{""}};
     outputAlignment * (">" + qryName + "\n" + alignedQuerySeq + "\n" + refTree + "\n");	
 }
+
+outputAlignment * 0;
+
+//fprintf (stdout, outputAlignment, "\n");
+	
 
 outputAlignment * 0;
 
