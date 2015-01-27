@@ -197,11 +197,10 @@ DataSet			jointDS			        = Combine (ds,ancestralSequences);
 DataSetFilter	referenceFilter	        = CreateFilter (jointDS,1,"",speciesIndex <= filteredData.species);
 
 IS_TREE_PRESENT_IN_DATA 		   = 1;
-DATAFILE_TREE					   = Format(givenTree,1,1);
+DATAFILE_TREE					   = KillInternalZeroBranchLengths (givenTree ^ 0);
 DATA_FILE_PRINT_FORMAT			   = 6;
 
-
-valid_node_names = {};
+valid_node_names = {"Node0" : 1, "Node1" : 1};
 UseModel (USE_NO_MODEL);
 Tree collapsed_tree = DATAFILE_TREE;
 (collapsed_tree ^ 0)["tag_internal_nodes"][""];

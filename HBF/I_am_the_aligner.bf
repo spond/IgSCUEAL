@@ -154,8 +154,8 @@ maxScore = Max (protScoreMatrix,0);
 minScore = Min (protScoreMatrix,0);
 
     
-alignOptions ["SEQ_ALIGN_GAP_OPEN"]		= 	1.5*Max(maxScore,-minScore);
-alignOptions ["SEQ_ALIGN_GAP_OPEN2"]	= 	1.5*Max(maxScore,-minScore);
+alignOptions ["SEQ_ALIGN_GAP_OPEN"]		= 	Max(maxScore,-minScore);
+alignOptions ["SEQ_ALIGN_GAP_OPEN2"]	= 	Max(maxScore,-minScore);
 alignOptions ["SEQ_ALIGN_GAP_EXTEND"]	= 	0;
 alignOptions ["SEQ_ALIGN_GAP_EXTEND2"]	= 	0;
 alignOptions ["SEQ_ALIGN_FRAMESHIFT"]	= 	3*Max(maxScore,-minScore);
@@ -218,34 +218,52 @@ GetInformation 	(qrySeqs, qry_filter);
 refSequence	     = refSeqs[ref_ds.species-1];
 _qry_sequence_id = 0;
 qrySequence = qrySeqs[_qry_sequence_id];
+additional_sequences = {};
 
 if (Type (_alignmentTemplates) == "AssociativeList") {
     afn = "../data/" + ancestralAlignmentFileName;
     if (!afn) {
         LoadFunctionLibrary ("ReadDelimitedFiles");
         DataSet                     ancestors = ReadDataFile (afn);
-        DataSetFilter               ancestral_filter = CreateFilter (ancestors, 1);    
-        _subtypeAssignmentByNode    ["Node0"] = "MRCA"; 
+        DataSetFilter               ancestral_filter = CreateFilter (ancestors, 1);   
+        GetInformation 	            (ancSeqs, ancestral_filter);
         
-        _additional_references_to_consider = {"0" : {}, "1" : {}};
+ 
+        _subtypeAssignmentByNode    ["NODE1"] = "MRCA"; 
         
-        for (s = 0; s < ancestral_filter.species; s += 1) {
-            GetString (seq_name, ancestral_filter, s);
-            seq_type = _subtypeAssignmentByNode[seq_name && 1];
-            if (Type (seq_type) == "String") {
-                for (pattern = 0; pattern < Abs (_alignmentTemplates); pattern += 1) {
+        
+        
+        
+        for (pattern = 0; pattern < Abs (_alignmentTemplates); pattern += 1) {
+            _additional_references_to_consider = {"0" : {}, "1" : {}};
+            for (s = 0; s < ancestral_filter.species; s += 1) {
+                GetString (seq_name, ancestral_filter, s);
+                seq_type = _subtypeAssignmentByNode[seq_name && 1];
+                if (Type (seq_type) == "String") {
                     pattern_id = matchStringToSetOfPatterns (seq_type, (_alignmentTemplates[pattern])["Components"]);
                     if (pattern_id >= 0) {
                          (_additional_references_to_consider[pattern_id])[s] = 1;
                     }   
                 }
             }
+            
+            bp = (_alignmentTemplates[pattern])["BP"];
+            
+            seq_ids  = Rows (_additional_references_to_consider[0]);
+            seq_ids2 = Rows (_additional_references_to_consider[1]);
+            
+            for (i1 = 0; i1 <  Abs (_additional_references_to_consider[0]); i1+=1) {
+                vs = ancSeqs[0 + seq_ids[i1]];
+                for (i2 = 0; i2 < Abs (_additional_references_to_consider[1]); i2+=1) {
+                    js = ancSeqs[0 + seq_ids2[i2]];
+                    igg = ( vs + js ) ^ {{"-", "N"}};
+                    additional_sequences[igg] = 1;
+                }
+            }
         }
-        
-        fprintf (stdout, _additional_references_to_consider, "\n");
-        assert (0);
     }
 }
+
 
 GetString 	(qryName, ds_to_align, _qry_sequence_id);
 toAlignDS	= ">REFERENCE\n" + refSequence + "\n>" + qryName + "\n"+qrySequence;
@@ -281,12 +299,27 @@ if (aligned[0] >= bestScore) {
     bestAlignment = aligned;
 }
 
+
+additional_sequences ["try_alignment"][""];
+function try_alignment (key, value) {
+    inStr [0] = key;	
+    AlignSequences(aligned, inStr, alignOptions);
+    aligned = aligned[0];
+    if (aligned[0] >= bestScore) {
+        bestScore   = aligned[0];
+        bestAlignment = aligned;
+    }    
+}
+
 if (tryReverseComplement) {
     inStr [1] = nucleotideReverseComplement (_query_sequence);
+    AlignSequences(aligned, inStr, alignOptions);
+    aligned = aligned[0];
     if (aligned[0] >= bestScore) {
         bestScore   = aligned[0];
         bestAlignment = aligned;
     }
+    additional_sequences ["try_alignment"][""];
 }
 
 if (bestScore == _expected_score) {
@@ -346,7 +379,7 @@ for (k=0; k< ref_ds.species; k +=1) {
 shift = 0;
 
 
-fprintf (stdout, "\n\n", fullRefSeq, "\n", gappedSeqN, "\n\n", KEEP_ALL_GAPS_IN, "\n\n", startFrom, ":", endAt, "\n\n");
+//fprintf (stdout, "\n\n", fullRefSeq, "\n", gappedSeqN, "\n\n", KEEP_ALL_GAPS_IN, "\n\n", startFrom, ":", endAt, "\n\n");
 
 gappedSeqN_Stripped = ""; gappedSeqN_Stripped * 128;
 
@@ -397,7 +430,7 @@ else
 
 outputAlignment * 0;
 
-fprintf (stdout, outputAlignment, "\n");
+//fprintf (stdout, outputAlignment, "\n");
 	
 
 /*---------------------------------------------
