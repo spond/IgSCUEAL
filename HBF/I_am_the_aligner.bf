@@ -156,19 +156,11 @@ minScore = Min (protScoreMatrix,0);
     
 alignOptions ["SEQ_ALIGN_GAP_OPEN"]		= 	Max(maxScore,-minScore);
 alignOptions ["SEQ_ALIGN_GAP_OPEN2"]	= 	Max(maxScore,-minScore);
-alignOptions ["SEQ_ALIGN_GAP_EXTEND"]	= 	0;
-alignOptions ["SEQ_ALIGN_GAP_EXTEND2"]	= 	0;
+alignOptions ["SEQ_ALIGN_GAP_EXTEND"]	= 	1;
+alignOptions ["SEQ_ALIGN_GAP_EXTEND2"]	= 	1;
 alignOptions ["SEQ_ALIGN_FRAMESHIFT"]	= 	3*Max(maxScore,-minScore);
 alignOptions ["SEQ_ALIGN_CODON_ALIGN"]	= 	1;
 
-/*       
-alignOptions ["SEQ_ALIGN_GAP_OPEN"]		= 	-1*minScore;
-alignOptions ["SEQ_ALIGN_GAP_OPEN2"]	= 	-1*minScore;
-alignOptions ["SEQ_ALIGN_GAP_EXTEND"]	= 	1;
-alignOptions ["SEQ_ALIGN_GAP_EXTEND2"]	= 	1;
-alignOptions ["SEQ_ALIGN_FRAMESHIFT"]	= 	Max(maxScore,-minScore);
-alignOptions ["SEQ_ALIGN_CODON_ALIGN"]	= 	1;
-*/
 
 alignOptions ["SEQ_ALIGN_CHARACTER_MAP"]=  "ACGT";
 alignOptions ["SEQ_ALIGN_NO_TP"]		=   1;
@@ -256,8 +248,8 @@ if (Type (_alignmentTemplates) == "AssociativeList") {
                 vs = ancSeqs[0 + seq_ids[i1]];
                 for (i2 = 0; i2 < Abs (_additional_references_to_consider[1]); i2+=1) {
                     js = ancSeqs[0 + seq_ids2[i2]];
-                    igg = ( vs + js ) ^ {{"-", "N"}};
-                    additional_sequences[igg] = 1;
+                    igg = ( vs[0][bp-1] + js [bp][Abs(js)-1]) ;
+                    additional_sequences[igg^ {{"-", ""}}] = igg;
                 }
             }
         }
@@ -307,7 +299,50 @@ function try_alignment (key, value) {
     aligned = aligned[0];
     if (aligned[0] >= bestScore) {
         bestScore   = aligned[0];
+        
+        rs = aligned[1];
+        qs = aligned[2];
+        
+        aligned[1] = "";
+        aligned[2] = "";
+        aligned[1] * 400;
+        aligned[2] * 400;
+        
+        letters = {};
+        lc      = -1;
+        for (cc = 0; cc < Abs (value); cc+=1) {
+            if (value[cc] != "-") {
+                lc += 1;
+            } else {
+                letters[lc] += 1;
+            }
+        }
+        
+        lc = -1;
+        rc = -1;
+        
+        for (padder = 0; padder < letters[lc]; padder += 1) {
+            aligned[1] += "N";
+            aligned[2] += "-";           
+        }
+        
+        while (rc < Abs (rs)) {
+            rc += 1;
+            aligned[1] * rs[rc];
+            aligned[2] * qs[rc];
+            if (rs[rc] != "-") {
+                lc += 1;
+                for (padder = 0; padder < letters[lc]; padder += 1) {
+                    aligned[1] * "N";
+                    aligned[2] * "-";           
+                }
+            }
+        }
+        
+        aligned[1] * 0;
+        aligned[2] * 0;
         bestAlignment = aligned;
+        
     }    
 }
 
