@@ -189,17 +189,41 @@ VERBOSITY_LEVEL = 0;
 
 fprintf (stdout, "\n[PHASE 6]. Reconstructing ancestors.");		
 
-DataSet			ancestralSequences = ReconstructAncestors (lf);
-DataSet			jointDS			   = Combine (ds,ancestralSequences);
-DataSetFilter	referenceFilter	   = CreateFilter (jointDS,1,"",speciesIndex <= filteredData.species);
+DataSet			ancestralSequences      = ReconstructAncestors (lf);
+
+GetString (ancestral_sequence_names, ancestralSequences,-1);
+
+DataSet			jointDS			        = Combine (ds,ancestralSequences);
+DataSetFilter	referenceFilter	        = CreateFilter (jointDS,1,"",speciesIndex <= filteredData.species);
 
 IS_TREE_PRESENT_IN_DATA 		   = 1;
 DATAFILE_TREE					   = Format(givenTree,1,1);
 DATA_FILE_PRINT_FORMAT			   = 6;
 
+
+valid_node_names = {};
+UseModel (USE_NO_MODEL);
+Tree collapsed_tree = DATAFILE_TREE;
+(collapsed_tree ^ 0)["tag_internal_nodes"][""];
+
+function tag_internal_nodes (key, value) {
+    if (Abs (value["Children"]) > 0) {
+        valid_node_names [value["Name"]] = 1;
+    }
+}
+
+DataSetFilter   ancestralSequenceFilter = CreateFilter (ancestralSequences,1,"",valid_node_names[ancestral_sequence_names[speciesIndex]]);
+
+
 SetDialogPrompt ("Save reference alignment and tree to:");
 fprintf (PROMPT_FOR_FILE,CLEAR_FILE,referenceFilter);
-outFilter = LAST_FILE_PATH + ".labels";
+
+spoolAncestors  = LAST_FILE_PATH + ".ancestors";
+outFilter       = LAST_FILE_PATH + ".labels";
+outJSON         = LAST_FILE_PATH + ".json";
+
+IS_TREE_PRESENT_IN_DATA = 0;
+fprintf (spoolAncestors, CLEAR_FILE, ancestralSequenceFilter);
 
 fprintf (stdout, "\n[PHASE 7]. Label sequences.\n");
 sequenceLabels = {};

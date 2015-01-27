@@ -41,7 +41,14 @@ referenceAlignmentFileName  = "HumanIGH-full.nex";
 	
 	*/
 
-frameSelectByAlignment			= 1;
+ancestralAlignmentFileName         = referenceAlignmentFileName + ".ancestors";
+referenceAlignmentDescriptiveName  = "Human IgG (heavy chain) with all unique F+ORF alleles, based on IMGT from Dec 2014";
+
+
+
+
+/************************************************************************/
+
 tryReverseComplement			= 1;
 useBlosum62						= 1;
 _bannedEndAdjust				= 1;
@@ -56,6 +63,12 @@ _try_resampling_rejections        = 50;
 _validBreakpointStructure            = {};
 _validBreakpointStructure [1]        = {"0":"^V[^\\,]+\\,J[^\\,]+"};
 _do_not_enforce_gaps_in_initial_scan = "^IGHV";
+
+_alignmentTemplates                  = {"0" : {"Components" : 
+                                              {"0"  : "^V[0-9]+$", 
+                                               "1"  : "MRCA"},
+                                               "BP" : 105 * 3}
+                                        };
 								 
 _annotateSequenceByAlignment	  = "MapIGH";
 ExecuteAFile ("Annotators/IGH-full.ibf");
