@@ -1633,6 +1633,7 @@ reverseNodeIDMap = {};
 check_sequential    = {{0,tbc}};
 do_check_sequential = Type (_check_tree_block_structure) == "AssociativeList";
 
+
 for (k=1; k<=tbc; k=k+1)
 {
     nn = (refTopAVL[k])["Name"];
@@ -1648,6 +1649,7 @@ for (k=1; k<=tbc; k=k+1)
                 check_sequential [1] = Min (check_sequential [1], k-1);
             }
         } else {
+            fprintf (stdout, "FAIL on `nn`\n");
             do_check_sequential = 0;
         }
     }
@@ -1663,7 +1665,7 @@ if (do_check_sequential) {
     if (check_sequential[0] + 1 == check_sequential[1] && check_sequential[0] < tbc) {
         _v_and_j_are_sequential = {{0, check_sequential[1]}{check_sequential[1], tbc-check_sequential[1]}};
     }
-    //fprintf (stdout, _v_and_j_are_sequential, "\n");
+    //fprintf (stdout, check_sequential, "\n", _v_and_j_are_sequential, "\n");
 }
 
 /* find "banned" ranges for CRFs and pre-populate initial solutions based on CRFs */
