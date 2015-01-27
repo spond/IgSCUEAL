@@ -212,10 +212,10 @@ _qry_sequence_id = 0;
 qrySequence = qrySeqs[_qry_sequence_id];
 additional_sequences = {};
 
-if (Type (_alignmentTemplates) == "AssociativeList") {
-    afn = "../data/" + ancestralAlignmentFileName;
+function handle_alignment_templates (file_path) {
+    afn = "../data/" + file_path;
     if (!afn) {
-        LoadFunctionLibrary ("ReadDelimitedFiles");
+        LoadFunctionLibrary         ("ReadDelimitedFiles");
         DataSet                     ancestors = ReadDataFile (afn);
         DataSetFilter               ancestral_filter = CreateFilter (ancestors, 1);   
         GetInformation 	            (ancSeqs, ancestral_filter);
@@ -224,13 +224,13 @@ if (Type (_alignmentTemplates) == "AssociativeList") {
         _subtypeAssignmentByNode    ["NODE1"] = "MRCA"; 
         
         
-        
+        GetString (seq_names, ancestral_filter, -1);
         
         for (pattern = 0; pattern < Abs (_alignmentTemplates); pattern += 1) {
             _additional_references_to_consider = {"0" : {}, "1" : {}};
             for (s = 0; s < ancestral_filter.species; s += 1) {
-                GetString (seq_name, ancestral_filter, s);
-                seq_type = _subtypeAssignmentByNode[seq_name && 1];
+                
+                seq_type = _subtypeAssignmentByNode[seq_names[s] && 1];
                 if (Type (seq_type) == "String") {
                     pattern_id = matchStringToSetOfPatterns (seq_type, (_alignmentTemplates[pattern])["Components"]);
                     if (pattern_id >= 0) {
@@ -249,13 +249,22 @@ if (Type (_alignmentTemplates) == "AssociativeList") {
                 for (i2 = 0; i2 < Abs (_additional_references_to_consider[1]); i2+=1) {
                     js = ancSeqs[0 + seq_ids2[i2]];
                     igg = ( vs[0][bp-1] + js [bp][Abs(js)-1]) ;
-                    additional_sequences[igg^ {{"-", ""}}] = igg;
+                    igg_stripped = igg ^ {{"---", ""}};
+                    additional_sequences[igg_stripped] = {2,1};
+                    (additional_sequences[igg_stripped])[0] = _subtypeAssignmentByNode[seq_names[0 + seq_ids[i1]]] + "-" + _subtypeAssignmentByNode[seq_names[0 + seq_ids2[i2]]];
+                    (additional_sequences[igg_stripped])[1] = igg;
                 }
             }
         }
     }
 }
 
+if (Type (_alignmentTemplates) == "AssociativeList") {
+    handle_alignment_templates (ancestralAlignmentFileName);
+    handle_alignment_templates (referenceAlignmentFileName);
+}
+
+//fprintf (stdout, Abs (additional_sequences, "\n");
 
 GetString 	(qryName, ds_to_align, _qry_sequence_id);
 toAlignDS	= ">REFERENCE\n" + refSequence + "\n>" + qryName + "\n"+qrySequence;
@@ -295,6 +304,7 @@ if (aligned[0] >= bestScore) {
 additional_sequences ["try_alignment"][""];
 function try_alignment (key, value) {
     inStr [0] = key;	
+    //fprintf (stdout, key, ":", Abs (key), "\n\n");
     AlignSequences(aligned, inStr, alignOptions);
     aligned = aligned[0];
     if (aligned[0] >= bestScore) {
@@ -310,8 +320,10 @@ function try_alignment (key, value) {
         
         letters = {};
         lc      = -1;
-        for (cc = 0; cc < Abs (value); cc+=1) {
-            if (value[cc] != "-") {
+        seq_in_ref = value[1];
+        
+        for (cc = 0; cc < Abs (seq_in_ref); cc+=1) {
+            if (seq_in_ref[cc] != "-") {
                 lc += 1;
             } else {
                 letters[lc] += 1;
@@ -341,6 +353,8 @@ function try_alignment (key, value) {
         
         aligned[1] * 0;
         aligned[2] * 0;
+        
+        //fprintf (stdout, value[0], "\n");
         bestAlignment = aligned;
         
     }    

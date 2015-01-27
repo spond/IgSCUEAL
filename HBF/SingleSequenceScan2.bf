@@ -1,7 +1,6 @@
 RequireVersion			("2.2");
-LoadFunctionLibrary		("PS_Plotters.bf");
-LoadFunctionLibrary		("GrabBag.bf");
-LoadFunctionLibrary		("ReadDelimitedFiles.bf");
+LoadFunctionLibrary		("GrabBag");
+LoadFunctionLibrary		("ReadDelimitedFiles");
 
 verboseFlag				   = 0;
 timeLimit				   = 1000000;
@@ -73,6 +72,8 @@ localMutationMultiplierDecrease = 0.03;
 localMutationMultiplierMin		= 0.10;
 localMutationInterval	= Min(stoppingCriterion-1,stoppingCriterion * localMutationMultiplier $ 1);
 shortestAllowedSegment  = 0;
+
+_v_and_j_are_sequential = None;
 
 
 prematureTermination	= 0;
@@ -797,18 +798,31 @@ function decodeIndividual (indString)
 	
 	/* map splice branches to indices */
 		
-	aBP = binaryToDecimal(indString,0,branchBits)%tbc;
-	
-	spliceLocations [0][0] = aBP+1;
-	spliceLocations [0][1] = -1;
 	
 	_hh = branchBits;
-	for (_i2=0; _i2<localPartCount; _i2=_i2+1)
-	{
-		spliceLocations[_i2+1][1] = binaryToDecimal(indString,_hh,bppSize)%bppMapSize;
-		spliceLocations[_i2+1][0] = binaryToDecimal(indString,_hh+bppSize,branchBits)%tbc+1;
-		_hh 				      = _hh + bitsPerPart;
-	}
+	
+	if (localPartCount == 1 && None != _v_and_j_are_sequential) {
+	    //fprintf (stdout, "Trim\n");
+	    
+	    spliceLocations [0][0] = binaryToDecimal(indString,0,branchBits)%_v_and_j_are_sequential[0][1] + _v_and_j_are_sequential[0][0] + 1;
+	    spliceLocations [0][1] = -1;
+	    
+        spliceLocations [1][1] = binaryToDecimal(indString,_hh,bppSize)%bppMapSize;
+        spliceLocations [1][0] = binaryToDecimal(indString,_hh+bppSize,branchBits)%_v_and_j_are_sequential[1][1] + _v_and_j_are_sequential[1][0] + 1;
+	
+	} else {
+    	aBP = binaryToDecimal(indString,0,branchBits)%tbc;
+	
+	    spliceLocations [0][0] = aBP+1;
+	    spliceLocations [0][1] = -1;
+
+        for (_i2=0; _i2<localPartCount; _i2 += 1)
+        {
+            spliceLocations[_i2+1][1] = binaryToDecimal(indString,_hh,bppSize)%bppMapSize;
+            spliceLocations[_i2+1][0] = binaryToDecimal(indString,_hh+bppSize,branchBits)%tbc+1;
+            _hh 				      += bitsPerPart;
+        }
+    }
 
 	return spliceLocations;
 }
@@ -1154,7 +1168,7 @@ dataNames = {ds.species,1};
 GetString (_querySequenceName, ds,querySequenceID);
 validTaxonNames [_querySequenceName&&1] = 1;
 
-for (k=0; k<tbc; k=k+1)
+for (k=0; k<tbc; k += 1)
 {
 	taxonName 				   = TipName(referenceTopology,k)&&1;
 	is_crf 					   = taxonName$crf_for_grep;
@@ -1189,7 +1203,7 @@ for (k=0; k<ds.species; k=k+1)
 DataSetFilter filteredData  = CreateFilter (ds,1,"",validTaxonNames[dataNames[speciesIndex]]);
 
 //PATHtosave = ""+MPI_NODE_ID + ".seq";
-//fprintf (PATHtosave, CLEAR_FILE, filteredData);
+//fprintf ("/Volumes/sergei-raid/Desktop/igscueal.fas", CLEAR_FILE, filteredData);
 
 DataSetFilter referenceData = CreateFilter (ds,1,"",validTaxonNames[dataNames[speciesIndex]] && (speciesIndex != querySequenceID));
 
@@ -1616,14 +1630,40 @@ baseBranchValues = {tbc,1};
 nodeNameToAVL	 = {};
 reverseNodeIDMap = {};
 
+check_sequential    = {{0,tbc}};
+do_check_sequential = Type (_check_tree_block_structure) == "AssociativeList";
+
 for (k=1; k<=tbc; k=k+1)
 {
-    k2 = nodeToID[(refTopAVL[k])["Name"]];
+    nn = (refTopAVL[k])["Name"];
+    k2 = nodeToID[nn];
+    
+    if (do_check_sequential) {
+        //fprintf (stdout, nn, "\n");
+        pattern_id = matchStringToSetOfPatterns (_subtypeAssignmentByNode[nn && 1], _check_tree_block_structure);
+        if (pattern_id >= 0) {
+            if (pattern_id == 0) {
+                check_sequential [0] = Max (check_sequential [0], k-1);
+            } else {
+                check_sequential [1] = Min (check_sequential [1], k-1);
+            }
+        } else {
+            do_check_sequential = 0;
+        }
+    }
+    
 	nodeIDMap[k] 					= k2;
-	reverseNodeIDMap[k2]            = (refTopAVL[k])["Name"];
+	reverseNodeIDMap[k2]            = nn;
 	nodeNameToAVL[(refTopAVL[k])["Name"]] = k;
 	ExecuteCommands 				("val = baselineTree." +(refTopAVL[k])["Name"] + ".t;");
 	baseBranchValues [nodeIDMap[k]] = val;
+}
+
+if (do_check_sequential) {
+    if (check_sequential[0] + 1 == check_sequential[1] && check_sequential[0] < tbc) {
+        _v_and_j_are_sequential = {{0, check_sequential[1]}{check_sequential[1], tbc-check_sequential[1]}};
+    }
+    //fprintf (stdout, _v_and_j_are_sequential, "\n");
 }
 
 /* find "banned" ranges for CRFs and pre-populate initial solutions based on CRFs */
@@ -1899,14 +1939,7 @@ cleanedUpSeqName = "QUERY";
 
 
 
-for (_h=1; _h<Abs(refTopAVL)-1; _h=_h+1)
-{
-	/*refTopAVL			  = referenceTopology^0;*/
-	/*if (verboseFlag)
-	{
-		fprintf (stdout, "[BRANCH ", (refTopAVL[_h])["Name"],"]\n");
-	}*/
-
+for (_h=1; _h<Abs(refTopAVL)-1; _h=_h+1) {
 	treeString = Format (referenceTopology,1,0);
 	Topology suppliedTree = treeString;
 	suppliedTree + {"NAME": cleanedUpSeqName, 
@@ -1941,7 +1974,7 @@ for (_h=1; _h<Abs(refTopAVL)-1; _h=_h+1)
 	
 	
 		if (myAIC < bestAIC) {
-		    //fprintf (stdout,(refTopAVL[_h])["Name"], ":", myAIC, "\n", modelBLEstimates,"\n\n");
+		    // fprintf (stdout,(refTopAVL[_h])["Name"], ":", myAIC, "\n", modelBLEstimates,"\n\n");
 		    
 			overallBestFound	= thisSample;
 			bestAIC 			= myAIC;
@@ -2062,11 +2095,11 @@ for (currentBPC = startBPC; currentBPC < maxBPP; currentBPC += 1) {
 	totalModelCounter 		 = 1;
 	kf 						 = 1;
 	
-	for (k=1; k <= partCount; k += 1)
-	{
+	for (k=1; k <= partCount; k += 1) {
 		totalModelCounter = totalModelCounter * (Abs(bppMap)-k+1)*tbc;
 		kf 				  = kf * k;
 	} 
+	
 	totalModelCounter = totalModelCounter / kf;
 
 	current_BPP_done_counter = Abs (MasterList);
@@ -2356,6 +2389,7 @@ function support_by_branch_populate (key, value) {
     support_by_branch [value] += aw;
 }
 
+//fprintf (stdout, currentBEST_IC, "\n");
 
 for (_mc=totalTried-1; _mc>=0; _mc = _mc - 1)
 {
@@ -2364,12 +2398,15 @@ for (_mc=totalTried-1; _mc>=0; _mc = _mc - 1)
 	aw	 								= Exp((currentBEST_IC-anIC)*0.5);
 	
 	if (aw > 0.001 / totalTried) {	
+	
 		_cmc								= Abs (credibleKeys);
 		credibleKeys[_cmc]					= aKey;
 		totalSum 							+= aw;
 		akaikeWeights[_cmc][0]   			= aw;
 		
 		thisModelType 						= AssembleSubtypeAssignment (aKey,0);
+		
+	    //fprintf (stdout, thisModelType, ":", aw, ":", anIC, "\n");
 		
 		sscanf  (aKey, REWIND, "Lines", scueal_model_definition);
 		(splitOnRegExp (scueal_model_definition[1], ","))["support_by_branch_populate"][""];
@@ -2458,6 +2495,8 @@ bestModelIC				= 0-MasterList[ConvertToPartString(overallBestFound)];
 bestModelBL				= modelBLEstimates;
 bestPC					= GetBreakpoints (ConvertToPartString (overallBestFound));
 matchingSum	   			= 0;
+
+fprintf  (stdout, bestModelIC, "\n");
 
 breakPointSupport 		= {filteredData.sites,1};
 otherBPSupport			= {filteredData.sites,1};

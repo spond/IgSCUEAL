@@ -1,0 +1,86 @@
+LoadFunctionLibrary ("GrabBag");
+LoadFunctionLibrary ("generic_annotator.ibf");
+
+IG_MRCA_sequence_length = 375;
+_IG_nuc_annotation = {1,IG_MRCA_sequence_length};
+aa_breaks = 
+{{            24}
+{            36}
+{            54}
+{            64}
+{           104}
+{           110}
+{           131}
+}
+;
+jMotifRegExp       = "[FW]G.G";
+jMotifFallBack     = 120 * 3;
+
+
+
+
+_features           = {"0" : "FW1", "1": "CDR1", "2": "FW2", "3": "CDR2", "4": "FW3", "5": "CDR3", "6": "J"};
+
+_extraOutputColumns = {"0": "FW1", 
+                       "1": "FW1_AA",
+                       "2": "CDR1", 
+                       "3": "CDR1_AA",
+                       "4": "FW2", 
+                       "5": "FW2_AA",
+                       "6": "CDR2",
+                       "7": "CDR2_AA", 
+                       "8": "FW3",
+                       "9": "FW3_AA", 
+                       "10": "CDR3",
+                       "11": "CDR3_AA",
+                       "12": "JUNCTION",
+                       "13": "JUNCTION_AA",
+                       "14": "D_ALLELE",
+                       "15": "D",
+                       "16" : "D_AA",
+                       "17" : "D_SCORE",
+                       "18" : "D/INV_ALLELE",
+                       "19" : "D/INV",
+                       "20" : "D/INV_AA",
+                       "21" : "D/INV_SCORE",
+                       "22" : "J",
+                       "23" : "J_AA",
+                       "24" : "Mapped Read"};
+
+
+_D_sequences = {"D1-1*01":"GGTACAACTGGAACGAC",
+"D1-20*01":"GGTATAACTGGAACGAC",
+"D1-26*01":"GGTATAGTGGGAGCTACTAC",
+"D1-7*01":"GGTATAACTGGAACTAC",
+"D2-15*01":"AGGATATTGTAGTGGTGGTAGCTGCTACTCC",
+"D2-2*01":"AGGATATTGTAGTAGTACCAGCTGCTATGCC",
+"D2-2*02":"AGGATATTGTAGTAGTACCAGCTGCTATACC",
+"D2-2*03":"TGGATATTGTAGTAGTACCAGCTGCTATGCC",
+"D2-21*01":"AGCATATTGTGGTGGTGATTGCTATTCC",
+"D2-21*02":"AGCATATTGTGGTGGTGACTGCTATTCC",
+"D2-8*01":"AGGATATTGTACTAATGGTGTATGCTATACC",
+"D2-8*02":"AGGATATTGTACTGGTGGTGTATGCTATACC",
+"D3-10*01":"GTATTACTATGGTTCGGGGAGTTATTATAAC",
+"D3-10*02":"GTATTACTATGTTCGGGGAGTTATTATAAC",
+"D3-16*01":"GTATTATGATTACGTTTGGGGGAGTTATGCTTATACC",
+"D3-16*02":"GTATTATGATTACGTTTGGGGGAGTTATCGTTATACC",
+"D3-22*01":"GTATTACTATGATAGTAGTGGTTATTACTAC",
+"D3-3*01":"GTATTACGATTTTTGGAGTGGTTATTATACC",
+"D3-3*02":"GTATTAGCATTTTTGGAGTGGTTATTATACC",
+"D3-9*01":"GTATTACGATATTTTGACTGGTTATTATAAC",
+"D4-17*01":"TGACTACGGTGACTAC",
+"D4-4*01":"TGACTACAGTAACTAC",
+"D5-12*01":"GTGGATATAGTGGCTACGATTAC",
+"D5-18*01":"GTGGATACAGCTATGGTTAC",
+"D5-5*01":"GTGGATACAGCTATGGTTAC",
+"D6-13*01":"GGGTATAGCAGCAGCTGGTAC",
+"D6-19*01":"GGGTATAGCAGTGGCTGGTAC",
+"D6-25*01":"GGGTATAGCAGCGGCTAC",
+"D6-6*01":"GAGTATAGCAGCTCGTCC",
+"D7-27*01":"CTAACTGGGGA"};
+
+
+
+_annotator_do_inverse_d = 1;
+_set_up_annotator ();
+

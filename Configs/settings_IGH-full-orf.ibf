@@ -30,7 +30,7 @@ BICMinLength			= 20;
 	*/
 
 
-referenceAlignmentFileName  = "HumanIGH-full.nex";
+referenceAlignmentFileName  = "HumanIGH-full-orf.nex";
 
 
 	/* the name of the reference alignment file (MUST 
@@ -71,8 +71,8 @@ _do_not_enforce_gaps_in_initial_scan = "^IGHV";
 _alignmentTemplates                  = {"0" : {"Components" : 
                                               {"0"  : "^V[0-9].+01$", 
                                                "1"  : "^J.+01$"},
-                                               "BP" : 105 * 3}
+                                               "BP" : 110 * 3}
                                         };
 								 
 _annotateSequenceByAlignment	  = "MapIGH";
-ExecuteAFile ("Annotators/IGH-full.ibf");
+ExecuteAFile ("Annotators/IGH-full-orf.ibf");
