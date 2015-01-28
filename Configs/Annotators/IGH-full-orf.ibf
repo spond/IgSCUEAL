@@ -10,11 +10,11 @@ aa_breaks =
 {            64}
 {           104}
 {           110}
-{           131}
+{           128}
 }
 ;
 jMotifRegExp       = "[FW]G.G";
-jMotifFallBack     = 120 * 3;
+jMotifFallBack     = 117 * 3;
 
 
 
