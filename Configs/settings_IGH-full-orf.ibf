@@ -1,4 +1,4 @@
-populationSize  		= 512;
+populationSize  		= 256;
 	/* the number of models in a GA population;
 	   reasonable range 16-128
 	   smaller values result in faster run times,
@@ -22,7 +22,7 @@ noMoreBPsThan 			= 2;
 	   Set to a small number (e.g. 2) if all that is needed is a simple
 	   recominant - or non-recombinant categorization */
 	   
-BICMinLength			= 20;
+BICMinLength			= 25;
 
 	/* What is the shortest sequence fragment to be allowed in a mosaic.
 	   Set to a larger value (e.g. 200) if greater speed is desired at 
@@ -59,7 +59,7 @@ _allowNsInSequences                 = 1;
 
 _additionalStartingBreakpoints	    = {};
 _additionalStartingBreakpoints[0]   = {{"^IGHV+","^IGHJ+"}};
-_try_resampling_rejections          = 5;
+_try_resampling_rejections          = 8;
 
 
 

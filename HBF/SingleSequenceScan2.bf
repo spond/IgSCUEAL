@@ -1007,6 +1007,7 @@ function RunASample (dummy,jobIndex)
 	}
 	else {
 		lf_MLES = runAModel (paramSpec,branchOptionValue);
+	    //fprintf (stdout, ConvertToPartString(cString), "\n", lf_MLES, "\n\n");
 	}
 	mpiNode = ReceiveJobs (0,jobIndex);
 	
@@ -1018,8 +1019,7 @@ function RunASample (dummy,jobIndex)
 function SpawnRandomString (clsCnt)
 {
 	rModel = {totalBitSize,1};
-	for (h=0; h<totalBitSize; h=h+1)
-	{
+	for (h=0; h<totalBitSize; h=h+1) {
 		rModel[h] = Random(0,2)$1;
 	}
 	return MakeStringCanonical(rModel,0);
@@ -1670,7 +1670,7 @@ for (k=1; k<=tbc; k=k+1)
 
 if (do_check_sequential) {
     if (check_sequential[0] + 1 == check_sequential[1] && check_sequential[0] < tbc) {
-        _v_and_j_are_sequential = {{0, check_sequential[1]}{check_sequential[1], tbc-check_sequential[1]}};
+        _v_and_j_are_sequential = {{0, check_sequential[1]}{check_sequential[1], tbc-check_sequential[1]+1}};
     }
     //fprintf (stdout, check_sequential, "\n", _v_and_j_are_sequential, "\n");
 }
