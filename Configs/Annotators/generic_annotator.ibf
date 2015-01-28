@@ -108,6 +108,8 @@ function MapIGH (ref,qry)
             qryWithN += qry[k];
         }
     }
+    
+    
 	coords 	   = remapSequenceCoordinatesToReference (ref, qryWithN);
 	_IGHHReport = {};
 	
@@ -121,7 +123,7 @@ function MapIGH (ref,qry)
 	
 	// replace all triplet gaps with nothing
 	// replace all remaining gaps with N
-	qryNoGaps = (qry ^ {{"\\-\\-\\-",""}}) ^ {{"\\-","N"}};
+	qryNoGaps = (qry ^ {{"---",""}}) ^ {{"-","N"}};
 
     
 	jRegionChunk = None;
@@ -194,6 +196,7 @@ function MapIGH (ref,qry)
 	            if (None != jRegionChunk) {
 	                _IGHHReport ["JUNCTION"] = (_IGHHReport ["FW3"])[whereAreTheC*3][Abs(_IGHHReport ["FW3"])-1] 
 	                                           + _IGHHReport["CDR3"] + jRegionChunk;
+	                //fprintf (stdout, "Alignment-based J\n", Abs(_IGHHReport ["JUNCTION"]), "\n");
 	                _IGHHReport ["J"] = (_IGHHReport ["J"])[Abs (jRegionChunk)][Abs (_IGHHReport ["J"])-1];
 	            }
 	        }

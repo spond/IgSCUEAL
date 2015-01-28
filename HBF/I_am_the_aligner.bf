@@ -249,7 +249,7 @@ function handle_alignment_templates (file_path) {
                 for (i2 = 0; i2 < Abs (_additional_references_to_consider[1]); i2+=1) {
                     js = ancSeqs[0 + seq_ids2[i2]];
                     igg = ( vs[0][bp-1] + js [bp][Abs(js)-1]) ;
-                    igg_stripped = igg ^ {{"---", ""}};
+                    igg_stripped = (igg ^ {{"---", ""}}) ^ {{"-","N"}};
                     additional_sequences[igg_stripped] = {2,1};
                     (additional_sequences[igg_stripped])[0] = _subtypeAssignmentByNode[seq_names[0 + seq_ids[i1]]] + "-" + _subtypeAssignmentByNode[seq_names[0 + seq_ids2[i2]]];
                     (additional_sequences[igg_stripped])[1] = igg;
