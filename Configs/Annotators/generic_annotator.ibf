@@ -33,7 +33,7 @@ function GetBestHomology (junction, d) {
     scores  = {};
     inStr   = {{junction, ""}};
     
-    _dcodon = 1;
+    _dcodon = 0;
     
     if (_dcodon) {
         _dAlignOptions = alignOptions;
@@ -50,20 +50,21 @@ function GetBestHomology (junction, d) {
         _dAlignOptions ["SEQ_ALIGN_CHARACTER_MAP"]="ACGT";
     
         scoreMatrix = {
-            {5,-1,-4,-4}
-            {-4,5,-4,-4}
-            {-4,-4,5,-4}
-            {-4,-4,-4,5}
+            {5,-4,-2,-4}
+            {-4,5,-4,-2}
+            {-2,-4,5,-4}
+            {-4,-2,-4,5}
         };
     
     
-        _dAlignOptions ["SEQ_ALIGN_SCORE_MATRIX"]   = 	scoreMatrix;
-        _dAlignOptions ["SEQ_ALIGN_GAP_OPEN"]		= 	10;
-        _dAlignOptions ["SEQ_ALIGN_GAP_OPEN2"]	    = 	10;
-        _dAlignOptions ["SEQ_ALIGN_GAP_EXTEND"]	    = 	1;
-        _dAlignOptions ["SEQ_ALIGN_GAP_EXTEND2"]	= 	1;
-        _dAlignOptions ["SEQ_ALIGN_AFFINE"]		    =   1;
-        _dAlignOptions ["SEQ_ALIGN_NO_TP"]		    =   1;
+        _dAlignOptions ["SEQ_ALIGN_SCORE_MATRIX"]    = 	scoreMatrix;
+        _dAlignOptions ["SEQ_ALIGN_GAP_OPEN"]		 = 	10;
+        _dAlignOptions ["SEQ_ALIGN_GAP_OPEN2"]	     = 	10;
+        _dAlignOptions ["SEQ_ALIGN_GAP_EXTEND"]	     = 	1;
+        _dAlignOptions ["SEQ_ALIGN_GAP_EXTEND2"]	 = 	1;
+        _dAlignOptions ["SEQ_ALIGN_AFFINE"]		     =  1;
+        _dAlignOptions ["SEQ_ALIGN_NO_TP"]		     =  1;
+        _dAlignOptions ["SEQ_ALIGN_LOCAL_ALIGNMENT"] =  1;
     }
     
     max_score = -1e100;
