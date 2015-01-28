@@ -10,7 +10,7 @@ aa_breaks =
 {            64}
 {           104}
 {           108}
-{           128}
+{           127}
 }
 ;
 jMotifRegExp       = "[FW]G.G";
