@@ -428,7 +428,7 @@ for (k=0; k< ref_ds.species; k +=1) {
 shift = 0;
 
 
-//fprintf (stdout, "\n\n", fullRefSeq, "\n", gappedSeqN, "\n\n", KEEP_ALL_GAPS_IN, "\n\n", startFrom, ":", endAt, "\n\n");
+fprintf (stdout, "\n\n", fullRefSeq, "\n", gappedSeqN, "\n\n", KEEP_ALL_GAPS_IN, "\n\n", startFrom, ":", endAt, "\n\n");
 
 gappedSeqN_Stripped = ""; gappedSeqN_Stripped * 128;
 
