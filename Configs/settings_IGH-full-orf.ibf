@@ -5,7 +5,7 @@ populationSize  		= 512;
 	   but could also cause premature termination
 	   */
 
-stoppingCriterion		= 8;
+stoppingCriterion		= 16;
 	/* 
 	  how many generations without score improvement
 	before the GA decides it has converged;
