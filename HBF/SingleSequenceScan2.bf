@@ -592,8 +592,16 @@ function MakeStringCanonical (someString, dummy)
 	} else {
 	    if (None != _v_and_j_are_sequential) {
 	        bpOrdering = decodeIndividual (someString);
-	        bpOrdering [0][0] = (bpOrdering[0][0] - 1) %_v_and_j_are_sequential[0][1] + _v_and_j_are_sequential[0][0];
-	        bpOrdering [1][0] = (bpOrdering[1][0] - 1) %_v_and_j_are_sequential[1][1] + _v_and_j_are_sequential[1][0];
+	        bpOrdering [0][0] += (-1);
+	        if (bpOrdering [0][0] >= _v_and_j_are_sequential[0] && bpOrdering [0][0] <= _v_and_j_are_sequential[1]) {
+	            bpOrdering[0][0] = (bpOrdering[0][0] + _v_and_j_are_sequential[2]) % tbc;
+	        }
+
+	        bpOrdering [1][0] += (-1);
+	        if (bpOrdering [1][0] < _v_and_j_are_sequential[0] && bpOrdering [0][0] > _v_and_j_are_sequential[1]) {
+	            bpOrdering[1][0] = _v_and_j_are_sequential[0] + bpOrdering[1][0] % _v_and_j_are_sequential[2];
+	        }
+	        
 	        return encodeIndividual (bpOrdering);
 	    }
 	}
@@ -1637,7 +1645,7 @@ baseBranchValues = {tbc,1};
 nodeNameToAVL	 = {};
 reverseNodeIDMap = {};
 
-check_sequential    = {{0,tbc}};
+check_sequential    = {{tbc,0,0}};
 do_check_sequential = Type (_check_tree_block_structure) == "AssociativeList";
 
 
@@ -1649,11 +1657,11 @@ for (k=1; k<=tbc; k=k+1)
     if (do_check_sequential) {
         //fprintf (stdout, nn, "\n");
         pattern_id = matchStringToSetOfPatterns (_subtypeAssignmentByNode[nn && 1], _check_tree_block_structure);
-        if (pattern_id >= 0) {
-            if (pattern_id == 0) {
-                check_sequential [0] = Max (check_sequential [0], k-1);
-            } else {
-                check_sequential [1] = Min (check_sequential [1], k-1);
+        if (pattern_id > =0) {
+            if (pattern_id == 1) {
+                check_sequential [0] = Min (check_sequential [0], k-1);
+                check_sequential [1] = Max (check_sequential [1], k-1);
+                check_sequential [2] += 1;
             }
         } else {
             fprintf (stdout, "FAIL on `nn`\n");
@@ -1669,10 +1677,10 @@ for (k=1; k<=tbc; k=k+1)
 }
 
 if (do_check_sequential) {
-    if (check_sequential[0] + 1 == check_sequential[1] && check_sequential[0] < tbc) {
-        _v_and_j_are_sequential = {{0, check_sequential[1]}{check_sequential[1], tbc-check_sequential[1]+1}};
+    if (check_sequential[1] - check_sequential[0] + 1 == check_sequential [2]) {
+        _v_and_j_are_sequential = check_sequential;
     }
-    //fprintf (stdout, check_sequential, "\n", _v_and_j_are_sequential, "\n");
+    // fprintf (stdout, check_sequential, "\n", _v_and_j_are_sequential, "\n");
 }
 
 /* find "banned" ranges for CRFs and pre-populate initial solutions based on CRFs */

@@ -154,11 +154,11 @@ maxScore = Max (protScoreMatrix,0);
 minScore = Min (protScoreMatrix,0);
 
     
-alignOptions ["SEQ_ALIGN_GAP_OPEN"]		= 	2*Max(maxScore,-minScore);
-alignOptions ["SEQ_ALIGN_GAP_OPEN2"]	= 	2*Max(maxScore,-minScore);
+alignOptions ["SEQ_ALIGN_GAP_OPEN"]		= 	1.5*Max(maxScore,-minScore);
+alignOptions ["SEQ_ALIGN_GAP_OPEN2"]	= 	1.5*Max(maxScore,-minScore);
 alignOptions ["SEQ_ALIGN_GAP_EXTEND"]	= 	1;
 alignOptions ["SEQ_ALIGN_GAP_EXTEND2"]	= 	1;
-alignOptions ["SEQ_ALIGN_FRAMESHIFT"]	= 	5*Max(maxScore,-minScore);
+alignOptions ["SEQ_ALIGN_FRAMESHIFT"]	= 	2*Max(maxScore,-minScore);
 alignOptions ["SEQ_ALIGN_CODON_ALIGN"]	= 	1;
 
 
@@ -313,6 +313,8 @@ function try_alignment (key, value) {
         rs = aligned[1];
         qs = aligned[2];
         
+        //fprintf (stdout, "\n\n\n>r\n", aligned[1], "\n>q\n", aligned[2], "\n");
+        
         aligned[1] = "";
         aligned[2] = "";
         aligned[1] * 400;
@@ -329,6 +331,8 @@ function try_alignment (key, value) {
                 letters[lc] += 1;
             }
         }
+        
+        //fprintf (stdout, letters, "\n");
         
         lc = -1;
         rc = -1;
@@ -354,6 +358,7 @@ function try_alignment (key, value) {
         aligned[1] * 0;
         aligned[2] * 0;
         
+        //fprintf (stdout, "\n>r\n", aligned[1], "\n>q\n", aligned[2], "\n");
         //fprintf (stdout, value[0], "\n");
         bestAlignment = aligned;
         
@@ -433,7 +438,7 @@ shift = 0;
 gappedSeqN_Stripped = ""; gappedSeqN_Stripped * 128;
 
 for (s=startFrom; s<endAt; s+=1) {
-    //fprintf (stdout, fullRefSeq[s], gappedSeqN[s], "\n");
+    //fprintf (stdout, fullRefSeq[s], gappedSeqN[s], ":", shift, "\n");
     if (fullRefSeq[s] == "-") {
         shift += 1;
     }
@@ -477,11 +482,8 @@ else {
 
 outputAlignment * 0;
 
-//fprintf (stdout, outputAlignment, "\n");
-	
-
-outputAlignment * 0;
-
+//fprintf ("/Volumes/sergei-raid/Desktop/igscueal.fas", CLEAR_FILE, outputAlignment);
+//assert (0);
 //fprintf (stdout, outputAlignment, "\n");
 	
 
