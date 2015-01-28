@@ -1679,8 +1679,11 @@ for (k=1; k<=tbc; k=k+1)
 if (do_check_sequential) {
     if (check_sequential[1] - check_sequential[0] + 1 == check_sequential [2]) {
         _v_and_j_are_sequential = check_sequential;
+        if (runInMPIMode == 0) {
+	        fprintf (stdout, "\nTurning on sequence pinning based on tree block structure\n");
+        }
     }
-    // fprintf (stdout, check_sequential, "\n", _v_and_j_are_sequential, "\n");
+    //fprintf (stdout, check_sequential, "\n", _v_and_j_are_sequential, "\n");
 }
 
 /* find "banned" ranges for CRFs and pre-populate initial solutions based on CRFs */
@@ -2080,9 +2083,7 @@ currentSubtypeAssignment = _subtypeAssignmentByNode[branchAttach];
 if (runInMPIMode == 0) {
 	fprintf (stdout, "\nInitial germline: `currentSubtypeAssignment` (`branchAttach`)\n");
 }
-else {
-	returnAVL = {};
-}
+
 
 currentPopulation  = {};
 sortedScores	   = {populationSize,2};
