@@ -393,7 +393,7 @@ ref_shift    = cleaned_up ["OFFSET"];
 
 if (ref_shift) {
     aligned_reference    = aligned_reference[0][ref_shift-1] + fullRefSeq;
-    aligned_query    = aligned2[0][ref_shift-1] + gappedSeqN;
+    aligned_query    = aligned_query[0][ref_shift-1] + gappedSeqN;
     fullRefSeq = aligned_reference;
     gappedSeqN = aligned_query;
 } else {
