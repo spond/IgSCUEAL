@@ -3,7 +3,7 @@ import csv, argparse, sys, re, operator, json
 
 ########### START GLOBALS #############
 
-required_headers = ['Name', 'Subtype', 'Support', 'Sequence']
+required_headers = ['Name', 'Best Rearrangement', 'Support', 'Sequence']
 column_mapper    = {}
 cdr3_id          = 0
 is_light_chain   = False
@@ -129,7 +129,7 @@ class colLengthClass:
 ####################################
 
 def reduceRearrangement (line):
-    subtype  = line[column_mapper['Subtype']]
+    rearrangement  = line[column_mapper['Best Rearrangement']]
     
     if is_light_chain:
         assignment = ['','','']    
@@ -138,7 +138,7 @@ def reduceRearrangement (line):
         assignment = ['','','','']
         j_id = 3
     
-    v_match  = V_processor.match (subtype)
+    v_match  = V_processor.match (rearrangement)
     assignment[0] = 'V' + v_match.group(1).replace('-','').replace('ancestral','?')
     
     if v_match.group (2) is not None:
@@ -146,7 +146,7 @@ def reduceRearrangement (line):
     else:
         assignment[1] = assignment[0] + '-?'
     
-    j_match = J_processor.search (subtype)
+    j_match = J_processor.search (rearrangement)
     if j_match is not None and j_match.group(1) is not None:
         assignment[j_id] = 'J' + j_match.group(1).replace('-','').replace('ancestral','?');
         
@@ -209,7 +209,7 @@ def ouputSummary (line_filter, support, support_col, rearrangement_col, mappingF
 
     binByRearrangement ['Summary']     = [['Total', total], ['Mapped', mapped], ['Low support', low_support], ['Passed filter', filtered_in]] 
                                         
-    return json.dumps (binByRearrangement)                                    
+    return json.dumps (binByRearrangement, indent = 2)                                    
 
 ####################################
         
@@ -288,7 +288,7 @@ def float01 (value):
 argument_parser = argparse.ArgumentParser (description='Read IgSCUEAL output files.')
 argument_parser.add_argument('-i', '--input',        help = 'The tab-separated file produced by IgSCUEAL. Must have at least 10 columns', nargs = '?', required = True, type=argparse.FileType('r'), default = sys.stdin)
 argument_parser.add_argument('-s', '--support',      help = 'Minimum assignment support required to process a read (default is 0.9)', type=float01, default = 0.9)
-argument_parser.add_argument('-p', '--pattern',      help = 'A regular expression pattern for pulling out reads that match a particular pattern in a particular column, e.g. "Subtype V3-21,J3"', type=str, nargs = 2, action = 'append')
+argument_parser.add_argument('-p', '--pattern',      help = 'A regular expression pattern for pulling out reads that match a particular pattern in a particular column, e.g. "Rearrangement V3-21,J3"', type=str, nargs = 2, action = 'append')
 argument_parser.add_argument('-c', '--column',       help = 'A column [l,g,e] length argument to select lines based on the length of the string in a given column, e.g. JUNCTION_AA g 10 (all lines with JUNCTIONS_AA with more than 10 chars)', nargs = 3, action = 'append')
 argument_parser.add_argument('-x', '--cluster',      help = 'Only keep sequences which represent unique clonotypes', required = False, type=argparse.FileType('r'))
 argument_parser.add_argument('-o', '--output',       help = 'Output mode (default fasta): either summarize filtered reads by column value (supply the column name), print FASTA for the reads matching selection criteria (fasta), or output JSON (json) for matching reads. '+ 

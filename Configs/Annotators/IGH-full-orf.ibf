@@ -6,15 +6,15 @@ _IG_nuc_annotation = {1,IG_MRCA_sequence_length};
 aa_breaks = 
 {{           25}
 {            35}
-{            54}
-{            64}
-{           104}
-{           108}
-{           127}
+{            52}
+{            62}
+{           102}
+{           105}
+{           125}
 }
 ;
 jMotifRegExp       = "[FW]G.G";
-jMotifFallBack     = 117 * 3;
+jMotifFallBack     = 115 * 3;
 
 
 
