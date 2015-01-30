@@ -1,11 +1,11 @@
-populationSize  		= 512;
+populationSize  		= 128;
 	/* the number of models in a GA population;
 	   reasonable range 16-128
 	   smaller values result in faster run times,
 	   but could also cause premature termination
 	   */
 
-stoppingCriterion		= 16;
+stoppingCriterion		= 24;
 	/* 
 	  how many generations without score improvement
 	before the GA decides it has converged;
@@ -30,7 +30,7 @@ BICMinLength			= 20;
 	*/
 
 
-referenceAlignmentFileName  = "HumanIGH-full-orf.nex";
+referenceAlignmentFileName  = "MacaqueIGH-full-orf.nex";
 
 
 	/* the name of the reference alignment file (MUST 
@@ -43,7 +43,7 @@ referenceAlignmentFileName  = "HumanIGH-full-orf.nex";
 	*/
 
 ancestralAlignmentFileName         = referenceAlignmentFileName + ".ancestors";
-referenceAlignmentDescriptiveName  = "Human IgG (heavy chain) with all unique F+ORF alleles, based on IMGT from Dec 2014";
+referenceAlignmentDescriptiveName  = "Macaque IgG (heavy chain) with all unique F+ORF alleles, based on IMGT from Dec 2014";
 
 
 
@@ -71,8 +71,8 @@ _do_not_enforce_gaps_in_initial_scan = "^IGHV";
 _alignmentTemplates                  = {"0" : {"Components" : 
                                               {"0"  : "^V[0-9].+01$", 
                                                "1"  : "^J.+01$"},
-                                               "BP" : 106 * 3}
+                                               "BP" : 103 * 3}
                                         };
 								 
 _annotateSequenceByAlignment	  = "MapIGH";
-ExecuteAFile ("Annotators/IGH-full-orf.ibf");
+ExecuteAFile ("Annotators/macaque-IGH-full-orf.ibf");
