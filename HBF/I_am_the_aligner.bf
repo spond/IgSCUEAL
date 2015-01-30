@@ -482,7 +482,7 @@ else {
 
 outputAlignment * 0;
 
-//fprintf ("/Volumes/sergei-raid/Desktop/igscueal.fas", CLEAR_FILE, outputAlignment);
+//fprintf ("/Users/sergei/Desktop/igscueal.fas", CLEAR_FILE, outputAlignment);
 //assert (0);
 //fprintf (stdout, outputAlignment, "\n");
 	

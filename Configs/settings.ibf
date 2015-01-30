@@ -1,2 +1,2 @@
-//ExecuteAFile ("settings_IGH-full-orf.ibf");
-ExecuteAFile ("settings_macaque-IGH-full-orf.ibf");
+ExecuteAFile ("settings_IGH-full-orf.ibf");
+//ExecuteAFile ("settings_macaque-IGH-full-orf.ibf");
