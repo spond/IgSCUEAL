@@ -1,16 +1,12 @@
-RequireVersion ("2.0020090803");
+RequireVersion ("2.22");
 
-if (MPI_NODE_COUNT <= 1)
-{
+if (MPI_NODE_COUNT <= 1) {
 	fprintf (stdout, "[ERROR] This script requires MPI \n");
 	return 0;
 }
 
-
-
-
-
-MPI_NODE_STATUS = {MPI_NODE_COUNT-1,1}; /* sequence indices being processed */
+/* sequence indices being processed */
+MPI_NODE_STATUS = {MPI_NODE_COUNT-1,1}; 
 
 ExecuteAFile 			("../Configs/settings.ibf"):
 	
@@ -28,19 +24,24 @@ fprintf 						(PROMPT_FOR_FILE,CLEAR_FILE,KEEP_OPEN);
 resultsFile				= 		LAST_FILE_PATH;
 
 SetDialogPrompt					("Write a tsv file with all significantly supported rearrangements for each sequence:");
-
 fprintf 						(PROMPT_FOR_FILE,CLEAR_FILE,KEEP_OPEN);
 rearrangementFile	   = 		LAST_FILE_PATH;
+
+SetDialogPrompt					("Write a tsv file with all branch support values for all screened sequences:");
+fprintf 						(PROMPT_FOR_FILE,CLEAR_FILE,KEEP_OPEN);
+treeAssignmentFile	   = 		LAST_FILE_PATH;
 
 headerString			= 		"Index\tName\tBest Rearrangement\tSupport\tSequence";
 
 for (k = 0; k < Abs(_extraOutputColumns); k+=1) {	
 	headerString += "\t"+_extraOutputColumns[k];
 }
+headerString += "\tV-length\tJ-length";
 
 
 fprintf 						(resultsFile,headerString);
-fprintf                         (rearrangementFile, KEEP_OPEN, "Name\tRearrangement\tSupport")l
+fprintf                         (rearrangementFile,  KEEP_OPEN, "Name\tRearrangement\tSupport")l
+fprintf                         (treeAssignmentFile, KEEP_OPEN, "Name\tBranch\tSupport");
 
 fprintf (stdout, "\n");
 
@@ -53,19 +54,19 @@ for (seqID = 0; seqID < ds_in.species; seqID += 1) {
 /* clean up MPI jobs */
 
 howManyPending = 0;
-for (mpiNode = 0; mpiNode < MPI_NODE_COUNT-1; mpiNode = mpiNode+1){
+for (mpiNode = 0; mpiNode < MPI_NODE_COUNT-1; mpiNode += 1){
 	if (MPI_NODE_STATUS[mpiNode]) {
 		howManyPending += 1;
 	}
 }
 
-for (; howManyPending; howManyPending = howManyPending-1)
-{
+for (; howManyPending; howManyPending = howManyPending-1) {
 	ReceiveAJob (0);
 }
 
 fprintf                         (rearrangementFile, CLOSE_FILE);
 fprintf                         (resultsFile, CLOSE_FILE);
+fprintf                         (treeAssignmentFile, CLOSE_FILE);
 
 /*------------------------------------------------------------------------*/
 
@@ -129,6 +130,7 @@ function ReceiveAJob (dummy)
 		                        "\t", returnAVL["SEQUENCE"]);
 		                        
 	    (returnAVL["REARRANGEMENTS"])["_write_rearrangements"][""];
+	    (returnAVL["BRANCH_SUPPORT"])["_write_branch_support"][""];
 		
 		extra			= returnAVL["EXTRA"];
 		
@@ -136,7 +138,21 @@ function ReceiveAJob (dummy)
 			for (k = 0; k < Abs(_extraOutputColumns); k+=1) {	
 				fprintf (resultsFile, "\t", extra[_extraOutputColumns[k]]);
 			}
+		} 
+		
+
+
+		_bl_dict = returnAVL["BRANCH_LENGTHS"];
+		_bl_vect = {{0,0}};
+		if (Type (_bl_dict) == "AssociativeList") {
+		    hasJ = Rows (_bl_dict["TO_SISTER"])* Columns (_bl_dict["TO_SISTER"]) > 1;
+		    _bl_vect[0] = (_bl_dict["TO_SISTER"])[0] + (_bl_dict["TO_PARENT"])[0] + (_bl_dict["TO_QUERY"])[0];
+		    if (hasJ) {
+		        _bl_vect[1] = (_bl_dict["TO_SISTER"])[1] + (_bl_dict["TO_PARENT"])[1] + (_bl_dict["TO_QUERY"])[1];
+		    }
 		}
+		fprintf (resultsFile, "\t", _bl_vect[0], "\t", _bl_vect[1]);
+		
 	}
 	return 			whichNode;
 }
@@ -144,3 +160,8 @@ function ReceiveAJob (dummy)
 function _write_rearrangements (key, value) {
     fprintf (rearrangementFile, "\n", processedName, "\t", key, "\t", value);
 }
+
+function _write_branch_support (key, value) {
+    fprintf (treeAssignmentFile, "\n", processedName, "\t", key, "\t", value);
+}
+
