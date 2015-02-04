@@ -40,7 +40,7 @@ headerString += "\tV-length\tJ-length";
 
 
 fprintf 						(resultsFile,headerString);
-fprintf                         (rearrangementFile,  KEEP_OPEN, "Name\tRearrangement\tSupport")l
+fprintf                         (rearrangementFile,  KEEP_OPEN, "Name\tRearrangement\tSupport");
 fprintf                         (treeAssignmentFile, KEEP_OPEN, "Name\tBranch\tSupport");
 
 fprintf (stdout, "\n");
