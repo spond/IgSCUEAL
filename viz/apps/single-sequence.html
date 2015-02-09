@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang = 'en'>
+
+<head>
+    <meta charset="utf-8">
+    <!-- Latest compiled and minified CSS -->
+    <script src="http://code.jquery.com/jquery.js"></script>
+
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://octamonkey.ucsd.edu/js/phylotree.js"></script>
+    
+    <title> IgSCUEAL analysis result</title>
+
+    <link href="http://octamonkey.ucsd.edu/css/phylotree.css" rel="stylesheet">
+    
+    <style>
+
+    .sequence {
+        font: 14px monospace;
+    }
+
+    .seq-label {
+        font: 14px monospace;
+    }
+
+    .axis path, .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+    
+    .axis-label {
+        font: 18px sans-serif;
+    }
+    
+    .axis text {
+        font: 12px sans-serif;
+    }
+
+
+
+    .support-bar line, .support-bar path {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+     .support-line {
+        stroke: #000;
+        stroke-width: 6px;
+    }
+
+    .weight-label {
+        font: 14px sans-serif;
+        text-anchor: middle;
+    }
+
+    .neutral-line {
+        stroke-dasharray: 2,10;
+        stroke: #000;
+        stroke-width: 1px;
+    }
+
+    .displacement-line {
+        fill: none;
+        stroke: #000;
+        opacity: 0.7;
+        stroke-width: 1.5px;
+    }
+
+
+
+    </style>
+</head>
+
+<body style = 'padding-top: 70px;'>
+
+<!--
+###############################################################################################################################
+-->
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">IgSCUEAL results</a>
+    </div>
+
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id = "navbar-collapse-1">
+
+      <ul class="nav nav-pills navbar-right" role="tablist" id = 'navigation_buttons'>
+           <li class="active"><a href="#summary_tab" role="tab" data-toggle="tab"><i class="fa fa-list" style = 'margin-right: 5px'></i>Summary</a></li>
+           <li><a href="#tree_tab" role="tab" data-toggle="tab"><i class="fa fa-tree" style = 'margin-right: 5px'></i> Tree</a></li>
+           <li><a href="#sequence_tab" role="tab" data-toggle="tab"><i class="fa fa-table" style = 'margin-right: 5px'></i> Sequences</a></li>
+      </ul>
+
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Load file<b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><input type="file" id="json_file"></li>
+          </ul>
+        </li>
+     </ul>
+     
+    
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+<div class = 'container-fluid'>
+    <div class="tab-content">
+        <div class="tab-pane active" id = "summary_tab">
+            
+            <div class = "row" style = 'margin-top: 5px'>
+                <div class = "col-md-12">
+                    <ul class="list-group">
+                      <li class="list-group-item list-group-item-info">
+                        <h3 class="list-group-item-heading"><i class="fa fa-list" style = 'margin-right: 10px'>
+                        </i>IgSCUEAL result for <span id = 'summary-sequence-name'></span></h3>
+                            <p class = "list-group-item-text lead" style = "margin-top:0.5em; ">
+                                Inferred a <strong id = 'summary-rearrangement'></strong> rearrangement 
+                                with <span id = 'summary-support'></span> support.
+                            </p>
+                            <p><small>Based on the <em id = 'summary-reference'></em> reference alignment</small>                          
+                                <br><small>Please cite <a href = '#' id = 'summary-pmid'>PMID XXX</a> if you use this result in a publication, presentation, or other scientific work.</small>
+                             </p>
+                       </li>
+                    </ul>
+                </div>
+            </div>
+               <div class = "row">
+                    <div class = "col-md-8">
+                        <ul class="list-group">
+                          <li class="list-group-item">
+                            <h4 class="list-group-item-heading"><i class="fa fa-folder-open" style = 'margin-right: 10px'>
+                            </i>Sequence features</h4>
+                                <table class = "table table-hover table-condensed list-group-item-text" style = "margin-top:0.5em;">
+                                <thead>
+                                    <tr>
+                                        <th>Region</th>
+                                        <th>Length</th>
+                                        <th>Amino-acid sequence</th>
+                                   </tr>
+                                </thead>       
+                                   <tbody id = 'summary-sequence-features'>
+                                        
+                                   </tbody>
+                                                           
+                                </table>                         
+                           </li>
+                        </ul>
+                    </div>                
+                    <div class = "col-md-4">
+                    <ul class="list-group">
+                      <li class="list-group-item">
+                        <h4 class="list-group-item-heading"><i class="fa fa-arrows-alt" style = 'margin-right: 10px'>
+                        </i>Credible rearrangements</h4>
+                            <table class = "table table-hover table-condensed list-group-item-text" style = "margin-top:0.5em;">
+                                <thead>
+                                    <tr>
+                                        <th>Inferred rearrangement</th>
+                                        <th>Model averaged support</th>
+                                   </tr>
+                                </thead>
+                               <tbody id = 'summary-rearrangement-table'>
+                                    
+                               </tbody>
+                               
+                               <caption style = 'caption-side: bottom; text-align: left; margin-top:1em;'>
+                                    <p class = "list-group-item-text text-muted">
+                                        IgSCUEAL considered <strong id = 'summary-model-count'></strong> rearranement/breakpoint configurations.
+                                    </p>                
+                                </caption>                   
+                            </table>                            
+                       </li>
+                    </ul>
+                </div>
+               </div>
+        </div>
+
+        <div class = 'tab-pane' id = "tree_tab">
+            <div class = 'row'>
+                    <div class = "col-md-4 col-md-offset-1">
+                           <div class="btn-group">
+                            <button type="button" class="btn btn-primary btn-sm" id = "show_v_tree">
+                                V
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm" id = "show_j_tree">
+                                J
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm" id = "expand_spacing">
+                                <i class="fa fa-expand" ></i>
+                            </button>
+                             <button type="button" class="btn btn-default btn-sm" id = "compress_spacing">
+                                <i class="fa fa-compress" ></i>
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm" id="sort_ascending" title="Sort deepest clades to the bototm">
+                                <i class="fa fa-sort-amount-asc"></i>
+                             </button>
+                            <button type="button" class="btn btn-default btn-sm" id="sort_descending" title="Sort deepsest clades to the top">
+                                <i class="fa fa-sort-amount-desc"></i>
+                             </button>
+                            <button type="button" class="btn btn-default btn-sm" id="sort_original" title="Restore original order">
+                                                <i class="fa fa-sort"></i>
+                            </button>
+                        </div>
+                    </div>
+            </div>        
+            <div class = 'row'>
+                <div class = 'col-md-1'>
+                     <div class = 'row'>
+                        <div id = 'color_legend'>
+                        </div>
+                    </div>
+                </div>
+                <div class = 'col-md-11'>
+                     <div class = 'row'>                        
+                        <div id = 'tree_container' class = 'tree-widget'>
+                        </div>
+                     </div>
+                        
+                  </div>
+            </div>
+        </div>
+
+        <div class = 'tab-pane' id = "sequence_tab"> 
+        
+            <div class = 'row'>
+                <div class = "col-md-8 col-md-offset-1">
+                       <div class="btn-group">
+                        <button type="button" class="btn btn-primary btn-sm seq-type" id = "seqs-protein">
+                            Protein
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm seq-type" id = "seqs-nucleotide">
+                            Nucleotide
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm seq_region" data-region = "0">
+                            FR1
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm seq_region" data-region = "1">
+                            CDR1
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm seq_region" data-region = "2">
+                            FR2
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm seq_region" data-region = "3">
+                            CDR2
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm seq_region" data-region = "4">
+                            FR3
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm seq_region" data-region = "5">
+                            CDR3
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm seq_region" data-region = "6" data-j-region = "1">
+                            J
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class = "row">
+                    <div class = "col-md-12">
+                        <table class="table table-hover table-condensed">
+                            <thead>
+                                <tr>
+                                    <td class="seq-label" >Sequence ID</td>
+                                    <td id="_seq_coordinates" class="seq-label">
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody id="_seq_positional_table">
+              
+                            </tbody>
+                        </table>
+                    <div>
+                </div>          
+            </div>
+         </div>
+</div>
+
+<!--
+###############################################################################################################################
+-->
+
+<script>
+
+
+var width  = 800, //$(container_id).width(),
+    height = 600, //$(container_id).height()
+    color_scheme = d3.scale.category10(),
+    branch_omegas = {},
+    branch_p_values = {},
+    alpha_level = 0.05,
+    omega_format = d3.format (".3r"),
+    prop_format = d3.format (".4p"),
+    fit_format = d3.format (".2f"),
+    branch_table_format = d3.format (".4f"),
+    analysis_data = null,
+    annotation_data = null,
+    render_color_bar = true,
+    color_legend_id = 'color_legend',
+    best_rearrangement = null,
+    sequences_to_display = null;
+
+var trees = [d3.layout.phylotree("body")
+    .size([height, width])
+    .separation (function (a,b) {return 0;}),
+    d3.layout.phylotree("body")
+    .size([height, width])
+    .separation (function (a,b) {return 0;})];
+    
+var active_tree = 0,
+    show_protein_sequence  = true,
+    active_sequence_region = 5;
+    
+var residue_colors      = d3.scale.category10();
+var residues = "ACGTDEFHIKLMNPQRSVWY";
+var residue_color_map = {};
+for (var i = 0; i < residues.length; i++) {
+    residue_color_map [residues[i]] = residue_colors (i); 
+} 
+ 
+    
+    //.node_span (function (a) {if (a.children && a.children.length) return 1; return isNaN (parseFloat (a["attribute"]) * 100) ? 1 : parseFloat (a["attribute"]) * 100; });
+
+
+//window.setInterval (function () {});
+   
+var svgs = [d3.select("#tree_container").append("svg")
+              .attr("width", width)
+              .attr("height", height),
+            d3.select("#tree_container").append("svg")
+              .attr("width", width)
+              .attr("height", height)
+              .style ("display", "none")];
+        
+var scaling_exponent = 0.33;       
+
+var support_color = d3.scale.pow().exponent(scaling_exponent)                    
+                    .domain([0, 0.1, 0.5, 1])
+                    .range([ "#5e4fa2", "#3288bd", "#f46d43","#9e0142"])
+                    .clamp(true);
+    
+
+// *** HANDLERS ***
+
+
+function sequence_drawer () {
+    draw_sequence_data (sequences_to_display[active_sequence_region > 5 ? 1 : 0], [1+parseInt(analysis_data["EXTRA"]["ALIGNMENT_SPANS"][active_sequence_region]),parseInt(analysis_data["EXTRA"]["ALIGNMENT_SPANS"][active_sequence_region+1])], 
+                                                 ['_seq_positional_table','_seq_coordinates'], show_protein_sequence);
+}
+
+$("#seqs-protein").on ("click", function (e) {
+    if (!show_protein_sequence) {
+        show_protein_sequence = true;
+        $(e).removeClass ("btn-default").addClass ("btn-primary");
+        $("#seqs-nucleotide").removeClass ("btn-primary").addClass ("btn-default");
+        sequence_drawer ();
+    }
+});
+
+$("#seqs-nucleotide").on ("click", function (e) {
+    if (show_protein_sequence) {
+        show_protein_sequence = false;
+        $(e).removeClass ("btn-default").addClass ("btn-primary");
+        $("#seqs-protein").removeClass ("btn-primary").addClass ("btn-default");
+        sequence_drawer ();
+    }
+});
+
+$(".seq_region").on ("click", function (e) {
+    var show_region = $(this).data ("region");
+    if (active_sequence_region != show_region) {
+        active_sequence_region = show_region;
+        $(".seq_region").each (function (i,e) {
+           if ($(e).data ("region") != active_sequence_region) {
+             $(e).removeClass ("btn-primary").addClass ("btn-default");
+           } else {
+                $(e).removeClass ("btn-default").addClass ("btn-primary");
+           }
+        });
+        sequence_drawer ();
+     }
+});
+
+$("#json_file").on ("change", function (e) {
+    var files = e.target.files; // FileList object
+
+    if (files.length == 1) {
+      var f = files[0];
+      var reader = new FileReader();
+
+      reader.onload = (function(theFile) {
+        return function(e) {
+            analysis_data = JSON.parse (e.target.result);
+            render_igscueal (analysis_data);
+        };
+      })(f);
+
+      reader.readAsText(f);
+    }
+});
+
+function sort_nodes (asc) {
+    trees[active_tree].traverse_and_compute (function (n) {
+            var d = 1;
+            if (n.children && n.children.length) {
+                d += d3.max (n.children, function (d) { return d["count_depth"];});
+            }
+            n["count_depth"] = d;
+        }); 
+        trees[active_tree].resort_children (function (a,b) {
+            return (a["count_depth"] - b["count_depth"]) * (asc ? 1 : -1);
+        });
+}
+
+$("#sort_original").on ("click", function (e) {
+    trees[active_tree].resort_children (function (a,b) {
+        return a["original_child_order"] - b["original_child_order"];
+    });
+});
+
+$("#sort_ascending").on ("click", function (e) {
+    sort_nodes (true);
+});
+
+$("#sort_descending").on ("click", function (e) {
+    sort_nodes (false);
+});
+
+$("#expand_spacing").on ("click", function (e) {
+    trees[active_tree].spacing_x ( trees[active_tree].spacing_x() + 1).update(true);
+});
+
+$("#compress_spacing").on ("click", function (e) {
+     trees[active_tree].spacing_x ( trees[active_tree].spacing_x() - 1).update(true);
+});
+
+$("#show_v_tree").on ("click", function (e) {
+     set_active_tree (0);
+});
+
+$("#show_j_tree").on ("click", function (e) {
+     set_active_tree (1);
+});
+
+function set_active_tree (w) {
+    if (active_tree != w) {
+        svgs[1-w].style ('display', 'none');
+        svgs[w].style ('display', 'block');
+        d3.select (w ? "#show_j_tree" : "#show_v_tree").attr ("class", "btn btn-primary btn-sm");
+        d3.select (w ? "#show_v_tree" : "#show_j_tree").attr ("class", "btn btn-default btn-sm");
+        active_tree = w;
+    }
+}
+function default_tree_settings (tree) {
+    tree.branch_length (null);
+    tree.branch_name (function (n) {
+        var nn = n.name.toUpperCase();
+        if ("ig" in n) {
+            return n["ig"];
+        }
+        return n.name;
+    });
+    tree.node_span ('equal');
+    tree.options ({'draw-size-bubbles' : false}, false);
+    tree.options ({'selectable' : false}, false);
+    tree.font_size (10);
+    tree.scale_bar_font_size (10);
+    tree.node_circle_size (3);
+    tree.spacing_x (10, true);
+    tree.style_nodes (node_colorizer);
+    tree.style_edges (edge_colorizer);
+    //tree.selection_label (current_selection_name);
+}
+
+
+
+                    
+
+function render_color_scheme (svg_container) {
+
+    var svg = d3.select ("#" + svg_container).selectAll ("svg").data ([support_color.domain()]);
+    svg.enter().append ("svg");
+    svg.selectAll ("*").remove();
+   
+    if (render_color_bar) {
+        var bar_width  = 70,
+            bar_height = 300,
+            margins = {'bottom' : 30,
+                       'top'    : 15,
+                       'left'   : 40,
+                       'right'  : 20};
+                       
+        svg.attr ("width", bar_width)
+           .attr ("height", bar_height);
+       
+       
+    
+        this_grad = svg.append ("defs").append ("linearGradient")
+                    .attr ("id", "_support_bar")
+                    .attr ("x1", "0%")
+                    .attr ("y1", "0%")
+                    .attr ("x2", "0%")
+                    .attr ("y2", "100%");
+       
+        var support_scale = d3.scale.pow().exponent(scaling_exponent)                    
+                         .domain(d3.extent (support_color.domain()))
+                         .range ([0,1]),
+            axis_scale = d3.scale.pow().exponent(scaling_exponent)                    
+                         .domain(d3.extent (support_color.domain()))
+                         .range ([0,bar_height - margins['top']-margins['bottom']]);
+                     
+                    
+        support_color.domain().forEach (function (d) { 
+        this_grad.append ("stop")
+                 .attr ("offset",  "" + support_scale (d) * 100 + "%")
+                 .style ("stop-color", support_color (d));
+       });
+   
+       var g_container = svg.append ("g").attr ("transform", "translate(" + margins["left"] + "," + margins["top"] + ")");
+   
+       g_container.append ("rect").attr ("x", 0)
+                          .attr ("width", bar_width - margins['left']-margins['right'])
+                          .attr ("y", 0)
+                          .attr ("height", bar_height - margins['top']-margins['bottom'])
+                          .style ("fill", "url(#_support_bar)");
+ 
+   
+        var draw_support_bar  =  d3.svg.axis().scale(axis_scale)
+                                 .orient ("left")
+                                 .tickFormat (d3.format(".1r"))
+                                 .tickValues ([0,0.01,0.1,0.5,1,2,5,10]);
+                             
+        var scale_bar = g_container.append("g");
+        scale_bar.style ("font-size", "14")
+                       .attr  ("class", "support-bar")
+                       .call (draw_support_bar);
+                   
+        scale_bar.selectAll ("text")
+                       .style ("text-anchor", "right");
+                   
+        var x_label =_label = scale_bar.append ("g").attr("class", "support-bar");
+        
+        x_label = x_label.selectAll("text").data(["Model-averaged support, %"]);
+        x_label.enter().append ("text");
+        x_label.text (function (d) {return d})
+                .attr  ("transform", "translate (" + (bar_width-margins['right']-margins["left"]) + ",0) rotate (-90) ")
+                .style ("text-anchor", "end")
+                .style ("font-size", "10")
+                .attr ("dx", "0.0em")
+                .attr ("dy", "1em");
+    }               
+}        
+
+
+
+
+
+function create_gradient (svg_defs, grad_id, rateD, already_cumulative) {
+    var this_grad = svg_defs.append ("linearGradient")
+                                    .attr ("id", grad_id);
+                                    
+    var current_weight = 0;
+    rateD.forEach (function (d,i) {
+        if (d[1]) {
+            var new_weight = current_weight + d[1];
+            this_grad.append ("stop")
+                     .attr ("offset",  "" + current_weight * 100 + "%")
+                     .style ("stop-color", support_color (d[0]));
+            this_grad.append ("stop")
+                     .attr ("offset",  "" + new_weight * 100 + "%")
+                     .style ("stop-color", support_color (d[0]));
+            current_weight = new_weight;
+        }
+    });
+}
+  
+function draw_sequence_data (sequences, span, id, translate) {  
+    
+    console.log (span);
+    
+    function display_sequence (seq_info,r,c) {
+        new_s = "";
+        for (var i = 0; i < seq_info.length; i++) {
+            if ((r > 0 || c > 0) && seq_info[i] == baseline_sequence[i]) {
+                new_s += ".";
+            } else {
+                new_s += "<span style = 'color: " +residue_color_map[seq_info[i]] + "'>" 
+                         + (seq_info[0][i] == " " ? "&nbsp;" : seq_info[i])  + "</span>";
+            }
+        }
+        return new_s;
+    }
+        
+    var trimmed_sequences = [];
+   
+    for (i = 0; i < sequences.length; i++) {
+        trimmed_sequences.push ([sequences[i][0], sequences[i][1].slice(span[0]-1,span[1])]);
+    }
+    
+    if (translate) {
+        trimmed_sequences.forEach (function (d) {d[1] = translateSequence (d[1]);});
+        span [0] = Math.floor ((span[0]-1)/3) + 1;
+        span [1] = Math.floor (span[1]/3);
+    }
+    
+    var baseline_sequence = trimmed_sequences[0][1];
+
+        
+    d3.select ('#' + id[1]).html (function () {
+        coordinates = ["","",""];
+        selected_string = "";
+        for (var s = span[0]; s <= span[1]; s++) {
+            var hs = s;
+            if (hs < 10) {
+                str = "  " + hs;
+            } else {
+                if (hs < 100) {
+                    str = " " + hs;
+                } else {
+                    str = "" + hs;
+                }
+           }
+           
+           coordinates[0] += "<span class = '_seq_hover_seq' data-coord = '" + s +"'>" + (str[0] == " " ? "&nbsp;" : str[0]) + "</span>";
+           coordinates[1] += "<span class = '_seq_hover_seq' data-coord = '" + s +"'>" + (str[1] == " " ? "&nbsp;" : str[1]) + "</span>";
+           coordinates[2] += "<span class = '_seq_hover_seq' data-coord = '" + s +"'>" + (str[2] == " " ? "&nbsp;" : str[2]) + "</span>";
+        }
+        return coordinates[0] + "<br/>" + coordinates[1] + "<br/>" + coordinates[2];
+    });
+    
+    var seq_table = d3.select ("#" + id[0]);
+    seq_table.selectAll ('tr').remove();
+    seq_table.selectAll ('tr').data (trimmed_sequences).enter()
+                  .append ('tr').selectAll ('td').data (function (d) {return d; }).enter()
+                  .append ('td').text (function (d,i) {if (i == 0) return d; return ""; })
+                  .attr ('class',function (d, i) { if (i==1) return "sequence"; else return "seq-date"});
+
+    seq_table.selectAll ('.sequence').selectAll ('ul').
+            data (trimmed_sequences).
+            enter().append ('ul').attr ('class', 'list-unstyled').
+            data (function (d) {return [d];}).selectAll('li').
+            data (function (d) {return [d];}).enter().append ('li').
+            html (display_sequence)            
+}
+  
+function render_igscueal_tree (json, tree_string, which_tree) {
+
+    trees[which_tree] (tree_string).svg (svgs[which_tree]);
+    var graft_here = null;
+    
+    trees[which_tree].get_nodes().forEach (function (d) {
+        var nn = d.name.toUpperCase();
+        if (nn == json["SISTER_SEQUENCES"][which_tree]) {
+            graft_here = d;
+        }
+    }
+    );
+    
+    if (graft_here) {
+        trees[which_tree].graft_a_node (graft_here, json["SEQUENCE_NAME"], "IgSCUEAL", 
+            [""+json["BRANCH_LENGTHS"]["TO_SISTER"][which_tree],
+             ""+json["BRANCH_LENGTHS"]["TO_QUERY"][which_tree],
+             ""+json["BRANCH_LENGTHS"]["TO_PARENT"][which_tree]
+            ]);
+    }
+
+    trees[which_tree].get_nodes().forEach (function (d) {
+        var nn = d.name.toUpperCase();
+        if (nn in annotation_data["labels"]) {
+            d["ig"] = annotation_data["labels"][nn];
+        }
+        if (nn in json["BRANCH_SUPPORT"]) {
+            d["support"] = json["BRANCH_SUPPORT"][nn];
+        }
+    }
+    );
+}
+
+                
+function render_igscueal (json) {
+
+    function make_distro_plot (d) {
+                drawDistribution (d[0],
+                          rate_distro_by_branch [d[0]].map (function (r) {return r[0];}), 
+                          rate_distro_by_branch [d[0]].map (function (r) {return r[1];}), 
+                          {'log' : true, 'legend' : false, 'domain' : [0.00001,10], 'dimensions': {'width' : 400, 'height': 400}});
+
+    }
+
+// summary table
+
+    d3.select ('#summary-pmid').text ("PubMed ID " + json['PMID'])
+                               .attr ("href", "http://www.ncbi.nlm.nih.gov/pubmed/" + json['PMID']);
+    d3.select ('#summary-sequence-name').text (json ['SEQUENCE_NAME']);
+    best_rearrangement = json ['BEST_REARRANGEMENT'];
+    best_d = null;
+    
+    if ('EXTRA' in json) {
+        if ('D_SCORE' in json['EXTRA'] && 'D/INV_SCORE' in json['EXTRA']) {
+            best_d = (json['EXTRA']['D_SCORE'] > json['EXTRA']['D/INV_SCORE']) ? json['EXTRA']['D_ALLELE'] : (json['EXTRA'] ['D/INV_ALLELE'] + '[INV]');
+        }
+    }
+    
+    if (best_d) {
+        best_rearrangement = best_rearrangement.split (',');
+        best_rearrangement = best_rearrangement [0] + " (" + best_d + ") " + (best_rearrangement[1] ? best_rearrangement[1] : "");
+    }
+    
+    d3.select ('#summary-rearrangement').text (best_rearrangement);
+    d3.select ('#summary-support').text (prop_format(json ['SUPPORT']));
+    d3.select ('#summary-reference').text (json['REFERENCE']);
+
+    // rearrangements
+    
+    d3.select ('#summary-model-count').text (json['MODELS_TRIED']);
+    var rearrangement_rows = [];
+    
+    var pull_out_these_sequences = [{}, {}];
+    
+    for (var k in json ["REARRANGEMENTS"]) {
+        var this_rearr = [k, json ["REARRANGEMENTS"][k]];
+        parts = k.split (",");
+        for (p = 0; p < 2; p++) {
+            var so_far = pull_out_these_sequences[p][parts[p]];
+            pull_out_these_sequences[p][parts[p]] = (so_far ? so_far : 0) + this_rearr[1];
+        }
+        rearrangement_rows.push (this_rearr);
+    }
+    
+    sequences_to_display = [[[analysis_data["SEQUENCE_NAME"], analysis_data["EXTRA"]["Mapped Read"], 1.1]],
+                            [[analysis_data["SEQUENCE_NAME"], analysis_data["EXTRA"]["Mapped Read"], 1.1]]];
+    
+
+   for (var seq_id in annotation_data["sequences"]) {
+        var seq_label = annotation_data["labels"][seq_id];
+        for (k = 0; k < 2; k++) {
+            if (seq_label in pull_out_these_sequences[k]) {
+                sequences_to_display[k].push ([seq_label, annotation_data["sequences"][seq_id], pull_out_these_sequences[k][seq_label]])
+            }
+        }
+    }
+    
+    sequences_to_display[0].push (['V-ancestor',annotation_data["sequences"]["Node1"],0]);
+    sequences_to_display[1].push (['J-ancestor',annotation_data["sequences"]["Node1"],0]);
+    
+    
+    for (k = 0; k < 2; k++) {
+        sequences_to_display[k] = sequences_to_display[k].sort (function (a,b) {return b[2]-a[2];}).map (function (d) {return [d[0], d[1]];});
+    }
+        
+    rearrangement_rows.sort (function (a,b) {return b[1]-a[1];});
+    rearrangement_rows = d3.select ('#summary-rearrangement-table').selectAll ("tr").data (rearrangement_rows);
+    rearrangement_rows.enter().append ('tr');
+    rearrangement_rows.exit().remove ();
+    rearrangement_rows = rearrangement_rows.selectAll ("td").data (function (d) {return d;});
+    rearrangement_rows.enter().append ("td");
+    rearrangement_rows.text (function (d,i) {return i ? prop_format (d) : d;});
+    
+    // sequence features
+    
+    var feature_list = [['FW1', 'FW1_AA'],
+                        ['CDR1', 'CDR1_AA'],
+                        ['FW2', 'FW2_AA'],
+                        ['CDR2', 'CDR2_AA'],
+                        ['FW3', 'FW3_AA'],
+                        ['CDR3', 'CDR3_AA'],
+                        ['J', 'J_AA']],
+        sequence_features = [];
+    
+    
+    feature_list.forEach (function (d,i) {
+        var feature = json['EXTRA'][d[1]];
+        if (feature && feature.length) {
+            sequence_features.push ([d[0], feature.length,  feature]); 
+        } else {
+            sequence_features.push ([d[0], "-", "Missing"]); 
+        }
+    }); 
+    
+    sequence_features = d3.select ('#summary-sequence-features').selectAll ("tr").data (sequence_features);
+    sequence_features.enter().append ('tr');
+    sequence_features.exit().remove ();
+    sequence_features = sequence_features.selectAll ("td").data (function (d) {return d;});
+    sequence_features.enter().append ("td");
+    sequence_features.attr ("class", function (d, i) { return i == 2 ? "sequence" : null})
+                     .text (function (d,i) {return d;});
+    
+    
+    default_tree_settings(trees[0]);
+    default_tree_settings(trees[1]);
+    render_igscueal_tree (json, annotation_data["trees"]["V"], 0);
+    trees[0].layout();
+    render_igscueal_tree (json, annotation_data["trees"]["J"], 1);
+    trees[1].layout();
+    render_color_scheme (color_legend_id);
+
+    
+    
+    
+}
+
+function node_colorizer (element, data) {
+    if (data.name == analysis_data["SEQUENCE_NAME"]) {
+        element.style ('fill', 'red');
+        element.selectAll ("text").style ("font-size","125%");
+    }
+};
+
+function edge_colorizer (element, data) {
+
+    if ("ig" in data.target){
+        $(element[0][0]).tooltip({'title' : "Support: " + ("support" in data.target ? prop_format(data.target["support"]) : "0.0%") + 
+                                            "<br>Label:" + data.target["ig"],  
+                                  'html' : true, 
+                                  'trigger' : 'hover', 
+                                  'container' : 'body', 
+                                  'placement' : 'auto'});
+    }
+    
+   
+    if ("ig" in data["target"]) {
+        var haz_title = element.selectAll ("title");
+        if (haz_title.empty()) {
+            haz_title = element.append ("title");
+        }
+        haz_title.text(data["target"]["ig"]);
+    }
+    if ("support" in data["target"]) {
+        element.style ('stroke-width', Math.max(2,5*Math.sqrt (data["target"]["support"])))
+               .style ('stroke', support_color(data["target"]["support"]));
+    
+    } else {
+        element.style ('stroke-width', '2')
+               .style ('stroke', "#CCCCCC");
+    }
+    element.style ('stroke-linejoin', 'round')
+           .style ('stroke-linecap', 'round');
+    
+}
+
+$( document ).ready( function () {
+    d3.json ("../data/HumanIGH.json", function (ref_data) {
+        annotation_data = ref_data;
+        d3.json ("../test-data/IGH.json", function (json) {
+            analysis_data = json;
+            render_igscueal (json);
+        });
+    });
+});
+
+var _codon_translations = {"AAA":"K",
+    "AAC":"N",
+    "AAG":"K",
+    "AAT":"N",
+    "ACA":"T",
+    "ACC":"T",
+    "ACG":"T",
+    "ACT":"T",
+    "AGA":"R",
+    "AGC":"S",
+    "AGG":"R",
+    "AGT":"S",
+    "ATA":"I",
+    "ATC":"I",
+    "ATG":"M",
+    "ATT":"I",
+    "CAA":"Q",
+    "CAC":"H",
+    "CAG":"Q",
+    "CAT":"H",
+    "CCA":"P",
+    "CCC":"P",
+    "CCG":"P",
+    "CCT":"P",
+    "CGA":"R",
+    "CGC":"R",
+    "CGG":"R",
+    "CGT":"R",
+    "CTA":"L",
+    "CTC":"L",
+    "CTG":"L",
+    "CTT":"L",
+    "GAA":"E",
+    "GAC":"D",
+    "GAG":"E",
+    "GAT":"D",
+    "GCA":"A",
+    "GCC":"A",
+    "GCG":"A",
+    "GCT":"A",
+    "GGA":"G",
+    "GGC":"G",
+    "GGG":"G",
+    "GGT":"G",
+    "GTA":"V",
+    "GTC":"V",
+    "GTG":"V",
+    "GTT":"V",
+    "TAA":"X",
+    "TAC":"Y",
+    "TAG":"X",
+    "TAT":"Y",
+    "TCA":"S",
+    "TCC":"S",
+    "TCG":"S",
+    "TCT":"S",
+    "TGA":"X",
+    "TGC":"C",
+    "TGG":"W",
+    "TGT":"C",
+    "TTA":"L",
+    "TTC":"F",
+    "TTG":"L",
+    "TTT":"F",
+    "---":"-"};
+
+function translateSequence (seq, from, to) {
+    from = from || 0;
+    to = to || seq.length;
+    
+    var translated = "";
+    for (k = from; k < to; k+=3) {
+        var codon = _codon_translations[seq.substring (k, k+3)];
+        translated += codon ? codon : "?";
+    }
+    return translated;
+}
+
+</script>
+
+</body>
+</html>

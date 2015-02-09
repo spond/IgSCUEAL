@@ -8,8 +8,9 @@ column_mapper    = {}
 cdr3_id          = 0
 is_light_chain   = False
 
-V_processor      = re.compile ('^V([0-9]+|\-ancestral)\-?([^\,]+)?')
-J_processor      = re.compile ('\,J(\-ancestral|[0-9]+)')
+V_processor      = re.compile ('^V([^\-\*\,]+)([^\*\,]+)?([^\,]+)?')
+J_processor      = re.compile ('\,J([^\*]+)(.*)$')
+D_processor      = re.compile ('^D([^\-\*\,]+)([^\*\,]+)?([^\,]+)?')
 
 ########### END GLOBALS #############
 
@@ -128,37 +129,54 @@ class colLengthClass:
 
 ####################################
 
-def reduceRearrangement (line):
-    rearrangement  = line[column_mapper['Best Rearrangement']]
-    
-    if is_light_chain:
-        assignment = ['','','']    
-        j_id = 2
-    else:
-        assignment = ['','','','']
-        j_id = 3
+def reduceRearrangementFromString (rearrangement):
+    v = ['','','']
+    j = ['','']
     
     v_match  = V_processor.match (rearrangement)
-    assignment[0] = 'V' + v_match.group(1).replace('-','').replace('ancestral','?')
-    
-    if v_match.group (2) is not None:
-        assignment[1] = assignment[0] + '-' + v_match.group (2).replace('-','')
-    else:
-        assignment[1] = assignment[0] + '-?'
+    for i in range (3):
+        v[i] = v_match.group (i+1)
+        if v[i] is None:
+            v[i] = '?'
+            
+    v[0] = 'V' + v[0]
     
     j_match = J_processor.search (rearrangement)
     if j_match is not None and j_match.group(1) is not None:
-        assignment[j_id] = 'J' + j_match.group(1).replace('-','').replace('ancestral','?');
+        for i in range (2):
+            j[i] = j_match.group (i+1)
+            if j[i] is None:
+                j[i] = '?'
+        j[0] = 'J' + j[0]
         
-    if not is_light_chain:
-        assignment[2] = line[column_mapper['D_ALLELE']]
-        if (assignment[2] == '0'):
-            assignment[2] = ''
-        else:
-            assignment[2] = 'D' + assignment[2][1:].replace('_','-')
-    
-    return '|'.join(assignment)
+    return v, j
+   
 
+
+def reduceRearrangement (line):
+    v, j = reduceRearrangementFromString (line[column_mapper['Best Rearrangement']])
+    
+    if not is_light_chain:
+        d_alleles = line[column_mapper['D_ALLELE']].split ('|')
+        if (d_alleles == '0'):
+            d_alleles = ''
+        else:
+            if cli_args.inverse_d:
+                if line [column_mapper['D/INV_SCORE']] > line [column_mapper['D_SCORE']]:
+                    d_alleles = [ k + "/I" for k in line[column_mapper['D/INV_ALLELE']].split ('|')]
+        
+        assignment = []
+        for d in d_alleles:
+            d_match = D_processor.search (d)
+            if d_match:
+                assignment.append ([v, ['D' + d_match.group (1), d_match.group (2) if d_match.group (2) else '?', d_match.group (3) if d_match.group (3) else '?'],j])
+                
+                
+    else:
+        assignment = ','.join (['|'.join (v),'|'.join (j)])
+            
+    return [['|'.join([','.join (b) for b in rearr]), 1/len (assignment)] for rearr in assignment]
+    
 ####################################
 
 def cdr3 (line):
@@ -166,48 +184,73 @@ def cdr3 (line):
 
 ####################################
         
-def ouputSummary (line_filter, support, support_col, rearrangement_col, mappingFunction = None, histogram = None):
+def ouputSummary (line_filter, support, support_col, rearrangement_col, mappingFunction = None, histogram = None, read_alternatives = None):
     binByRearrangement = {}
     total        = 0
     low_support  = 0
     mapped       = 0
     filtered_in  = 0
+    alternatives = {}
     
+    if read_alternatives:
+        alt_reader = csv.reader (read_alternatives, delimiter = '\t')
+        next (alt_reader)
+        for l in alt_reader:
+            read_name = l[0]
+            
+            if not read_name in alternatives:
+                alternatives[read_name] = []
+                
+            alternatives[read_name].append ([[','.join (k) for k in reduceRearrangementFromString (l[1])], float (l[2])])
+        
     for line in ig_reader:
         total += 1
-        if len (line) > 10: # not a failed alignment
+        if len ([k for k in line if len (k) >0]) > 10: # not a failed alignment
             mapped += 1
             if float (line[support_col]) >= support:
                 if line_filter is not None:
                     if not line_filter.check_line (line): 
                         continue
                 filtered_in += 1
+                
                 if mappingFunction:                    
                     alleles = mappingFunction (line)
                 else:
-                    alleles = line[rearrangement_col]
+                    alleles = [line[rearrangement_col],1]
                     
-                if (histogram):                   
-                    if alleles not in binByRearrangement:
-                        binByRearrangement [alleles] = {'Count' : 1}
-                    else:
-                        binByRearrangement [alleles]['Count'] += 1
+                if read_alternatives and line[column_mapper['Name']] in alternatives:
+                    new_alleles = []
+                    for d in alleles:
+                        d_a = d[0].split ('|')[1]
+                        for vj in alternatives[line[column_mapper['Name']]]:
+                            wt = d[1] * vj[1]
+                            new_alleles.append (["|".join ([vj[0][0], d_a, vj[0][1]]), wt])
+                    alleles = new_alleles
                     
-                    prop = histogram (line)
-                    if prop not in binByRearrangement [alleles]:
-                        binByRearrangement [alleles][prop] = 1
-                    else:
-                        binByRearrangement [alleles][prop] += 1
+                if (histogram):  
+                    prop   = histogram (line)
+                    
+                    for a in alleles:            
+                        if a[0] not in binByRearrangement:
+                            binByRearrangement [a[0]] = {'Count' : a[1]}
+                        else:
+                            binByRearrangement [a[0]]['Count'] += a[1]
+                    
+                        if prop not in binByRearrangement [a[0]]:
+                            binByRearrangement [a[0]][prop] = a[1]
+                        else:
+                            binByRearrangement [a[0]][prop] += a[1]
                                                 
                 else:
-                    if alleles not in binByRearrangement:
-                        binByRearrangement [alleles] = 1
-                    else:
-                        binByRearrangement [alleles] += 1
+                    for a in alleles:            
+                        if a[0] not in binByRearrangement:
+                            binByRearrangement [a[0]] = a[1]
+                        else:
+                            binByRearrangement [a[0]] += a[1]
             else:
                 low_support += 1
 
-    binByRearrangement ['Summary']     = [['Total', total], ['Mapped', mapped], ['Low support', low_support], ['Passed filter', filtered_in]] 
+    binByRearrangement ['Summary']     = [['Total', total], ['Mapped', mapped], ['Passed support', total-low_support], ['Passed filter', filtered_in], ['Support', support]] 
                                         
     return json.dumps (binByRearrangement, indent = 2)                                    
 
@@ -285,7 +328,7 @@ def float01 (value):
 
 ####################################
 
-argument_parser = argparse.ArgumentParser (description='Read IgSCUEAL output files.')
+argument_parser = argparse.ArgumentParser (description='Post-process IgSCUEAL output files.')
 argument_parser.add_argument('-i', '--input',        help = 'The tab-separated file produced by IgSCUEAL. Must have at least 10 columns', nargs = '?', required = True, type=argparse.FileType('r'), default = sys.stdin)
 argument_parser.add_argument('-s', '--support',      help = 'Minimum assignment support required to process a read (default is 0.9)', type=float01, default = 0.9)
 argument_parser.add_argument('-p', '--pattern',      help = 'A regular expression pattern for pulling out reads that match a particular pattern in a particular column, e.g. "Rearrangement V3-21,J3"', type=str, nargs = 2, action = 'append')
@@ -294,8 +337,10 @@ argument_parser.add_argument('-x', '--cluster',      help = 'Only keep sequences
 argument_parser.add_argument('-o', '--output',       help = 'Output mode (default fasta): either summarize filtered reads by column value (supply the column name), print FASTA for the reads matching selection criteria (fasta), or output JSON (json) for matching reads. '+ 
                                                           'Finally specify "json output bin [bin2...]" to output a json of "ID": "output" for each unique value of "bin+bin2" (group by)', nargs = '+', default = ['fasta'], type = str)
 argument_parser.add_argument('-l', '--length',       help = 'Summarize the lengths of sequences in a given column', type = str, default = '')
-argument_parser.add_argument('-r', '--rearrangement',help = 'Summarize all reads by [H-family,H-allele,D-allele,J-allele]', action = 'store_const', const = True)
+argument_parser.add_argument('-r', '--rearrangement',help = 'Summarize all reads by [H (family, gene, allele) : D (gene-allele) : J (gene, allele)]', action = 'store_const', const = True)
 argument_parser.add_argument('-t', '--light_chain', help='If set, assume that the reads come from a light Ig chain (no d-region)', action = 'store_const', const = True, default = False);
+argument_parser.add_argument('-a', '--alternatives',  help='If set, read alternative rearrangements from this file and use those for rearranegment binning', required = False, type=argparse.FileType('r'));
+argument_parser.add_argument('-v', '--inverse_d',   help='If set (for heavy chains only), produce the D-region assignment by also considering inverted regions', action = 'store_const', const = True, default = False);
 
 
 cli_args = argument_parser.parse_args()
@@ -330,8 +375,8 @@ if cli_args.cluster is not None:
     line_filter = idFilterClass ("Name", filter_set, column_headings, line_filter)
 
 if cli_args.rearrangement is not None:
-    cdr3_id = column_mapper["JUNCTION_AA"]
-    print (ouputSummary (line_filter, cli_args.support, column_mapper['Support'], None,reduceRearrangement,cdr3))
+    cdr3_id = column_mapper["CDR3_AA"]
+    print (ouputSummary (line_filter, cli_args.support, column_mapper['Support'], None,reduceRearrangement,cdr3, cli_args.alternatives))
     
 else:    
     if cli_args.length != '':

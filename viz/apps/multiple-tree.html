@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang = 'en'>
+
+<head>
+    <meta charset="utf-8">
+    <!-- Latest compiled and minified CSS -->
+    <script src="http://code.jquery.com/jquery.js"></script>
+
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://octamonkey.ucsd.edu/js/phylotree.js"></script>
+    
+    <title> IgSCUEAL analysis result</title>
+
+    <link href="http://octamonkey.ucsd.edu/css/phylotree.css" rel="stylesheet">
+    
+    <style>
+
+    .sequence {
+        font: 14px monospace;
+    }
+
+    .seq-label {
+        font: 14px monospace;
+    }
+
+    .axis path, .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+    
+    .axis-label {
+        font: 18px sans-serif;
+    }
+    
+    .axis text {
+        font: 12px sans-serif;
+    }
+
+
+
+    .support-bar line, .support-bar path {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+     .support-line {
+        stroke: #000;
+        stroke-width: 6px;
+    }
+
+    .weight-label {
+        font: 14px sans-serif;
+        text-anchor: middle;
+    }
+
+    .neutral-line {
+        stroke-dasharray: 2,10;
+        stroke: #000;
+        stroke-width: 1px;
+    }
+
+    .displacement-line {
+        fill: none;
+        stroke: #000;
+        opacity: 0.7;
+        stroke-width: 1.5px;
+    }
+
+
+
+    </style>
+</head>
+
+<body style = 'padding-top: 70px;'>
+
+<!--
+###############################################################################################################################
+-->
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">IgSCUEAL tree support</a>
+    </div>
+
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id = "navbar-collapse-1">
+
+      <ul class="nav nav-pills navbar-right" role="tablist" id = 'navigation_buttons'>
+           <li class="active"><a href="#summary_tab" role="tab" data-toggle="tab"><i class="fa fa-list" style = 'margin-right: 5px'></i>Summary</a></li>
+           <li><a href="#tree_tab" role="tab" data-toggle="tab"><i class="fa fa-tree" style = 'margin-right: 5px'></i> Tree</a></li>
+           <li><a href="#sequence_tab" role="tab" data-toggle="tab"><i class="fa fa-table" style = 'margin-right: 5px'></i> Sequences</a></li>
+      </ul>
+
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Load file<b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><input type="file" id="tsv_file"></li>
+          </ul>
+        </li>
+     </ul>
+     
+    
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+<div class = 'container-fluid'>
+
+        <div class = 'row'>
+                <div class = "col-md-4 col-md-offset-1">
+                       <div class="btn-group">
+                        <button type="button" class="btn btn-primary btn-sm" id = "show_v_tree">
+                            V
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm" id = "show_j_tree">
+                            J
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm" id = "toggle_unsupported">
+                            Toggle unsupported branches
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm" id = "expand_spacing">
+                            <i class="fa fa-expand" ></i>
+                        </button>
+                         <button type="button" class="btn btn-default btn-sm" id = "compress_spacing">
+                            <i class="fa fa-compress" ></i>
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm" id="sort_ascending" title="Sort deepest clades to the bototm">
+                            <i class="fa fa-sort-amount-asc"></i>
+                         </button>
+                        <button type="button" class="btn btn-default btn-sm" id="sort_descending" title="Sort deepsest clades to the top">
+                            <i class="fa fa-sort-amount-desc"></i>
+                         </button>
+                        <button type="button" class="btn btn-default btn-sm" id="sort_original" title="Restore original order">
+                                            <i class="fa fa-sort"></i>
+                        </button>
+                    </div>
+                </div>
+        </div>        
+        <div class = 'row'>
+            <div class = 'col-md-1'>
+                 <div class = 'row'>
+                    <div id = 'color_legend'>
+                    </div>
+                </div>
+            </div>
+            <div class = 'col-md-11'>
+                 <div class = 'row'>                        
+                    <div id = 'tree_container' class = 'tree-widget'>
+                    </div>
+                 </div>
+                    
+              </div>
+        </div>
+    </div>
+
+</div>
+
+<!--
+###############################################################################################################################
+-->
+
+<script>
+
+
+var width  = 800, //$(container_id).width(),
+    height = 600, //$(container_id).height()
+    color_scheme = d3.scale.category10(),
+    analysis_data = null,
+    prop_format = d3.format (".4p"),
+    annotation_data = null,
+    render_color_bar = true,
+    color_legend_id = 'color_legend';
+    
+var trees = [d3.layout.phylotree("body")
+    .size([height, width])
+    .separation (function (a,b) {return 0;}),
+    d3.layout.phylotree("body")
+    .size([height, width])
+    .separation (function (a,b) {return 0;})];
+    
+var active_tree = 0;
+ 
+    
+    //.node_span (function (a) {if (a.children && a.children.length) return 1; return isNaN (parseFloat (a["attribute"]) * 100) ? 1 : parseFloat (a["attribute"]) * 100; });
+
+
+//window.setInterval (function () {});
+   
+var svgs = [d3.select("#tree_container").append("svg")
+              .attr("width", width)
+              .attr("height", height),
+            d3.select("#tree_container").append("svg")
+              .attr("width", width)
+              .attr("height", height)
+              .style ("display", "none")];
+        
+var scaling_exponent = 0.33;       
+
+var support_color = d3.scale.pow().exponent(scaling_exponent)                    
+                    .domain([0, 0.1, 0.5, 1])
+                    .range([ "#5e4fa2", "#3288bd", "#f46d43","#9e0142"])
+                    .clamp(true);
+    
+
+// *** HANDLERS ***
+
+
+
+
+
+
+$("#tsv_file").on ("change", function (e) {
+    var files = e.target.files; // FileList object
+
+    if (files.length == 1) {
+      var f = files[0];
+      var reader = new FileReader();
+
+      reader.onload = (function(theFile) {
+        return function(e) {
+            handle_tsv (d3.tsv.parse (e.target.result));
+         };
+      })(f);
+
+      reader.readAsText(f);
+    }
+});
+
+function sort_nodes (asc) {
+    trees[active_tree].traverse_and_compute (function (n) {
+            var d = 1;
+            if (n.children && n.children.length) {
+                d += d3.max (n.children, function (d) { return d["count_depth"];});
+            }
+            n["count_depth"] = d;
+        }); 
+        trees[active_tree].resort_children (function (a,b) {
+            return (a["count_depth"] - b["count_depth"]) * (asc ? 1 : -1);
+        });
+}
+
+$("#sort_original").on ("click", function (e) {
+    trees[active_tree].resort_children (function (a,b) {
+        return a["original_child_order"] - b["original_child_order"];
+    });
+});
+
+$("#sort_ascending").on ("click", function (e) {
+    sort_nodes (true);
+});
+
+$("#sort_descending").on ("click", function (e) {
+    sort_nodes (false);
+});
+
+$("#expand_spacing").on ("click", function (e) {
+    trees[active_tree].spacing_x ( trees[active_tree].spacing_x() + 1).update(true);
+});
+
+$("#compress_spacing").on ("click", function (e) {
+     trees[active_tree].spacing_x ( trees[active_tree].spacing_x() - 1).update(true);
+});
+
+$("#show_v_tree").on ("click", function (e) {
+     set_active_tree (0);
+});
+
+$("#show_j_tree").on ("click", function (e) {
+     set_active_tree (1);
+});
+
+
+$("#toggle_unsupported").on ("click", function (e) {
+     trees[active_tree].get_nodes().forEach (function (d) {
+        if (! (d["no_collapse"])) {
+            trees[0].toggle_collapse (d).update (true);
+        }
+    });
+});
+
+function set_active_tree (w) {
+    if (active_tree != w) {
+        svgs[1-w].style ('display', 'none');
+        svgs[w].style ('display', 'block');
+        d3.select (w ? "#show_j_tree" : "#show_v_tree").attr ("class", "btn btn-primary btn-sm");
+        d3.select (w ? "#show_v_tree" : "#show_j_tree").attr ("class", "btn btn-default btn-sm");
+        active_tree = w;
+    }
+}
+function default_tree_settings (tree) {
+    tree.branch_length (null);
+    tree.branch_name (function (n) {
+        var nn = n.name.toUpperCase();
+        if ("ig" in n) {
+            return n["ig"];
+        }
+        return n.name;
+    });
+    tree.node_span ('equal');
+    tree.options ({'draw-size-bubbles' : false}, false);
+    tree.options ({'selectable' : false}, false);
+    tree.font_size (18);
+    tree.scale_bar_font_size (18);
+    tree.node_circle_size (5);
+    tree.spacing_x (18, true);
+    tree.style_nodes (node_colorizer);
+    tree.style_edges (edge_colorizer);
+    //tree.selection_label (current_selection_name);
+}
+
+
+
+                    
+
+function render_color_scheme (svg_container) {
+
+    var svg = d3.select ("#" + svg_container).selectAll ("svg").data ([support_color.domain()]);
+    svg.enter().append ("svg");
+    svg.selectAll ("*").remove();
+   
+    if (render_color_bar) {
+        var bar_width  = 70,
+            bar_height = 300,
+            margins = {'bottom' : 30,
+                       'top'    : 15,
+                       'left'   : 40,
+                       'right'  : 20};
+                       
+        svg.attr ("width", bar_width)
+           .attr ("height", bar_height);
+       
+       
+    
+        this_grad = svg.append ("defs").append ("linearGradient")
+                    .attr ("id", "_support_bar")
+                    .attr ("x1", "0%")
+                    .attr ("y1", "0%")
+                    .attr ("x2", "0%")
+                    .attr ("y2", "100%");
+       
+        var support_scale = d3.scale.pow().exponent(scaling_exponent)                    
+                         .domain(d3.extent (support_color.domain()))
+                         .range ([0,1]),
+            axis_scale = d3.scale.pow().exponent(scaling_exponent)                    
+                         .domain(d3.extent (support_color.domain()))
+                         .range ([0,bar_height - margins['top']-margins['bottom']]);
+                     
+                    
+        support_color.domain().forEach (function (d) { 
+        this_grad.append ("stop")
+                 .attr ("offset",  "" + support_scale (d) * 100 + "%")
+                 .style ("stop-color", support_color (d));
+       });
+   
+       var g_container = svg.append ("g").attr ("transform", "translate(" + margins["left"] + "," + margins["top"] + ")");
+   
+       g_container.append ("rect").attr ("x", 0)
+                          .attr ("width", bar_width - margins['left']-margins['right'])
+                          .attr ("y", 0)
+                          .attr ("height", bar_height - margins['top']-margins['bottom'])
+                          .style ("fill", "url(#_support_bar)");
+ 
+   
+        var draw_support_bar  =  d3.svg.axis().scale(axis_scale)
+                                 .orient ("left")
+                                 .tickFormat (d3.format(".1r"))
+                                 .tickValues ([0,0.01,0.1,0.5,1,2,5,10]);
+                             
+        var scale_bar = g_container.append("g");
+        scale_bar.style ("font-size", "14")
+                       .attr  ("class", "support-bar")
+                       .call (draw_support_bar);
+                   
+        scale_bar.selectAll ("text")
+                       .style ("text-anchor", "right");
+                   
+        var x_label =_label = scale_bar.append ("g").attr("class", "support-bar");
+        
+        x_label = x_label.selectAll("text").data(["Model-averaged support, %"]);
+        x_label.enter().append ("text");
+        x_label.text (function (d) {return d})
+                .attr  ("transform", "translate (" + (bar_width-margins['right']-margins["left"]) + ",0) rotate (-90) ")
+                .style ("text-anchor", "end")
+                .style ("font-size", "10")
+                .attr ("dx", "0.0em")
+                .attr ("dy", "1em");
+    }               
+}        
+
+
+
+
+
+function create_gradient (svg_defs, grad_id, rateD, already_cumulative) {
+    var this_grad = svg_defs.append ("linearGradient")
+                                    .attr ("id", grad_id);
+                                    
+    var current_weight = 0;
+    rateD.forEach (function (d,i) {
+        if (d[1]) {
+            var new_weight = current_weight + d[1];
+            this_grad.append ("stop")
+                     .attr ("offset",  "" + current_weight * 100 + "%")
+                     .style ("stop-color", support_color (d[0]));
+            this_grad.append ("stop")
+                     .attr ("offset",  "" + new_weight * 100 + "%")
+                     .style ("stop-color", support_color (d[0]));
+            current_weight = new_weight;
+        }
+    });
+}
+  
+function render_igscueal_tree (json, tree_string, which_tree) {
+
+    trees[which_tree] (tree_string).svg (svgs[which_tree]);
+ 
+    trees[which_tree].get_nodes().forEach (function (d) {
+        var nn = d.name.toUpperCase();
+        if (nn in annotation_data["labels"]) {
+            d["ig"] = annotation_data["labels"][nn];
+        }
+        if (nn in analysis_data) {
+            d["support"] = analysis_data[nn];
+            d["no_collapse"] = true;
+        }
+        
+        if (d["no_collapse"]) {
+            d["parent"]["no_collapse"] = true;
+        }
+    }
+    );
+    
+    trees[which_tree].get_nodes().forEach (function (d) {
+        if (!d["no_collapse"]) {
+            if ("children" in d) {
+                d["children"].forEach (function (n) {
+                   n["no_collapse"] = true;
+                });
+            }
+        }
+    }
+    );
+    
+    
+    
+    
+}
+
+                
+function render_igscueal (json) {
+
+    default_tree_settings(trees[0]);
+    default_tree_settings(trees[1]);
+    render_igscueal_tree (json, annotation_data["trees"]["V"], 0);
+    trees[0].layout();
+    
+    render_igscueal_tree (json, annotation_data["trees"]["J"], 1);
+    trees[1].layout();
+    render_color_scheme (color_legend_id);
+}
+
+function node_colorizer (element, data) {
+    if (data.name == analysis_data["SEQUENCE_NAME"]) {
+        element.style ('fill', 'red');
+        element.selectAll ("text").style ("font-size","125%");
+    }
+};
+
+function edge_colorizer (element, data) {
+
+    if ("ig" in data.target){
+        $(element[0][0]).tooltip({'title' : "Support: " + ("support" in data.target ? prop_format(data.target["support"]) : "0.0%") + 
+                                            "<br>Label:" + data.target["ig"],  
+                                  'html' : true, 
+                                  'trigger' : 'hover', 
+                                  'container' : 'body', 
+                                  'placement' : 'auto'});
+    }
+    
+   
+    if ("ig" in data["target"]) {
+        var haz_title = element.selectAll ("title");
+        if (haz_title.empty()) {
+            haz_title = element.append ("title");
+        }
+        haz_title.text(data["target"]["ig"]);
+    }
+    if ("support" in data["target"]) {
+        element.style ('stroke-width', Math.max(5,15*Math.sqrt (data["target"]["support"])))
+               .style ('stroke', support_color(data["target"]["support"]));
+    
+    } else {
+        element.style ('stroke-width', '5')
+               .style ('stroke', "#CCCCCC");
+    }
+    element.style ('stroke-linejoin', 'round')
+           .style ('stroke-linecap', 'round');
+    
+}
+
+function handle_tsv (rows) {
+
+    analysis_data = {};
+    unique_ids    = {};
+    total = 0;
+    rows.forEach (function (r) {
+        s = r["Name"];
+        console.log (s);
+        if ( ! (s in unique_ids)) {
+            unique_ids[s] = 1;
+            total += 1;
+        }
+        b = r["Branch"];
+        if ( ! (b in analysis_data)) {
+            analysis_data [b] = 0;
+        }
+        analysis_data [b] += parseFloat (r["Support"]);
+    });
+    
+    for (b in analysis_data) {
+        analysis_data[b] /= total;
+    }
+    render_igscueal (analysis_data);
+}
+
+$( document ).ready( function () {
+    d3.json ("../data/HumanIGH.json", function (ref_data) {
+        annotation_data = ref_data;
+            d3.tsv ("../test-data/PW57.tsv", handle_tsv);        
+    });
+});
+
+
+</script>
+
+</body>
+</html>
