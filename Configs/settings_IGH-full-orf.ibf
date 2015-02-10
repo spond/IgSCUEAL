@@ -1,11 +1,11 @@
-populationSize  		= 256;
+populationSize  		= 384;
 	/* the number of models in a GA population;
 	   reasonable range 16-128
 	   smaller values result in faster run times,
 	   but could also cause premature termination
 	   */
 
-stoppingCriterion		= 24;
+stoppingCriterion		= 16;
 	/* 
 	  how many generations without score improvement
 	before the GA decides it has converged;
@@ -59,7 +59,7 @@ _allowNsInSequences                 = 1;
 
 _additionalStartingBreakpoints	    = {};
 _additionalStartingBreakpoints[0]   = {{"^IGHV+","^IGHJ+"}};
-_try_resampling_rejections          = 8;
+_try_resampling_rejections          = 16;
 
 
 
