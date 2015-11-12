@@ -958,8 +958,7 @@ function PrepareSampleForARun (sortedBP, is_banned&) {
 		paramSpec[mpiNode][0] = filteredData.sites;
 	}
 	
-	if (Abs(_validBreakpointStructure))
-	{
+	if (Abs(_validBreakpointStructure)) {
 		if (Abs (_validBreakpointStructure[my_size-1]))
 		{
 			ss2 = AssembleSubtypeAssignment(ConvertToPartStringInt (sortedBP),0);
@@ -971,12 +970,10 @@ function PrepareSampleForARun (sortedBP, is_banned&) {
 		}
 	}
 	
-	if (verboseFlag > 5)
-	{
-		if (is_banned == 0)
-		{
-			fprintf (stdout, sortedBP, " is OK!\n");
-		}
+	if (verboseFlag == 3) {
+		if (is_banned == 0) {
+			fprintf (stdout, sortedBP, "(", ss2, ") is OK!\n");
+		} 
 	}
 	
 	return paramSpec;
@@ -1698,8 +1695,7 @@ CRFStructure			  = {};
 gapStructureRegex		  = "(\\-){"+_contigGapThresh+"}\\-+";
 stencil     			  = {1,filteredData.sites};
 
-for (h = 0; h < filteredData.species; h = h+1)
-{
+for (h = 0; h < filteredData.species; h = h+1) {
 	crf_group = CRFGroups[allSeqs[h]];
 	
 	if (Rows(crf_group)) {
@@ -1931,10 +1927,12 @@ if (Abs(_additionalStartingBreakpoints)) {
 	}
 }
 
-//fprintf (stdout, initialPops, "\n");
 
 //fprintf (stdout, "\nCRFGroups\n",CRFGroups,"\n\n",bySegment, "\n", CRFStructure, "\n");
-//assert (0);
+
+// fprintf (stdout, "\bySegment\n",bySegment, "\n");
+
+// assert (0);
 
 
 
@@ -2221,16 +2219,14 @@ for (currentBPC = startBPC; currentBPC < maxBPP; currentBPC += 1) {
 					stencil = (Random (stencil,0))[{{0,0}}][{{0,runTo-1}}];
 					
 					
-					if (verboseFlag)
-					{
+					if (verboseFlag) {
 						fprintf (stdout, "\nRunning CRF presets (",currentBPC," breakpoints)\n", stencil, "\n");
 					}
 					
 					for (h2 = 0; h2 < runTo; h2=h2+1)
 					{
 						currentPopulation[k+h2] = (initialPops[currentBPC])[stencil[h2]];
-						if (verboseFlag)
-						{
+						if (verboseFlag) {
 							fprintf (stdout, "\n***\n", h2, "\n", ConvertToPartString (currentPopulation[k+h2]), "\n");
 						}
 						populationStrings[currentPopulation[k+h2]] = 1;

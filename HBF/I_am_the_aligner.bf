@@ -279,32 +279,65 @@ function handle_alignment_templates (file_path) {
         GetString (seq_names, ancestral_filter, -1);
         
         for (pattern = 0; pattern < Abs (_alignmentTemplates); pattern += 1) {
-            _additional_references_to_consider = {"0" : {}, "1" : {}};
+            
+            _component_count = Abs ((_alignmentTemplates[pattern])["Components"]);
+        
+            _additional_references_to_consider = {};
+            
             for (s = 0; s < ancestral_filter.species; s += 1) {
-                
                 seq_type = _subtypeAssignmentByNode[seq_names[s] && 1];
                 if (Type (seq_type) == "String") {
                     pattern_id = matchStringToSetOfPatterns (seq_type, (_alignmentTemplates[pattern])["Components"]);
-                    if (pattern_id >= 0) {
+                    if (pattern_id >= 0) { 
+                         if (Abs (_additional_references_to_consider[pattern_id]) == 0) {
+                            _additional_references_to_consider[pattern_id] = {};
+                         }
                          (_additional_references_to_consider[pattern_id])[s] = 1;
                     }   
                 }
             }
             
-            bp = (_alignmentTemplates[pattern])["BP"];
+            if (_component_count == 2) {
+                bp = (_alignmentTemplates[pattern])["BP"];
             
-            seq_ids  = Rows (_additional_references_to_consider[0]);
-            seq_ids2 = Rows (_additional_references_to_consider[1]);
+                seq_ids  = Rows (_additional_references_to_consider[0]);
+                seq_ids2 = Rows (_additional_references_to_consider[1]);
             
-            for (i1 = 0; i1 <  Abs (_additional_references_to_consider[0]); i1+=1) {
-                vs = ancSeqs[0 + seq_ids[i1]];
-                for (i2 = 0; i2 < Abs (_additional_references_to_consider[1]); i2+=1) {
-                    js = ancSeqs[0 + seq_ids2[i2]];
-                    igg = ( vs[0][bp-1] + js [bp][Abs(js)-1]) ;
-                    igg_stripped = (igg ^ {{"---", ""}}) ^ {{"-","N"}};
-                    additional_sequences[igg_stripped] = {2,1};
-                    (additional_sequences[igg_stripped])[0] = _subtypeAssignmentByNode[seq_names[0 + seq_ids[i1]]] + "-" + _subtypeAssignmentByNode[seq_names[0 + seq_ids2[i2]]];
-                    (additional_sequences[igg_stripped])[1] = igg;
+                for (i1 = 0; i1 <  Abs (_additional_references_to_consider[0]); i1+=1) {
+                    vs = ancSeqs[0 + seq_ids[i1]];
+                    for (i2 = 0; i2 < Abs (_additional_references_to_consider[1]); i2+=1) {
+                        js = ancSeqs[0 + seq_ids2[i2]];
+                        igg = ( vs[0][bp-1] + js [bp][Abs(js)-1]) ;
+                        igg_stripped = (igg ^ {{"---", ""}}) ^ {{"-","N"}};
+                        additional_sequences[igg_stripped] = {2,1};
+                        (additional_sequences[igg_stripped])[0] = _subtypeAssignmentByNode[seq_names[0 + seq_ids[i1]]] + "-" + _subtypeAssignmentByNode[seq_names[0 + seq_ids2[i2]]];
+                        (additional_sequences[igg_stripped])[1] = igg;
+                    }
+                }
+            } else {
+                if (_component_count == 3) {
+                    bps = (_alignmentTemplates[pattern])["BP"];
+            
+                    seq_ids  = Rows (_additional_references_to_consider[0]);
+                    seq_ids2 = Rows (_additional_references_to_consider[1]);
+                    seq_ids3 = Rows (_additional_references_to_consider[2]);
+                    
+             
+                    for (i1 = 0; i1 <  Abs (_additional_references_to_consider[0]); i1+=1) {
+                        vs = ancSeqs[0 + seq_ids[i1]];
+                        for (i2 = 0; i2 < Abs (_additional_references_to_consider[1]); i2+=1) {
+                            js = ancSeqs[0 + seq_ids2[i2]];
+                            for (i3 = 0; i3 < Abs (_additional_references_to_consider[2]); i3+=1) {
+                                cs = ancSeqs [0 + seq_ids3[i3]];
+                                igg = ( vs[0][bps[0]-1] + js [bps[0]][bps[1]-1] + cs[bps[1]][Abs(cs)-1]) ;
+                                igg_stripped = (igg ^ {{"---", ""}}) ^ {{"-","N"}};
+                                additional_sequences[igg_stripped] = {2,1};
+                                (additional_sequences[igg_stripped])[0] = _subtypeAssignmentByNode[seq_names[0 + seq_ids[i1]]] + "-" + _subtypeAssignmentByNode[seq_names[0 + seq_ids2[i2]]] + "-" + _subtypeAssignmentByNode[seq_names[0 + seq_ids3[i3]]];
+                                (additional_sequences[igg_stripped])[1] = igg;
+                            }
+                        }
+                    }
+                
                 }
             }
         }
@@ -329,6 +362,7 @@ GetInformation (CleanedSequences,filteredData);
 for (seqCounter = 0; seqCounter < Columns(CleanedSequences); seqCounter += 1) {
     aSeq = CleanedSequences[seqCounter];
     CleanedSequences[seqCounter] = aSeq^{{"[^a-zA-Z]",""}};
+    aSeq = CleanedSequences[seqCounter];
     
     if (_allowNsInSequences == 0) {
         CleanedSequences[seqCounter] = CleanedSequences[seqCounter]^{{"^N+",""}};
@@ -340,7 +374,9 @@ _reference_sequence = CleanedSequences[0];
 _query_sequence     = CleanedSequences[1];
 	    
 _expected_score = Max(0,computeExpectedPerBaseScore (.4,protScoreMatrix,_protBaseFrequencies))*Abs(aSeq)$3;
-bestScore = _expected_score;		
+bestScore = _expected_score;
+
+//fprintf (stdout, _expected_score, "\n", aSeq, "\n");		
 		
 inStr = {{_reference_sequence,_query_sequence}};	
 		

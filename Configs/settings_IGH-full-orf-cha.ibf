@@ -1,4 +1,4 @@
-populationSize  		= 64;
+populationSize  		= 196;
 	/* the number of models in a GA population;
 	   reasonable range 16-128
 	   smaller values result in faster run times,
@@ -16,7 +16,7 @@ stoppingCriterion		= 16;
 	   
 	*/
 
-noMoreBPsThan 			= 2;
+noMoreBPsThan 			= 3;
 
 	/* do not consider mosaics with more than this many breakpoints.
 	   Set to a small number (e.g. 2) if all that is needed is a simple
@@ -30,7 +30,7 @@ BICMinLength			= 20;
 	*/
 
 
-referenceAlignmentFileName  = "HumanIGH-full-orf.nex";
+referenceAlignmentFileName  = "HumanIGH-full-orf-CH1A.nex";
 
 
 	/* the name of the reference alignment file (MUST 
@@ -43,7 +43,7 @@ referenceAlignmentFileName  = "HumanIGH-full-orf.nex";
 	*/
 
 ancestralAlignmentFileName         = referenceAlignmentFileName + ".ancestors";
-referenceAlignmentDescriptiveName  = "Human IgG (heavy chain) with all unique F+ORF alleles, based on IMGT from Dec 2014";
+referenceAlignmentDescriptiveName  = "Human IgG (heavy chain) with all unique F+ORF alleles + constant alpha (1 and 2), based on IMGT from Dec 2014";
 
 
 
@@ -52,27 +52,35 @@ referenceAlignmentDescriptiveName  = "Human IgG (heavy chain) with all unique F+
 
 tryReverseComplement			    = 1;
 useBlosum62						    = 1;
+
 _bannedEndAdjust				    = 1;
 _bannedStartAdjust				    = 1;
 
 _allowNsInSequences                 = 1;
 
 _additionalStartingBreakpoints	    = {};
-_additionalStartingBreakpoints[0]   = {{"^IGHV+","^IGHJ+"}};
+_additionalStartingBreakpoints +  {{"^IGHV+","^IGHJ+"}};
+_additionalStartingBreakpoints +  {{"^IGHJ+","^IGHCA+"}};
+_additionalStartingBreakpoints +  {{"^IGHV+","^IGHJ+","^IGHCA+"}};
 _try_resampling_rejections          = 16;
 
 
 
 _validBreakpointStructure            = {};
-_validBreakpointStructure [1]        = {"0":"^V[^\\,]+\\,J[^\\,]+"};
-_check_tree_block_structure          = { "0" : "^V+", "1": "^J+"};
+_validBreakpointStructure [1]        = {"0": "^V[^\\,]+\\,J[^\\,]+", 
+                                        "1": "^J[^\\,]+\\,CH[^\\,]+"};
+                                        
+_validBreakpointStructure [2]        = {"0":"^V[^\\,]+\\,J[^\\,]+,CH[^\\,]+"};
+
+_check_tree_block_structure          = { "0" : "^V+", "1": "^J+", "2": "^CH+"};
 _do_not_enforce_gaps_in_initial_scan = "^IGHV";
 
 _alignmentTemplates                  = {"0" : {"Components" : 
                                               {"0"  : "^V[0-9].+01$", 
-                                               "1"  : "^J.+01$"},
-                                               "BP" : 106 * 3}
+                                               "1"  : "^J.+01$",
+                                               "2"  : "^CH1.+01$"},
+                                               "BP" : {{106 * 3,126*3}}}
                                         };
 								 
 _annotateSequenceByAlignment	  = "MapIGH";
-ExecuteAFile ("Annotators/IGH-full-orf.ibf");
+ExecuteAFile ("Annotators/IGH-full-orf-cha.ibf");
