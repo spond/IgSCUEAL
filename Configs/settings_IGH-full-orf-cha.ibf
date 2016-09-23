@@ -1,19 +1,19 @@
-populationSize  		= 196;
+populationSize  		= 64;
 	/* the number of models in a GA population;
 	   reasonable range 16-128
 	   smaller values result in faster run times,
 	   but could also cause premature termination
 	   */
 
-stoppingCriterion		= 16;
-	/* 
+stoppingCriterion		= 8;
+	/*
 	  how many generations without score improvement
 	before the GA decides it has converged;
 	   larger values = better convergence but longer
 	   runtimes
-	   
+
 	   reasonbale range 20-100
-	   
+
 	*/
 
 noMoreBPsThan 			= 3;
@@ -21,11 +21,11 @@ noMoreBPsThan 			= 3;
 	/* do not consider mosaics with more than this many breakpoints.
 	   Set to a small number (e.g. 2) if all that is needed is a simple
 	   recominant - or non-recombinant categorization */
-	   
+
 BICMinLength			= 20;
 
 	/* What is the shortest sequence fragment to be allowed in a mosaic.
-	   Set to a larger value (e.g. 200) if greater speed is desired at 
+	   Set to a larger value (e.g. 200) if greater speed is desired at
 	   the expense of a finer breakpoint resolution.
 	*/
 
@@ -33,13 +33,13 @@ BICMinLength			= 20;
 referenceAlignmentFileName  = "HumanIGH-full-orf-CH1A.nex";
 
 
-	/* the name of the reference alignment file (MUST 
-	be in the 'data' directory and have a .labels 
+	/* the name of the reference alignment file (MUST
+	be in the 'data' directory and have a .labels
 	counterpart mapping taxon names to subtype labels
-		
-	The alignments can be generated using 'TopLevel/MakeReferenceAlignment.bf'	
+
+	The alignments can be generated using 'TopLevel/MakeReferenceAlignment.bf'
 	or built up recursively using 'TopLevel/BuildUpReferenceAlignment.bf'
-	
+
 	*/
 
 ancestralAlignmentFileName         = referenceAlignmentFileName + ".ancestors";
@@ -67,20 +67,20 @@ _try_resampling_rejections          = 16;
 
 
 _validBreakpointStructure            = {};
-_validBreakpointStructure [1]        = {"0": "^V[^\\,]+\\,J[^\\,]+", 
+_validBreakpointStructure [1]        = {"0": "^V[^\\,]+\\,J[^\\,]+",
                                         "1": "^J[^\\,]+\\,CH[^\\,]+"};
-                                        
+
 _validBreakpointStructure [2]        = {"0":"^V[^\\,]+\\,J[^\\,]+,CH[^\\,]+"};
 
 _check_tree_block_structure          = { "0" : "^V+", "1": "^J+", "2": "^CH+"};
 _do_not_enforce_gaps_in_initial_scan = "^IGHV";
 
-_alignmentTemplates                  = {"0" : {"Components" : 
-                                              {"0"  : "^V[0-9].+01$", 
+_alignmentTemplates                  = {"0" : {"Components" :
+                                              {"0"  : "^V[0-9].+01$",
                                                "1"  : "^J.+01$",
                                                "2"  : "^CH1.+01$"},
                                                "BP" : {{106 * 3,126*3}}}
                                         };
-								 
+
 _annotateSequenceByAlignment	  = "MapIGH";
 ExecuteAFile ("Annotators/IGH-full-orf-cha.ibf");
