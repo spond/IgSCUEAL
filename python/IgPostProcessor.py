@@ -1,4 +1,4 @@
-import csv, argparse, sys, re, operator, json
+import csv, argparse, sys, re, operator, json, random
 
 
 ########### START GLOBALS #############
@@ -12,7 +12,7 @@ has_constant     = False
 V_processor      = re.compile ('^V([^\-\*\,]+)([^\*\,]+)?([^\,]+)?')
 J_processor      = re.compile ('\,J([^\*\,]+)([^\,]+)?')
 D_processor      = re.compile ('^D([^\-\*\,]+)([^\*\,]+)?([^\,]+)?')
-CH_processor     = re.compile ('\,CH([^\*\,]+)([^\,]+)?')
+CH_processor     = re.compile ('\,C([^\*\,]+)([^\,]+)?')
 
 ########### END GLOBALS #############
 
@@ -128,6 +128,10 @@ class colLengthClass:
             return True
         return False
 
+####################################
+
+def add_random_suffix (name, sep = '_', length = 10):
+    return name + sep + "".join (random.sample ("0123456789ABDCDE", length))
 
 ####################################
 
@@ -160,7 +164,7 @@ def reduceRearrangementFromString (rearrangement):
             ch[i] = ch_match.group (i+1)
             if ch[i] is None:
                 ch[i] = '?'
-        ch[0] = 'CH' + ch[0]
+        ch[0] = 'C' + ch[0]
 
 
     return v, j, ch
@@ -341,12 +345,18 @@ def ouputLengths (line_filter, support, support_col, binning_column):
 ####################################
 
 def ouputSequences (line_filter, support, support_col, name_col, sequence_col):
+    unique_names = set ()
+
     for line in ig_reader:
         if len ([k for k in line if len (k) >0]) > 10:
             if float (line[support_col]) >= support:
                 if line_filter is not None:
                     if not line_filter.check_line (line): continue
-                print (">%s\n%s\n" % (line[name_col], line[sequence_col]))
+                name = line[name_col]
+                while name in unique_names:
+                    name = add_random_suffix (line[name_col])
+                unique_names.add (name)
+                print (">%s\n%s\n" % (name, line[sequence_col]))
 
 
 ####################################
@@ -363,6 +373,7 @@ def outputJSON (line_filter, support, support_col, group_by = None):
                     output.append (line)
     else:
         output = {}
+        unique_by_bin = {}
         for line in ig_reader:
             if len ([k for k in line if len (k) >0]) > 10:
                 if float (line[support_col]) >= support:
@@ -377,7 +388,14 @@ def outputJSON (line_filter, support, support_col, group_by = None):
                     #print (group_by, file = sys.stderr)
                     if bin_by not in output:
                         output [bin_by] = {}
-                    output[bin_by][line[group_by[0]]] = line[group_by[2]]
+                        unique_by_bin [bin_by] = set ()
+
+                    name = line[group_by[0]]
+                    while name in unique_by_bin [bin_by]:
+                        name = add_random_suffix ( line[group_by[0]])
+                    unique_by_bin [bin_by].add (name)
+
+                    output[bin_by][name] = line[group_by[2]]
 
     return json.dumps (output, sort_keys=True, indent=4)
 

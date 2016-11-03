@@ -121,9 +121,13 @@ def run_group_alignment (sequence_group):
     seqrecords = []
 
     for seq_id in sequence_group:
-        massaged_string = sequence_group[seq_id].replace ('NNN','')
+        #print ("Step 1\n%s" % sequence_group[seq_id])
+        massaged_string = sequence_group[seq_id].replace ('NNN','').replace ('---','').replace ('-','N')
+        #print ("Step 2\n%s" % massaged_string)
         if len (massaged_string) % 3:
             massaged_string = massaged_string [:len (massaged_string) - len (massaged_string) % 3]
+            #print ("Step 3\n%s" % massaged_string)
+
         seqrecords.append(gapless(Bio.SeqRecord.SeqRecord (Bio.Seq.Seq(massaged_string), id = seq_id, name = seq_id, description = '')))
 
     if len (seqrecords) == 1:
@@ -138,10 +142,10 @@ def run_group_alignment (sequence_group):
 
     #print (len (seqrecords))
 
-    #if len(refseq.seq) % 3:
-    #seqrecords = [gapless(s) for s in seqrecords]
-    #print (">ref\n%s" % str(refseq.seq))
-    #print ('\n'.join ([">%s\n%s" % (str(k.id), str(k.seq)) for k in seqrecords]))
+    if len(refseq.seq) % 3:
+        seqrecords = [s for s in seqrecords]
+        print (">ref\n%s" % str(refseq.seq))
+        print ('\n'.join ([">%s\n%s" % (str(k.id), str(k.seq)) for k in seqrecords]))
 
     sm = BLOSUM62.load()
 
