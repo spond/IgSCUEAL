@@ -42,7 +42,13 @@ report_headers = {{
 /*24*/ "Mapped Read",
 /*25*/ "V-length",
 /*26*/ "J-length",
-/*27*/ "C-length"}};
+/*27*/ "C-length",
+/*28*/ "V-divergence",
+/*29*/ "J-divergence",
+/*30*/ "C-divergence"
+}};
+
+//console.log (IgSCUEAL.strip_in_frame_indels ("GTGAGTAGCAAGTACTAC------ATGGACGTC"));
 
 //------------------------------------------------------------------------------------------------
 
@@ -131,6 +137,7 @@ lfunction igh_human_report_read_batch (node, batch_results, arguments) {
 
 lfunction igh_human_report_read (node, read_result, arguments) {
 
+
     col_count = utility.Array1D (^"report_headers");
 
     result    = {col_count,1};
@@ -157,11 +164,20 @@ lfunction igh_human_report_read (node, read_result, arguments) {
         if ((read_result["assignment"])["SEGMENTS"] / "0") { // has V
             result [25] = "" + (((read_result["assignment"])["SEGMENTS"])["0"])["span"];
         }
+        if ((read_result["assignment"])["PHYLO-PLACEMENT"] / "0") { // has V
+            result [28] = "" + (((read_result["assignment"])["PHYLO-PLACEMENT"])["0"])["divergence"];
+        }
         if ((read_result["assignment"])["SEGMENTS"] / "1") { // has J
             result [26] = "" + (((read_result["assignment"])["SEGMENTS"])["1"])["span"];
         }
+        if ((read_result["assignment"])["PHYLO-PLACEMENT"] / "1") { // has V
+            result [29] = "" + (((read_result["assignment"])["PHYLO-PLACEMENT"])["1"])["divergence"];
+        }
         if ((read_result["assignment"])["SEGMENTS"] / "2") { // has C
             result [27] = "" + (((read_result["assignment"])["SEGMENTS"])["2"])["span"];
+        }
+        if ((read_result["assignment"])["PHYLO-PLACEMENT"] / "2") { // has V
+            result [30] = "" + (((read_result["assignment"])["PHYLO-PLACEMENT"])["2"])["divergence"];
         }
    }
 

@@ -2773,7 +2773,7 @@
       }
     }
   },
- "model":"\nglobal IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_GT:=0.3961598490170885;\nglobal IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_CT:=0.7966486667747116;\nglobal IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_CG:=0.3024289069160409;\nglobal IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_AT:=0.217842715129869;\nglobal IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_AG:=1;\nglobal IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_AC:=0.6129940218761645;\nIgSCUEAL.phylo.ZCsCZETq.t=0.2026434468075409;\nIgSCUEAL.phylo.ZCsCZETq.t:>-1e+26;\nIgSCUEAL.phylo.ZCsCZETq.t:<1e+26;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q={4,4};\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[0][0]:=0;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[0][1]:=IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_AC*IgSCUEAL.phylo.ZCsCZETq.t;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[0][2]:=IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_AG*IgSCUEAL.phylo.ZCsCZETq.t;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[0][3]:=IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_AT*IgSCUEAL.phylo.ZCsCZETq.t;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[1][0]:=IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_AC*IgSCUEAL.phylo.ZCsCZETq.t;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[1][1]:=0;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[1][2]:=IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_CG*IgSCUEAL.phylo.ZCsCZETq.t;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[1][3]:=IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_CT*IgSCUEAL.phylo.ZCsCZETq.t;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[2][0]:=IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_AG*IgSCUEAL.phylo.ZCsCZETq.t;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[2][1]:=IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_CG*IgSCUEAL.phylo.ZCsCZETq.t;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[2][2]:=0;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[2][3]:=IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_GT*IgSCUEAL.phylo.ZCsCZETq.t;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[3][0]:=IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_AT*IgSCUEAL.phylo.ZCsCZETq.t;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[3][1]:=IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_CT*IgSCUEAL.phylo.ZCsCZETq.t;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[3][2]:=IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user.theta_GT*IgSCUEAL.phylo.ZCsCZETq.t;\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q[3][3]:=0;\n\n\nIgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_pi={\n{0.2044871794871795}\n{0.3108974358974359}\n{0.2493589743589744}\n{0.2352564102564103}\n};\nModel IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user=(IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_Q,IgSCUEAL.phylo.ZCsCZETq.IrEANaOv.user_pi);\n",
+ "model":"\nglobal IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_AC:=0.6129940218761645;\nglobal IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_AG:=1;\nglobal IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_AT:=0.217842715129869;\nglobal IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_CG:=0.3024289069160409;\nglobal IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_CT:=0.7966486667747116;\nglobal IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_GT:=0.3961598490170885;\nIgSCUEAL.phylo.yKPYGxiI.t=0.2026434468075409;\nIgSCUEAL.phylo.yKPYGxiI.t:>-1e+26;\nIgSCUEAL.phylo.yKPYGxiI.t:<1e+26;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q={4,4};\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[0][0]:=0;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[0][1]:=IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_AC*IgSCUEAL.phylo.yKPYGxiI.t;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[0][2]:=IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_AG*IgSCUEAL.phylo.yKPYGxiI.t;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[0][3]:=IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_AT*IgSCUEAL.phylo.yKPYGxiI.t;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[1][0]:=IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_AC*IgSCUEAL.phylo.yKPYGxiI.t;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[1][1]:=0;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[1][2]:=IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_CG*IgSCUEAL.phylo.yKPYGxiI.t;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[1][3]:=IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_CT*IgSCUEAL.phylo.yKPYGxiI.t;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[2][0]:=IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_AG*IgSCUEAL.phylo.yKPYGxiI.t;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[2][1]:=IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_CG*IgSCUEAL.phylo.yKPYGxiI.t;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[2][2]:=0;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[2][3]:=IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_GT*IgSCUEAL.phylo.yKPYGxiI.t;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[3][0]:=IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_AT*IgSCUEAL.phylo.yKPYGxiI.t;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[3][1]:=IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_CT*IgSCUEAL.phylo.yKPYGxiI.t;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[3][2]:=IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user.theta_GT*IgSCUEAL.phylo.yKPYGxiI.t;\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q[3][3]:=0;\n\n\nIgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_pi={\n{0.2044871794871795}\n{0.3108974358974359}\n{0.2493589743589744}\n{0.2352564102564103}\n};\nModel IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user=(IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_Q,IgSCUEAL.phylo.yKPYGxiI.IrEANaOv.user_pi);\n",
  "labels":{
    "IGHJ3_01":"J3*01",
    "NODE125":"J3*01",
@@ -2797,5 +2797,28 @@
    "IGHJ4_01":"J4*01",
    "IGHJ4_02":"J4*02",
    "IGHJ4_03":"J4*03"
+  },
+ "lengths":{
+   "IGHJ3_01":0,
+   "IGHJ3_02":0.0206631298915562,
+   "NODE125":0.0103315649457781,
+   "IGHJ2_01":0.2169259381556873,
+   "IGHJ6_03":0,
+   "IGHJ6_01":0.01695806637217045,
+   "IGHJ6_02":0,
+   "NODE133":0.008479033186085227,
+   "IGHJ6_04":0,
+   "NODE132":0.005652688790723485,
+   "NODE130":0.004239516593042614,
+   "NODE128":0.04677680090557156,
+   "IGHJ5_01":0,
+   "IGHJ5_02":0.04101974471038129,
+   "NODE138":0.02050987235519065,
+   "IGHJ1_01":0.2251561851905284,
+   "IGHJ4_01":0,
+   "IGHJ4_02":0.02153089470509909,
+   "IGHJ4_03":0.04367102376267523,
+   "NODE141":0.07258952591457568,
+   "NODE137":0.05522964139478067
   }
 }

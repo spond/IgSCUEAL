@@ -30,15 +30,15 @@ function IgSCUEAL.set_up (settings) {
 }
 
 function IgSCUEAL.screen_a_read (read) {
-    mapped_read     = IgSCUEAL.handle_sequence_alignment (IgSCUEAL.sanitize_sequence(read), IgSCUEAL.references, IgSCUEAL.alignment_options);
+    sanitized_read = IgSCUEAL.sanitize_sequence(read);
+    mapped_read     = IgSCUEAL.handle_sequence_alignment (sanitized_read, IgSCUEAL.references, IgSCUEAL.alignment_options);
     annotated_read = None;
     if (None != mapped_read) {
-
         annotated_read  = IgSCUEAL.annotate (mapped_read, IgSCUEAL.references, IgSCUEAL.universal_code, IgSCUEAL.settings ["d"]);
         extracted_data = IgSCUEAL.extracted_for_phylomap (mapped_read, IgSCUEAL.references);
         utility.ForEach (mapped_read["SEGMENTS"], "_segment_", "IgSCUEAL.phylo.prepare_alignment (_segment_['index'], ((IgSCUEAL.settings ['segments'])[_segment_['index']])[1], IgSCUEAL.precomputed_likelihoods)");
         utility.Extend (annotated_read, IgSCUEAL.phylo.place_sequence (extracted_data, IgSCUEAL.precomputed_likelihoods));
-        annotated_read = utility.Extend(annotated_read, {"input-sequence" : read});
+        annotated_read = utility.Extend(annotated_read, {"input-sequence" : sanitized_read});
     }
 
     return annotated_read;
@@ -118,11 +118,10 @@ namespace IgSCUEAL.phylo {
                 LikelihoodFunction placement_lf    = (numeric_filter_object, screening_tree);
                 Optimize					  (res_lf,placement_lf);
 
-
-
                 logL_by_branch [this_branch] = -2*res_lf[1][0];
                 if (logL_by_branch [this_branch] < best_AIC) {
                     best_AIC = logL_by_branch [this_branch];
+                    divergence = BranchLength (screening_tree, "Query") + ((reference_data[segment_name])["lengths"]) [this_branch];
                 }
             }
 
@@ -135,12 +134,19 @@ namespace IgSCUEAL.phylo {
             utility.ForEachPair (raw_names_supported, "_branch_", "_support_",
                                                       "(^'`&supported`')[(^'`&labels`')[_branch_]] += _support_");
 
-            supported = utility.Filter (supported, "_support_", "_support_ > 0.01");
 
             best_type = Max (supported);
 
+
+            supported = utility.Filter (supported, "_support_", "_support_ >= 0.01");
+            if (utility.Array1D (supported) == 0) {
+                // ensure that there's at least one supported assignment
+                supported [best_type["key"]] = best_type["value"];
+            }
+
             placement_result [segment_name] = {"best" : {"type": best_type["key"], "support" : best_type ["value"]},
-                                               "credible" : supported };
+                                               "credible" : supported,
+                                               "divergence" : divergence };
 
         }
 
@@ -188,14 +194,26 @@ namespace IgSCUEAL.phylo {
         tip_avl = (^tree_name) ^ 0;
         labels  = {};
         zero_branch_lock = {};
+        lengths = {};
 
         for (node = 1; node < Abs (tip_avl) - 1; node += 1) {
-            if (Abs ((tip_avl[node])["Children"]) == 0) {
-                my_label = standardize_label ((tip_avl[node])["Name"]);
+            child_count = Abs ((tip_avl[node])["Children"]);
+            node_name = (tip_avl[node])["Name"];
+            if (child_count == 0) {
+                my_label = standardize_label (node_name);
                 labels [(tip_avl[node])["Name"]] = my_label;
+                (tip_avl[node])["Total tips below"] = 1;
+                (tip_avl[node])["Total length below"] =  (tip_avl[node])["Length"];
             } else {
-                my_label = labels [(tip_avl[node])["Name"]];
+                my_label = labels [node_name];
+                // compute average branch lengths
+                for (child = 0; child < child_count; child += 1) {
+                    (tip_avl[node])["Total tips below"] += (tip_avl[((tip_avl[node])["Children"])[child]])["Total tips below"];
+                    (tip_avl[node])["Total length below"] += (tip_avl[((tip_avl[node])["Children"])[child]])["Total length below"];
+                }
             }
+
+            lengths [node_name] = (tip_avl[node])["Total length below"] / (tip_avl[node])["Total tips below"];
 
             parent_name = (tip_avl[(tip_avl[node])["Parent"]])["Name"];
 
@@ -262,7 +280,8 @@ namespace IgSCUEAL.phylo {
             }
         }
 
-        return labels;
+        return {"labels" : labels,
+                "lengths" : lengths};
     }
 
     lfunction prepare_alignment (index, path, cache) {
@@ -298,9 +317,12 @@ namespace IgSCUEAL.phylo {
 
 
                 Export (model_string, ^((lf_info["Models"])[0]));
+
+
                 branch_level_conditionals = {"conditionals" : {},
-                                             "model" : model_string,
-                                             "labels" : generate_labels ((lf_info["Trees"])[0])};
+                                             "model" : model_string};
+
+                utility.Extend (branch_level_conditionals, generate_labels ((lf_info["Trees"])[0]));
 
                 site_count                = utility.Array1D (duplicate_map);
 
@@ -408,10 +430,11 @@ namespace IgSCUEAL {
                             locations[this_fragment] = {{from__,to__}};
 
                             if (from < to) {
-                                annotation[this_fragment] = (mapped_data["QRY"])[from][to];
+                                annotation[this_fragment] = strip_in_frame_indels ((mapped_data["QRY"])[from][to]);
                             } else {
                                 annotation[this_fragment] = "";
                             }
+
                             annotation[this_fragment + "_AA"] = alignments.TranslateCodonsToAminoAcids (annotation[this_fragment], 0, code);
                         }
                    }
@@ -421,10 +444,10 @@ namespace IgSCUEAL {
 
             if (locations / "JUNCTION_CDR3" && locations / "JUNCTION_J") {
                 junction = (mapped_data["QRY"])[(locations["JUNCTION_CDR3"])[0]][(locations["JUNCTION_J"])[0]+2];
-                annotation ["JUNCTION"] = junction;
-                annotation ["JUNCTION_AA"] = alignments.TranslateCodonsToAminoAcids (junction, 0, code);
-                annotation ["CDR3"] = junction [3][Abs (junction)-4];
+                annotation ["CDR3"] = strip_in_frame_indels(junction [3][Abs (junction)-4]);
                 annotation ["CDR3_AA"] = alignments.TranslateCodonsToAminoAcids (annotation ["CDR3"], 0, code);
+                annotation ["JUNCTION"] = strip_in_frame_indels(junction);
+                annotation ["JUNCTION_AA"] = alignments.TranslateCodonsToAminoAcids (annotation["JUNCTION"], 0, code);
 
                 if (None != d_region) {
                     _dAlignOptions = {};
@@ -560,6 +583,10 @@ namespace IgSCUEAL {
         return strip_non_letters (sequence && 1)['stripped'];
     }
 
+    lfunction strip_in_frame_indels (sequence) {
+        return sequence ^ {{"-{3}",""}};
+    }
+
     lfunction  strip_gaps (sequence) {
         return {'aligned': sequence, 'stripped' : sequence ^ {{"\-",""}}};
     }
@@ -670,7 +697,7 @@ namespace IgSCUEAL {
 
         if (Type (overall['RAW-REF']) == "String") {
 
-            computed_score = (overall["SCORE"] - 10 * alignment_settings["MATCH"] * Exp (-Abs(seq)) ) / Abs (seq) * 3 ;
+            computed_score = (overall["SCORE"] - 10 * alignment_settings["MATCH"] * Exp (-Abs(seq)/3) ) / Abs (seq) * 3 ;
 
 
             /*console.log ("\n\n");
@@ -685,7 +712,7 @@ namespace IgSCUEAL {
 
             if (alignment_settings["E"] <= computed_score) {
                 utility.Extend (overall, correctReadUsingCodonAlignedData (overall['RAW-REF'], overall['RAW-QRY'], alignment_settings["code"]));
-                assert (alignment_settings["SEQ_ALIGN_CODON_ALIGN"] != TRUE || overall["SPAN"] > 3 , "Internal error in align_sequence_to_reference_set" + overall);
+                assert (alignment_settings["SEQ_ALIGN_CODON_ALIGN"] != TRUE || overall["SPAN"] > 3 , "Internal error in align_sequence_to_reference_set" + overall + "\nComputed score `computed_score`; expected score " + alignment_settings["E"] + "; match score " +  alignment_settings["MATCH"] + "\nInput sequence: `seq`");
                 return overall;
             }
         }
