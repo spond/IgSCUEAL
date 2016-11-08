@@ -48,8 +48,6 @@ report_headers = {{
 /*30*/ "C-divergence"
 }};
 
-//console.log (IgSCUEAL.strip_in_frame_indels ("GTGAGTAGCAAGTACTAC------ATGGACGTC"));
-
 //------------------------------------------------------------------------------------------------
 
 io.DisplayAnalysisBanner({
@@ -87,7 +85,7 @@ screening.queue = mpi.CreateQueue ({"Headers" : utility.GetListOfLoadedModules (
 fprintf (IgSCUEAL.result.csv, Join ("\t", report_headers), "\n");
 
 igscueal.start_time = Time (0);
-IgSCUEAL.batch_size = Min (10, read_set["sequences"] $ Max (1, utility.GetEnvVariable ("MPI_NODE_COUNT")));
+IgSCUEAL.batch_size = Min (5, read_set["sequences"] $ Max (1, utility.GetEnvVariable ("MPI_NODE_COUNT")));
 
 for (seq_id = 0; seq_id < read_set["sequences"]; ) {
 
@@ -97,7 +95,8 @@ for (seq_id = 0; seq_id < read_set["sequences"]; ) {
 
     io.ReportProgressBar("", "\tScreening read " + (seq_id+1) + "/" + read_set["sequences"] +
             ". Elapsed time : " + io.FormatTimeInterval (igscueal.time_so_far ) +
-            ". ETA : " + io.FormatTimeInterval (igscueal.time_so_far * ((read_set["sequences"]-seq_id-1)/(seq_id+1))) + ".");
+            ". ETA : " + io.FormatTimeInterval (igscueal.time_so_far * ((read_set["sequences"]-seq_id-1)/(seq_id+1))) +
+            ". " + Format ((seq_id+1)/igscueal.time_so_far, 5,2) + " sequences/ second" + ".");
 
     send.indices = {};
     send.ids = {};
