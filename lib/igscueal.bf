@@ -63,6 +63,7 @@ namespace IgSCUEAL.phylo {
         for (segment_id = 0; segment_id < segment_count; segment_id += 1) {
 
             segment_name = mapped_segments[segment_id];
+
             branch_names = utility.Keys ((reference_data[segment_name])["conditionals"]);
             branch_count = utility.Array1D (branch_names) - 1; // subtract "Node0"
 
@@ -73,6 +74,8 @@ namespace IgSCUEAL.phylo {
                     "Internal error in place_sequence ");
 
             DataSet qry           = ReadFromString (">qry\n" + (phylomap_data[segment_name])["mapped_qry"]);
+
+
             DataSetFilter   qry_f = CreateFilter (qry, 1);
             unique_sites = utility.Array1D (qry_f.site_freqs);
             resolutions  = {};
@@ -105,7 +108,7 @@ namespace IgSCUEAL.phylo {
             utility.SetEnvVariable ("OPTIMIZATION_METHOD", 4);
             utility.SetEnvVariable ("VERBOSITY_LEVEL", 0);
             utility.SetEnvVariable ("USE_LAST_VALUES", 0);
-            utility.SetEnvVariable ("OPTIMIZATION_PRECISION", 0.01);
+            utility.SetEnvVariable ("OPTIMIZATION_PRECISION", 0.001);
 
             best_AIC = 1e100;
 
@@ -117,6 +120,8 @@ namespace IgSCUEAL.phylo {
     			DataSetFilter numeric_filter_object = CreateFilter (numerical_filter);
                 LikelihoodFunction placement_lf    = (numeric_filter_object, screening_tree);
                 Optimize					  (res_lf,placement_lf);
+
+
 
                 logL_by_branch [this_branch] = -2*res_lf[1][0];
                 if (logL_by_branch [this_branch] < best_AIC) {
@@ -420,6 +425,7 @@ namespace IgSCUEAL {
                    if (Type (fragments) == "AssociativeList"){
                         fragment_names = utility.Keys (fragments);
                         fragment_count = Abs (fragments);
+
                         for (f = 0; f < fragment_count; f += 1) {
                             this_fragment = fragment_names[f];
                             this_fragment_span = fragments [this_fragment];
@@ -639,7 +645,9 @@ namespace IgSCUEAL {
         if (label == "J") {
             utility.Extend (result, ensure_required_partitions ({{"J","JUNCTION_J"}}, data["partitions"]));
         }
-
+        if (label == "C") {
+            utility.Extend (result, ensure_required_partitions ({{"CH"}}, data["partitions"]));
+        }
        return  result;
     }
 
@@ -697,7 +705,7 @@ namespace IgSCUEAL {
 
         if (Type (overall['RAW-REF']) == "String") {
 
-            computed_score = (overall["SCORE"] - 10 * alignment_settings["MATCH"] * Exp (-Abs(seq)/3) ) / Abs (seq) * 3 ;
+            computed_score = (overall["SCORE"] - 30 * alignment_settings["MATCH"] * Exp (-Abs(seq)/3) ) / Abs (seq) * 3 ;
 
 
             /*console.log ("\n\n");
@@ -712,7 +720,11 @@ namespace IgSCUEAL {
 
             if (alignment_settings["E"] <= computed_score) {
                 utility.Extend (overall, correctReadUsingCodonAlignedData (overall['RAW-REF'], overall['RAW-QRY'], alignment_settings["code"]));
-                assert (alignment_settings["SEQ_ALIGN_CODON_ALIGN"] != TRUE || overall["SPAN"] > 3 , "Internal error in align_sequence_to_reference_set" + overall + "\nComputed score `computed_score`; expected score " + alignment_settings["E"] + "; match score " +  alignment_settings["MATCH"] + "\nInput sequence: `seq`");
+
+
+                if (alignment_settings["SEQ_ALIGN_CODON_ALIGN"] == TRUE && overall["SPAN"] <= 3) {
+                    return None;
+                } // , "Internal error in align_sequence_to_reference_set" + overall + "\nComputed score `computed_score`; expected score " + alignment_settings["E"] + "; match score " +  alignment_settings["MATCH"] + "\nInput sequence: `seq`");
                 return overall;
             }
         }

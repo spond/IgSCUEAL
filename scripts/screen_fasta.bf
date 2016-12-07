@@ -64,6 +64,8 @@ io.DisplayAnalysisBanner({
 
 IgSCUEAL.set_up (igh_human.settings);
 
+utility.SetEnvVariable ("NORMALIZE_SEQUENCE_NAMES", FALSE);
+
 SetDialogPrompt ("Select an alignment to screen");
 read_set = alignments.ReadNucleotideDataSet ("reads", None);
 io.ReportProgressMessageMD("IGSCUEAL", "Load", "Loaded " + read_set["sequences"] + " sequences from `read_set['file']`");
@@ -85,18 +87,11 @@ screening.queue = mpi.CreateQueue ({"Headers" : utility.GetListOfLoadedModules (
 fprintf (IgSCUEAL.result.csv, Join ("\t", report_headers), "\n");
 
 igscueal.start_time = Time (0);
-IgSCUEAL.batch_size = Min (5, read_set["sequences"] $ Max (1, utility.GetEnvVariable ("MPI_NODE_COUNT")));
+IgSCUEAL.batch_size = Min (25, read_set["sequences"] $ Max (1, utility.GetEnvVariable ("MPI_NODE_COUNT")));
+igscueal.finished = 0;
 
 for (seq_id = 0; seq_id < read_set["sequences"]; ) {
 
-    igscueal.time_so_far = Max (1,Time(0) - igscueal.timer);
-
-
-
-    io.ReportProgressBar("", "\tScreening read " + (seq_id+1) + "/" + read_set["sequences"] +
-            ". Elapsed time : " + io.FormatTimeInterval (igscueal.time_so_far ) +
-            ". ETA : " + io.FormatTimeInterval (igscueal.time_so_far * ((read_set["sequences"]-seq_id-1)/(seq_id+1))) +
-            ". " + Format ((seq_id+1)/igscueal.time_so_far, 5,2) + " sequences/ second" + ".");
 
     send.indices = {};
     send.ids = {};
@@ -132,6 +127,16 @@ lfunction igh_human_report_read_batch (node, batch_results, arguments) {
     for (k = 0; k < size; k += 1) {
         igh_human_report_read (node, batch_results[k], arguments);
     }
+
+
+    ^"igscueal.finished" += size;
+    time_so_far = Max (1,Time(0) - ^"igscueal.start_time");
+
+    io.ReportProgressBar("", "\tScreened " + ^"igscueal.finished" + "/" + (^"read_set")["sequences"] + " sequences" +
+            ". Elapsed time : " + io.FormatTimeInterval (time_so_far ) +
+            ". ETA : " + io.FormatTimeInterval (time_so_far * (((^"read_set")["sequences"]-^"igscueal.finished")/(^"igscueal.finished"))) +
+            ". " + Format (^"igscueal.finished"/time_so_far, 5,2) + " sequences/ second" + ".");
+
 }
 
 lfunction igh_human_report_read (node, read_result, arguments) {
