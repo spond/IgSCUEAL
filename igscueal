@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+if ( ! getopts ":i:o:a:p:" opt); then
+	echo "Usage: igscueal -i INFILE -o OUTFILE -A ALTFILE -P PROCESSES";
+	exit $E_OPTERROR;
+fi
+
+while getopts ":i:o:a:p:" opt; do
+  case $opt in
+    i) infile="$OPTARG"
+    ;;
+    o) outfile="$OPTARG"
+    ;;
+    a) altfile="$OPTARG"
+    ;;
+    p) numproc="$OPTARG"
+    ;;
+    \?) echo "Invalid option -$OPTARG" >&2
+    ;;
+  esac
+done
+
+mpirun -np $numproc /usr/local/bin/HYPHYMPI scripts/screen_fasta.bf <<END
+$infile
+$outfile
+$altfile
+
+END
