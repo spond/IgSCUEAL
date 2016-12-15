@@ -86,18 +86,18 @@ class regExpClass:
 
 
 ####################################
-class idFilterClass:
+class setMemberFilterClass:
     filter_set    = None
-    column_id = 0
-    next_filter = None
+    next_filter   = None
+    line_processor = None
 
-    def __init__ (self, id_tag, the_set, column_mapper, nf = None):
-        self.column_id = column_mapper.index(id_tag)
+    def __init__ (self, line_handler, the_set, nf = None):
+        self.line_processor = line_handler
         self.filter_set = the_set
         self.next_filter = nf
 
     def check_line (self,line):
-        if line[self.column_id] in self.filter_set:
+        if self.line_processor (line) in self.filter_set:
             if (self.next_filter is not None): return self.next_filter.check_line (line)
             return True
         return False
@@ -212,7 +212,7 @@ def reduceRearrangement (line):
 ####################################
 
 def cdr3 (line):
-    return len (line[cdr3_id])
+    return line[cdr3_id]
 
 ####################################
 
@@ -263,7 +263,6 @@ def outputUsage (line_filter, support, support_col, mappingFunction):
 
 def outputSummary (line_filter, support, support_col, rearrangement_col, mappingFunction = None, histogram = None, read_alternatives = None, coverages = None, cluster_sizes = None):
 
-
     binByRearrangement = {}
     total        = 0
     pass_support = 0
@@ -276,14 +275,13 @@ def outputSummary (line_filter, support, support_col, rearrangement_col, mapping
                      'Failed filter' : {} }
 
 
-
     read_column_id = column_mapper ["Sequence"]
 
-    def add_to_counts (line, tag):
+    def add_to_counts (line, tag, increment = 1):
         length = len(line[read_column_id])
         if length not in read_lengths [tag]:
             read_lengths[tag][length] = 0
-        read_lengths[tag][length] += 1
+        read_lengths[tag][length] += increment
 
     if coverages is not None:
         coverages = coverages.split (',')
@@ -321,9 +319,11 @@ def outputSummary (line_filter, support, support_col, rearrangement_col, mapping
                         alleles = mappingFunction (line)
                     else:
                         alleles = [[line[rearrangement_col],1]]
+
                 except:
                     add_to_counts (line, 'Failed filter')
                     continue
+
 
                 filtered_in += 1
 
@@ -532,7 +532,7 @@ if cli_args.cluster is not None:
                 cluster_sizes[cluster['size']] = 0
             cluster_sizes[cluster['size']] += 1
 
-    line_filter = idFilterClass ("Name", filter_set, column_headings, line_filter)
+    line_filter = setMemberFilterClass (make_sequence_id, filter_set ,line_filter)
 
 
 if cli_args.rearrangement is not None:
