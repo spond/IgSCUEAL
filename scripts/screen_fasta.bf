@@ -62,9 +62,9 @@ io.DisplayAnalysisBanner({
     "requirements": "a FASTA file with (human) Ig reads"
 });
 
-IgSCUEAL.set_up (igh_human.settings);
-
 utility.SetEnvVariable ("NORMALIZE_SEQUENCE_NAMES", FALSE);
+
+IgSCUEAL.set_up (igh_human.settings);
 
 SetDialogPrompt ("Select an alignment to screen");
 read_set = alignments.ReadNucleotideDataSet ("reads", None);
