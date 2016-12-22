@@ -80,7 +80,7 @@ IgSCUEAL.result.rearr.tsv = utility.GetEnvVariable ("LAST_FILE_PATH");
 
 
 screening.queue = mpi.CreateQueue ({"Headers" : utility.GetListOfLoadedModules (),
-                                    "Variables" : {{"igh_human.settings"}}});
+                                    "Variables" : {{"igh_human.settings", "NORMALIZE_SEQUENCE_NAMES"}}});
 
 
 
