@@ -97,8 +97,12 @@ class setMemberFilterClass:
         self.next_filter = nf
 
     def check_line (self,line):
-        if self.line_processor (line) in self.filter_set:
-            if (self.next_filter is not None): return self.next_filter.check_line (line)
+        processed = self.line_processor (line)
+        if not isinstance(processed, list):
+            processed = [processed]
+        #print (processed, file = sys.stderr)
+        if any ([k (line) in self.filter_set for k in processed]):
+            if self.next_filter is not None: return self.next_filter.check_line (line)
             return True
         return False
 
@@ -137,6 +141,12 @@ def add_random_suffix (name, sep = '_', length = 10):
 
 def make_sequence_id (line):
     return "%s:%s" % (line[column_mapper['Name']], line[column_mapper['Index']])
+
+def make_sequence_id_plain (line):
+    return "%s" % (line[column_mapper['Name']],)
+
+def make_sequence_id_2 (line):
+    return [make_sequence_id_plain , make_sequence_id]
 
 ####################################
 
@@ -532,7 +542,7 @@ if cli_args.cluster is not None:
                 cluster_sizes[cluster['size']] = 0
             cluster_sizes[cluster['size']] += 1
 
-    line_filter = setMemberFilterClass (make_sequence_id, filter_set ,line_filter)
+    line_filter = setMemberFilterClass (make_sequence_id_2, filter_set ,line_filter)
 
 
 if cli_args.rearrangement is not None:
