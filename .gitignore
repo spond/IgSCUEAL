@@ -1,0 +1,4 @@
+.DS_Store
+*.mpinode0
+__pycache__
+*.pyc
