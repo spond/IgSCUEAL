@@ -38,68 +38,68 @@ END;
 BEGIN HYPHY;
 
 
-global mtpqnFfi.user.theta_AC:=0.6204586519954149;
-global mtpqnFfi.user.theta_AG:=1;
-global mtpqnFfi.user.theta_AT:=0.1781596412918593;
-global mtpqnFfi.user.theta_CG:=0.3125149175219012;
-global mtpqnFfi.user.theta_CT:=0.8073584316168136;
-global mtpqnFfi.user.theta_GT:=0.40222373143961;
-mtpqnFfi.user_Q={4,4};
-mtpqnFfi.user_Q[0][0]:=0;
-mtpqnFfi.user_Q[0][1]:=mtpqnFfi.user.theta_AC*t;
-mtpqnFfi.user_Q[0][2]:=mtpqnFfi.user.theta_AG*t;
-mtpqnFfi.user_Q[0][3]:=mtpqnFfi.user.theta_AT*t;
-mtpqnFfi.user_Q[1][0]:=mtpqnFfi.user.theta_AC*t;
-mtpqnFfi.user_Q[1][1]:=0;
-mtpqnFfi.user_Q[1][2]:=mtpqnFfi.user.theta_CG*t;
-mtpqnFfi.user_Q[1][3]:=mtpqnFfi.user.theta_CT*t;
-mtpqnFfi.user_Q[2][0]:=mtpqnFfi.user.theta_AG*t;
-mtpqnFfi.user_Q[2][1]:=mtpqnFfi.user.theta_CG*t;
-mtpqnFfi.user_Q[2][2]:=0;
-mtpqnFfi.user_Q[2][3]:=mtpqnFfi.user.theta_GT*t;
-mtpqnFfi.user_Q[3][0]:=mtpqnFfi.user.theta_AT*t;
-mtpqnFfi.user_Q[3][1]:=mtpqnFfi.user.theta_CT*t;
-mtpqnFfi.user_Q[3][2]:=mtpqnFfi.user.theta_GT*t;
-mtpqnFfi.user_Q[3][3]:=0;
+global AwHHFN_N.user.theta_AC:=0.6208175629192274;
+global AwHHFN_N.user.theta_AG:=1;
+global AwHHFN_N.user.theta_AT:=0.1782239191093178;
+global AwHHFN_N.user.theta_CG:=0.3128922630839979;
+global AwHHFN_N.user.theta_CT:=0.8066670711711597;
+global AwHHFN_N.user.theta_GT:=0.4026273483452799;
+AwHHFN_N.user_Q={4,4};
+AwHHFN_N.user_Q[0][0]:=0;
+AwHHFN_N.user_Q[0][1]:=AwHHFN_N.user.theta_AC*t;
+AwHHFN_N.user_Q[0][2]:=AwHHFN_N.user.theta_AG*t;
+AwHHFN_N.user_Q[0][3]:=AwHHFN_N.user.theta_AT*t;
+AwHHFN_N.user_Q[1][0]:=AwHHFN_N.user.theta_AC*t;
+AwHHFN_N.user_Q[1][1]:=0;
+AwHHFN_N.user_Q[1][2]:=AwHHFN_N.user.theta_CG*t;
+AwHHFN_N.user_Q[1][3]:=AwHHFN_N.user.theta_CT*t;
+AwHHFN_N.user_Q[2][0]:=AwHHFN_N.user.theta_AG*t;
+AwHHFN_N.user_Q[2][1]:=AwHHFN_N.user.theta_CG*t;
+AwHHFN_N.user_Q[2][2]:=0;
+AwHHFN_N.user_Q[2][3]:=AwHHFN_N.user.theta_GT*t;
+AwHHFN_N.user_Q[3][0]:=AwHHFN_N.user.theta_AT*t;
+AwHHFN_N.user_Q[3][1]:=AwHHFN_N.user.theta_CT*t;
+AwHHFN_N.user_Q[3][2]:=AwHHFN_N.user.theta_GT*t;
+AwHHFN_N.user_Q[3][3]:=0;
 
 
-mtpqnFfi.user_pi={
+AwHHFN_N.user_pi={
 {0.2048076923076923}
 {0.3073717948717949}
 {0.2496794871794872}
 {0.2381410256410256}
 };
-Model mtpqnFfi.user=(mtpqnFfi.user_Q,mtpqnFfi.user_pi);
+Model AwHHFN_N.user=(AwHHFN_N.user_Q,AwHHFN_N.user_pi);
 TRY_NUMERIC_SEQUENCE_MATCH=0;
 ACCEPT_ROOTED_TREES=1;
 
-UseModel (mtpqnFfi.user);
-Tree mtpqnFfi.tree_0=((IGHJ3_01,IGHJ3_02)Node1,(IGHJ2_01,(IGHJ6_03,((IGHJ6_01,IGHJ6_02)Node9,IGHJ6_04)Node8)Node6)Node4,((IGHJ5_01,IGHJ5_02)Node14,(IGHJ1_01,IGHJ4_01,IGHJ4_02,IGHJ4_03)Node17)Node13);
+UseModel (AwHHFN_N.user);
+Tree AwHHFN_N.tree_0=((IGHJ3_01,IGHJ3_02)Node1,(IGHJ2_01,(IGHJ6_03,((IGHJ6_01,IGHJ6_02)Node9,IGHJ6_04)Node8)Node6)Node4,((IGHJ5_01,IGHJ5_02)Node14,(IGHJ1_01,IGHJ4_01,IGHJ4_02,IGHJ4_03)Node17)Node13);
 
-mtpqnFfi.tree_0.IGHJ3_01.t=0;
-mtpqnFfi.tree_0.IGHJ3_02.t=0.04820615087392251;
-mtpqnFfi.tree_0.Node1.t=0.4788667136610167;
-mtpqnFfi.tree_0.IGHJ2_01.t=0.5017201833437932;
-mtpqnFfi.tree_0.IGHJ6_03.t=0;
-mtpqnFfi.tree_0.IGHJ6_01.t=0.04119250296872407;
-mtpqnFfi.tree_0.IGHJ6_02.t=0;
-mtpqnFfi.tree_0.Node9.t=0.04072696737037717;
-mtpqnFfi.tree_0.IGHJ6_04.t=0;
-mtpqnFfi.tree_0.Node8.t=0.1241221576339596;
-mtpqnFfi.tree_0.Node6.t=0.2641655461829876;
-mtpqnFfi.tree_0.Node4.t=0.0530693745016594;
-mtpqnFfi.tree_0.IGHJ5_01.t=0;
-mtpqnFfi.tree_0.IGHJ5_02.t=0.09748659704610416;
-mtpqnFfi.tree_0.Node14.t=0.2351017210456103;
-mtpqnFfi.tree_0.IGHJ1_01.t=0.5363955471364987;
-mtpqnFfi.tree_0.IGHJ4_01.t=0;
-mtpqnFfi.tree_0.IGHJ4_02.t=0.05120051433294139;
-mtpqnFfi.tree_0.IGHJ4_03.t=0.1037773791698561;
-mtpqnFfi.tree_0.Node17.t=0.04612178991279325;
-mtpqnFfi.tree_0.Node13.t=0.1704386104895154;
-DataSet IgSCUEAL.phylo.LgcXMjdN.alignment = ReadDataFile(USE_NEXUS_FILE_DATA);
-DataSetFilter mtpqnFfi.nuc_data_0 = CreateFilter(IgSCUEAL.phylo.LgcXMjdN.alignment,1,"0-59","2,3,1,11,9,10,12,7,8,0,4-6");
+AwHHFN_N.tree_0.IGHJ3_01.t=0;
+AwHHFN_N.tree_0.IGHJ3_02.t=0.04817393083477718;
+AwHHFN_N.tree_0.Node1.t=0.4792032733818398;
+AwHHFN_N.tree_0.IGHJ2_01.t=0.5015545911382859;
+AwHHFN_N.tree_0.IGHJ6_03.t=0;
+AwHHFN_N.tree_0.IGHJ6_01.t=0.04116216501962858;
+AwHHFN_N.tree_0.IGHJ6_02.t=0;
+AwHHFN_N.tree_0.Node9.t=0.04071299390229021;
+AwHHFN_N.tree_0.IGHJ6_04.t=0;
+AwHHFN_N.tree_0.Node8.t=0.1240751260582061;
+AwHHFN_N.tree_0.Node6.t=0.2643242375580618;
+AwHHFN_N.tree_0.Node4.t=0.05302694834525173;
+AwHHFN_N.tree_0.IGHJ5_01.t=0;
+AwHHFN_N.tree_0.IGHJ5_02.t=0.097449761954016;
+AwHHFN_N.tree_0.Node14.t=0.2352354550701448;
+AwHHFN_N.tree_0.IGHJ1_01.t=0.5361888557970821;
+AwHHFN_N.tree_0.IGHJ4_01.t=0;
+AwHHFN_N.tree_0.IGHJ4_02.t=0.05118097424760663;
+AwHHFN_N.tree_0.IGHJ4_03.t=0.1037378659042678;
+AwHHFN_N.tree_0.Node17.t=0.04609182496666664;
+AwHHFN_N.tree_0.Node13.t=0.1703729370016438;
+DataSet IgSCUEAL.phylo.wzLNUFZd.alignment = ReadDataFile(USE_NEXUS_FILE_DATA);
+DataSetFilter AwHHFN_N.nuc_data_0 = CreateFilter(IgSCUEAL.phylo.wzLNUFZd.alignment,1,"0-59","2,3,1,11,9,10,12,7,8,0,4-6");
 ASSUME_REVERSIBLE_MODELS=0;
-LikelihoodFunction mtpqnFfi.likelihoodFunction = (mtpqnFfi.nuc_data_0,mtpqnFfi.tree_0);
+LikelihoodFunction AwHHFN_N.likelihoodFunction = (AwHHFN_N.nuc_data_0,AwHHFN_N.tree_0);
 
 END;
