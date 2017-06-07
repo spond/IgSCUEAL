@@ -77,6 +77,8 @@ namespace IgSCUEAL.phylo {
 
 
             DataSetFilter   qry_f = CreateFilter (qry, 1);
+            
+            
             unique_sites = utility.Array1D (qry_f.site_freqs);
             resolutions  = {};
             GetDataInfo (map_to_unique, qry_f);
@@ -85,10 +87,11 @@ namespace IgSCUEAL.phylo {
                 resolutions[p] = character_resolution;
             }
 
-
+            //console.log ((phylomap_data[segment_name])["mapped_qry"]);
             numeric_query = {qry.sites, 4};
             for (p = 0; p < qry.sites; p+=1) {
                 pattern = resolutions[map_to_unique[p]];
+                //console.log ("Site " + (p+1) + " => " + pattern + "\n");
                 for (s = 0; s < 4; s+=1) {
                     numeric_query[p][s] = pattern[s];
                 }
@@ -127,6 +130,7 @@ namespace IgSCUEAL.phylo {
                 if (logL_by_branch [this_branch] < best_AIC) {
                     best_AIC = logL_by_branch [this_branch];
                     divergence = BranchLength (screening_tree, "Query") + ((reference_data[segment_name])["lengths"]) [this_branch];
+                    
                 }
             }
 
@@ -708,15 +712,16 @@ namespace IgSCUEAL {
             computed_score = (overall["SCORE"] - 30 * alignment_settings["MATCH"] * Exp (-Abs(seq)/3) ) / Abs (seq) * 3 ;
 
 
-            /*console.log ("\n\n");
+            /*
+            console.log ("\n\n");
             console.log (">ref\n" + overall['RAW-REF']);
             console.log (">qry\n" + overall['RAW-QRY']);
             console.log ("Input: `seq`");
             console.log ("Score :" + overall['SCORE']);
             console.log ("Computed : " + computed_score);
             console.log ("E :" + alignment_settings["E"]);
-            console.log (overall);*/
-
+            console.log (overall); */
+            
 
             if (alignment_settings["E"] <= computed_score) {
                 utility.Extend (overall, correctReadUsingCodonAlignedData (overall['RAW-REF'], overall['RAW-QRY'], alignment_settings["code"]));
