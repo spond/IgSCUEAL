@@ -738,98 +738,98 @@ namespace IgSCUEAL {
 
     // -------------------------------------------------------------------------- //
 
-    lfunction define_alignment_settings (code) {
+lfunction define_alignment_settings (code) {
 
-            igh_matrix = {
-                {7,-9,-3,-2,-6,0,-5,-4,-7,-6,-5,-7,0,-10,-5,-2,0,0,-6,-7}
-                {-9,11,-7,-13,-4,-6,-6,-12,-13,-10,-12,-10,-8,-15,-5,-5,-12,-10,-2,-3}
-                {-3,-7,8,2,-7,-1,0,-8,-6,-8,-10,0,-5,-5,-7,-4,-6,-5,-9,-3}
-                {-2,-13,2,9,-8,-1,-4,-9,1,-10,-9,-4,-9,0,-5,-6,-6,-3,-10,-6}
-                {-6,-4,-7,-8,8,-5,-2,0,-10,1,1,-5,-3,-10,-7,-3,-6,0,-4,1}
-                {0,-6,-1,-1,-5,6,-4,-9,-7,-9,-9,-4,-7,-10,-2,-2,-7,-4,-4,-5}
-                {-5,-6,0,-4,-2,-4,11,-6,-4,-4,-8,2,0,2,-1,-2,-5,-5,-8,3}
-                {-4,-12,-8,-9,0,-9,-6,8,-4,-1,3,-2,-6,-11,-4,-4,0,3,-7,-4}
-                {-7,-13,-6,1,-10,-7,-4,-4,9,-8,-2,1,-9,0,2,-5,-2,-8,-10,-8}
-                {-6,-10,-8,-10,1,-9,-4,-1,-8,7,3,-10,-1,-3,-4,-7,-3,1,-5,-6}
-                {-5,-12,-10,-9,1,-9,-8,3,-2,3,9,-7,-6,-8,-4,-7,0,1,-4,-7}
-                {-7,-10,0,-4,-5,-4,2,-2,1,-10,-7,8,-7,-6,-4,1,-1,-8,-11,-2}
-                {0,-8,-5,-9,-3,-7,0,-6,-9,-1,-6,-7,9,-2,-5,-2,-2,-4,-12,-4}
-                {-10,-15,-5,0,-10,-10,2,-11,0,-3,-8,-6,-2,9,-1,-10,-9,-10,-13,-8}
-                {-5,-5,-7,-5,-7,-2,-1,-4,2,-4,-4,-4,-5,-1,7,-1,-1,-6,-3,-6}
-                {-2,-5,-4,-6,-3,-2,-2,-4,-5,-7,-7,1,-2,-10,-1,5,0,-7,-6,-3}
-                {0,-12,-6,-6,-6,-7,-5,0,-2,-3,0,-1,-2,-9,-1,0,6,-4,-11,-8}
-                {0,-10,-5,-3,0,-4,-5,3,-8,1,1,-8,-4,-10,-6,-7,-4,7,-7,-5}
-                {-6,-2,-9,-10,-4,-4,-8,-7,-10,-5,-4,-11,-12,-13,-3,-6,-11,-7,9,-3}
-                {-7,-3,-3,-6,1,-5,3,-4,-8,-6,-7,-2,-4,-8,-6,-3,-8,-5,-3,7}
-            };
+        igh_matrix = {
+            {7,-9,-3,-2,-6,0,-5,-4,-7,-6,-5,-7,0,-10,-5,-2,0,0,-6,-7}
+            {-9,11,-7,-13,-4,-6,-6,-12,-13,-10,-12,-10,-8,-15,-5,-5,-12,-10,-2,-3}
+            {-3,-7,8,2,-7,-1,0,-8,-6,-8,-10,0,-5,-5,-7,-4,-6,-5,-9,-3}
+            {-2,-13,2,9,-8,-1,-4,-9,1,-10,-9,-4,-9,0,-5,-6,-6,-3,-10,-6}
+            {-6,-4,-7,-8,8,-5,-2,0,-10,1,1,-5,-3,-10,-7,-3,-6,0,-4,1}
+            {0,-6,-1,-1,-5,6,-4,-9,-7,-9,-9,-4,-7,-10,-2,-2,-7,-4,-4,-5}
+            {-5,-6,0,-4,-2,-4,11,-6,-4,-4,-8,2,0,2,-1,-2,-5,-5,-8,3}
+            {-4,-12,-8,-9,0,-9,-6,8,-4,-1,3,-2,-6,-11,-4,-4,0,3,-7,-4}
+            {-7,-13,-6,1,-10,-7,-4,-4,9,-8,-2,1,-9,0,2,-5,-2,-8,-10,-8}
+            {-6,-10,-8,-10,1,-9,-4,-1,-8,7,3,-10,-1,-3,-4,-7,-3,1,-5,-6}
+            {-5,-12,-10,-9,1,-9,-8,3,-2,3,9,-7,-6,-8,-4,-7,0,1,-4,-7}
+            {-7,-10,0,-4,-5,-4,2,-2,1,-10,-7,8,-7,-6,-4,1,-1,-8,-11,-2}
+            {0,-8,-5,-9,-3,-7,0,-6,-9,-1,-6,-7,9,-2,-5,-2,-2,-4,-12,-4}
+            {-10,-15,-5,0,-10,-10,2,-11,0,-3,-8,-6,-2,9,-1,-10,-9,-10,-13,-8}
+            {-5,-5,-7,-5,-7,-2,-1,-4,2,-4,-4,-4,-5,-1,7,-1,-1,-6,-3,-6}
+            {-2,-5,-4,-6,-3,-2,-2,-4,-5,-7,-7,1,-2,-10,-1,5,0,-7,-6,-3}
+            {0,-12,-6,-6,-6,-7,-5,0,-2,-3,0,-1,-2,-9,-1,0,6,-4,-11,-8}
+            {0,-10,-5,-3,0,-4,-5,3,-8,1,1,-8,-4,-10,-6,-7,-4,7,-7,-5}
+            {-6,-2,-9,-10,-4,-4,-8,-7,-10,-5,-4,-11,-12,-13,-3,-6,-11,-7,9,-3}
+            {-7,-3,-3,-6,1,-5,3,-4,-8,-6,-7,-2,-4,-8,-6,-3,-8,-5,-3,7}
+        };
 
-            max_score = Max (igh_matrix,0);
-            penalty = Max (max_score, -Min (igh_matrix,0));
-
-
-            options = {
-                "SEQ_ALIGN_CHARACTER_MAP" : "ACGT",
-                "SEQ_ALIGN_GAP_OPEN"	 : 	1.5*penalty,
-                "SEQ_ALIGN_GAP_OPEN2"	 :	1.5*penalty,
-                "SEQ_ALIGN_GAP_EXTEND"   : 	0.1*penalty,
-                "SEQ_ALIGN_GAP_EXTEND2"  : 	0.1*penalty,
-                "SEQ_ALIGN_FRAMESHIFT"   :  2*penalty,
-                "SEQ_ALIGN_NO_TP"        :  1,
-                "SEQ_ALIGN_AFFINE"       :  1,
-                "SEQ_ALIGN_CODON_ALIGN"  :  1
-            };
-
-           base_frequencies = {
-                                    {   0.069352301}
-                                    {   0.021000333}
-                                    {   0.049862283}
-                                    {   0.026563029}
-                                    {   0.033026253}
-                                    {     0.1054545}
-                                    {   0.008970554}
-                                    {   0.036648952}
-                                    {   0.036329907}
-                                    {   0.065164842}
-                                    {   0.021805663}
-                                    {   0.032992805}
-                                    {     0.0348093}
-                                    {   0.036818766}
-                                    {   0.054168098}
-                                    {    0.12149678}
-                                    {   0.082464001}
-                                    {   0.053564744}
-                                    {   0.038383113}
-                                    {    0.07112377}
-                                };
+        max_score = Max (igh_matrix,0);
+        penalty = Max (max_score, -Min (igh_matrix,0));
 
 
+        options = {
+            "SEQ_ALIGN_CHARACTER_MAP" : "ACGTN",
+            "SEQ_ALIGN_GAP_OPEN"	 : 	1.5*penalty,
+            "SEQ_ALIGN_GAP_OPEN2"	 :	1.5*penalty,
+            "SEQ_ALIGN_GAP_EXTEND"   : 	0.1*penalty,
+            "SEQ_ALIGN_GAP_EXTEND2"  : 	0.1*penalty,
+            "SEQ_ALIGN_FRAMESHIFT"   :  2*penalty,
+            "SEQ_ALIGN_NO_TP"        :  1,
+            "SEQ_ALIGN_AFFINE"       :  1,
+            "SEQ_ALIGN_CODON_ALIGN"  :  1
+        };
 
-            options["SEQ_ALIGN_SCORE_MATRIX"] = pSM2cSM(igh_matrix, "ACDEFGHIKLMNPQRSTVWY", code["code"], code["ordering"]);
-            shift_penalty = computeExpectedPerBaseScore (.5,igh_matrix,base_frequencies);
+       base_frequencies = {
+                                {   0.069352301}
+                                {   0.021000333}
+                                {   0.049862283}
+                                {   0.026563029}
+                                {   0.033026253}
+                                {     0.1054545}
+                                {   0.008970554}
+                                {   0.036648952}
+                                {   0.036329907}
+                                {   0.065164842}
+                                {   0.021805663}
+                                {   0.032992805}
+                                {     0.0348093}
+                                {   0.036818766}
+                                {   0.054168098}
+                                {    0.12149678}
+                                {   0.082464001}
+                                {   0.053564744}
+                                {   0.038383113}
+                                {    0.07112377}
+                            };
 
-            _cdnaln_partialScoreMatrices = cSM2partialSMs(options["SEQ_ALIGN_SCORE_MATRIX"],
-                    {{shift_penalty__*1.5,shift_penalty__,shift_penalty__,shift_penalty*1.5}});
 
 
-            options ["SEQ_ALIGN_PARTIAL_3x1_SCORES"] = _cdnaln_partialScoreMatrices["3x1"];
-            options ["SEQ_ALIGN_PARTIAL_3x2_SCORES"] = _cdnaln_partialScoreMatrices["3x2"];
-            options ["SEQ_ALIGN_PARTIAL_3x4_SCORES"] = _cdnaln_partialScoreMatrices["3x4"];
-            options ["SEQ_ALIGN_PARTIAL_3x5_SCORES"] = _cdnaln_partialScoreMatrices["3x5"];
+        options["SEQ_ALIGN_SCORE_MATRIX"] = pSM2cSM(igh_matrix, "ACDEFGHIKLMNPQRSTVWY", code["code"], code["ordering"]);
+        shift_penalty = computeExpectedPerBaseScore (.5,igh_matrix,base_frequencies);
 
-            options ["MATCH"] = computeExpectedPerBaseScore (1,igh_matrix,base_frequencies);
-            options ["E"] = Max (0.1, computeExpectedPerBaseScore (.4,igh_matrix,base_frequencies));
+        _cdnaln_partialScoreMatrices = cSM2partialSMs(options["SEQ_ALIGN_SCORE_MATRIX"],
+                {{shift_penalty__*1.5,shift_penalty__,shift_penalty__,shift_penalty*1.5}});
 
-            return options;
-    }
 
-    // -------------------------------------------------------------------------- //
+        options ["SEQ_ALIGN_PARTIAL_3x1_SCORES"] = _cdnaln_partialScoreMatrices["3x1"];
+        options ["SEQ_ALIGN_PARTIAL_3x2_SCORES"] = _cdnaln_partialScoreMatrices["3x2"];
+        options ["SEQ_ALIGN_PARTIAL_3x4_SCORES"] = _cdnaln_partialScoreMatrices["3x4"];
+        options ["SEQ_ALIGN_PARTIAL_3x5_SCORES"] = _cdnaln_partialScoreMatrices["3x5"];
 
-    lfunction cSM2partialSMs(_cdnScoreMatrix, penalties) {
-        m3x5  =  { 65, 640 };
-        m3x4  =  { 65, 256 };
-        m3x2  =  { 65,  48 };
-        m3x1  =  { 65,  12 };
+        options ["MATCH"] = computeExpectedPerBaseScore (1,igh_matrix,base_frequencies);
+        options ["E"] = Max (0.1, computeExpectedPerBaseScore (.4,igh_matrix,base_frequencies));
 
+        return options;
+}
+
+lfunction cSM2partialSMs(_cdnScoreMatrix, penalties) {
+        
+        m3x5  =  { 126, 1250 };
+        m3x4  =  { 126, 500 };
+        m3x2  =  { 126,  75 };
+        m3x1  =  { 126,  15 };
+        
+ 
         if (utility.Array1D (penalties) == 4) {
             p3x1 = penalties [0];
             p3x2 = penalties [1];
@@ -843,19 +843,19 @@ namespace IgSCUEAL {
         }
 
         for ( thisCodon = 0; thisCodon < 64; thisCodon += 1 ) {
-            for ( d1 = 0; d1 < 4; d1 += 1 ) {
+            for ( d1 = 0; d1 < 5; d1 += 1 ) {
                 max100 = -1e100;
                 max010 = -1e100;
                 max001 = -1e100;
 
-                for ( d2 = 0; d2 < 4; d2 += 1 ) {
-                    partialCodon = 4 * d1 + d2;
+                for ( d2 = 0; d2 < 5; d2 += 1 ) {
+                    partialCodon = 5 * d1 + d2;
                     max110 = -1e100;
                     max101 = -1e100;
                     max011 = -1e100;
 
-                    for ( d3 = 0; d3 < 4; d3 += 1 ) {
-                        thisCodon2 = 4 * partialCodon + d3;
+                    for ( d3 = 0; d3 < 5; d3 += 1 ) {
+                        thisCodon2 = 5 * partialCodon + d3;
                         thisScore = _cdnScoreMatrix[ thisCodon ][ thisCodon2 ];
 
                         // this is the trivial and stupid way of doing it, but it should work
@@ -876,14 +876,14 @@ namespace IgSCUEAL {
                         m3x4[ thisCodon ][ 4 * thisCodon2 + 3 ] = thisScore - p3x4;
 
                         // d1 is 1
-                        max100 = Max( max100, _cdnScoreMatrix[ thisCodon ][ 16 * d1 + 4 * d2 + d3 ] );
-                        max010 = Max( max010, _cdnScoreMatrix[ thisCodon ][ 16 * d2 + 4 * d1 + d3 ] );
-                        max001 = Max( max001, _cdnScoreMatrix[ thisCodon ][ 16 * d2 + 4 * d3 + d1 ] );
+                        max100 = Max( max100, _cdnScoreMatrix[ thisCodon ][ 25 * d1 + 5 * d2 + d3 ] );
+                        max010 = Max( max010, _cdnScoreMatrix[ thisCodon ][ 25 * d2 + 5 * d1 + d3 ] );
+                        max001 = Max( max001, _cdnScoreMatrix[ thisCodon ][ 25 * d2 + 5 * d3 + d1 ] );
 
                         // d1 and d2 are 1
-                        max110 = Max( max110, _cdnScoreMatrix[ thisCodon ][ 16 * d1 + 4 * d2 + d3 ] );
-                        max101 = Max( max101, _cdnScoreMatrix[ thisCodon ][ 16 * d1 + 4 * d3 + d2 ] );
-                        max011 = Max( max011, _cdnScoreMatrix[ thisCodon ][ 16 * d3 + 4 * d1 + d2 ] );
+                        max110 = Max( max110, _cdnScoreMatrix[ thisCodon ][ 25 * d1 + 5 * d2 + d3 ] );
+                        max101 = Max( max101, _cdnScoreMatrix[ thisCodon ][ 25 * d1 + 5 * d3 + d2 ] );
+                        max011 = Max( max011, _cdnScoreMatrix[ thisCodon ][ 25 * d3 + 5 * d1 + d2 ] );
                     }
 
                     m3x2[ thisCodon ][ 3 * partialCodon + 0 ] = max110 - p3x2;
@@ -900,41 +900,149 @@ namespace IgSCUEAL {
 
         return { "3x1": m3x1, "3x2": m3x2, "3x4": m3x4, "3x5": m3x5 };
     }
+    
+    
+    
+    lfunction _digits (index) {
+        return {{index__$25, index__ % 25 $ 5, index__ % 5}};
+    };
+
+    lfunction _hazN (digits) {
+        return digits [0] == 4 || digits [1] == 4 || digits [2] == 4;
+    };
+
+    lfunction _map_to_nuc (digits) {
+        return digits [0] * 16 + digits [1] * 4 + digits[2];
+    };
+
+    lfunction _generate_resolutions (digits) {
+        resolutions = {};
+        for (k = 0; k < 4; k += 1) {
+            try = digits;
+            if (digits[0] == 4) {
+                try [0] = k;
+            } 
+            for (k2 = 0; k2 < 4; k2 += 1) {
+                if (digits[1] == 4) {
+                    try [1] = k;
+                } 
+                for (k3 = 0; k3 < 4; k3 += 1) {
+                    if (digits[2] == 4) {
+                        try [2] = k;
+                    } 
+                    resolutions[_map_to_nuc (try)] = 1;
+                }
+            }
+        }
+        return Rows(resolutions);
+    };  
 
     // -------------------------------------------------------------------------- //
 
     lfunction pSM2cSM (_scorematrix, _letters, code, ordering) {
 
-        _cdnScoreMatrix  = { 65,65 };
+        _cdnScoreMatrix  = { 126 , 126 };
         _mapping      = utility.MapStrings ( ordering, _letters );
-
-        for ( _k = 0; _k < 64; _k += 1 ) {
-            _mappedK = _mapping[ code[ _k ] ];
-            if ( _mappedK >= 0) {
-                for ( _k2 = _k; _k2 < 64; _k2 += 1 ) {
-                    _mappedK2 = _mapping[ code[ _k2 ] ];
-                    if ( _mappedK2 >= 0 ) {
-                        _aScore = _scorematrix[ _mappedK ][ _mappedK2 ];
-                        if ( _mappedK == _mappedK2 && _k2 > _k ) {
-                            _aScore = _aScore - 1;
-                        }
-                    } else {
-                        // stop codons don't match anything
+        
+        
+        for ( _k = 0; _k < 125; _k += 1 ) {
+        
+            letters1 = _digits (_k);
+            
+            if (_hazN (letters1)) {
+                 letters1 = _generate_resolutions (letters1);
+                  for ( _k2 = _k; _k2 < 125 ; _k2 += 1 ) {
+                    letters2 = _digits (_k2);
+                    if (_hazN (letters2) == 0) { 
+                        codon2 = _map_to_nuc(letters2);
+                        _mappedK2 = _mapping[ code[ codon2 ] ];
                         _aScore = -1e4;
-                    }
-                    _cdnScoreMatrix[ _k ][ _k2 ] = _aScore;
-                    _cdnScoreMatrix[ _k2 ][ _k ] = _aScore;
-                }
+                        if (_mappedK2 >= 0) {
+                            
+                            res_count = utility.Array1D (letters1);
+                            for (r = 0; r < res_count; r += 1) {
+                                resolution_codon = 0 + letters1[r];
+                                resolution_aa = _mapping[ code[ resolution_codon  ] ];
+                                if (resolution_aa >= 0) {
+                                    try_score = _scorematrix[ resolution_aa ][ _mappedK2 ];
+                                    if (resolution_aa == _mappedK2 && codon2 != resolution_codon) {
+                                        try_score = try_score - 1;
+                                    }
+                                    _aScore = Max (_aScore, try_score);
+                                }
+                            }  
+                        }
+                        
+                         
+                        _cdnScoreMatrix[ _k ][ _k2 ] = _aScore;
+                        _cdnScoreMatrix[ _k2 ][ _k ] = _aScore;
+                    } 
+                 }
             } else {
-                for ( _k2 = _k; _k2 < 64; _k2 += 1 ) {
-                    _mappedK2 = _mapping[ code[ _k2 ] ];
-                    if ( _mappedK2 < 0 ) {
-                        // don't penalize stop codons matching themselves
-                        _cdnScoreMatrix[ _k ][ _k2 ] = 0;
-                        _cdnScoreMatrix[ _k2 ][ _k ] = 0;
-                    } else {
-                        _cdnScoreMatrix[ _k ][ _k2 ] = -1e4;
-                        _cdnScoreMatrix[ _k2 ][ _k ] = -1e4;
+                codon1 = _map_to_nuc(letters1);
+        
+                _mappedK = _mapping[ code[ codon1 ] ];
+            
+                if ( _mappedK >= 0) {
+                    for ( _k2 = _k; _k2 < 125 ; _k2 += 1 ) {
+                        letters2 = _digits (_k2);
+            
+                        if (_hazN (letters2)) {
+                           _aScore = -1e4;
+                           letters2 = _generate_resolutions (letters2);
+                            res_count = utility.Array1D (letters2);
+                            for (r = 0; r < res_count; r += 1) {
+                                resolution_codon = 0 + letters2[r];
+                                resolution_aa = _mapping[ code[ resolution_codon  ] ];
+                                if (resolution_aa >= 0) {
+                                    try_score = _scorematrix[ _mappedK ][ resolution_aa ];
+                                    if (resolution_aa == _mappedK && codon1 != resolution_codon) {
+                                        try_score = try_score - 1;
+                                    }
+                                    _aScore = Max (_aScore, try_score);
+                                }
+                            }  
+                            _cdnScoreMatrix[ _k ][ _k2 ] = _aScore;
+                            _cdnScoreMatrix[ _k2 ][ _k ] = _aScore;
+                            continue;
+                        } 
+            
+                        codon2 = _map_to_nuc(letters2);
+
+                        _mappedK2 = _mapping[ code[ codon2 ] ];
+                        if ( _mappedK2 >= 0 ) {
+                            _aScore = _scorematrix[ _mappedK ][ _mappedK2 ];
+                            if ( _mappedK == _mappedK2 && _k2 > _k ) {
+                                _aScore = _aScore - 1; // synonymous match 
+                            }
+                        } else {
+                            // stop codons don't match anything
+                            _aScore = -1e4;
+                        }
+                        _cdnScoreMatrix[ _k ][ _k2 ] = _aScore;
+                        _cdnScoreMatrix[ _k2 ][ _k ] = _aScore;
+                    }
+                } else { // stop codons here
+                    for ( _k2 = _k; _k2 < 125; _k2 += 1 ) {
+
+                        letters2 = _digits (_k2);
+            
+                        if (_hazN (letters2)) {
+                            continue;
+                        } 
+            
+                        codon2 = _map_to_nuc(letters2);
+
+                        _mappedK2 = _mapping[ code[ codon2 ] ];
+
+                        if ( _mappedK2 < 0 ) {
+                            // don't penalize stop codons matching themselves
+                            _cdnScoreMatrix[ _k ][ _k2 ] = 0;
+                            _cdnScoreMatrix[ _k2 ][ _k ] = 0;
+                        } else {
+                            _cdnScoreMatrix[ _k ][ _k2 ] = -1e4;
+                            _cdnScoreMatrix[ _k2 ][ _k ] = -1e4;
+                        }
                     }
                 }
             }
