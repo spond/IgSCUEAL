@@ -1,3 +1,4 @@
+LoadFunctionLibrary ("libv3/all-terms.bf");
 LoadFunctionLibrary ("libv3/IOFunctions.bf");
 LoadFunctionLibrary ("libv3/UtilityFunctions.bf");
 LoadFunctionLibrary ("libv3/tasks/mpi.bf");
@@ -73,6 +74,7 @@ io.ReportProgressMessageMD("IGSCUEAL", "Load", "Loaded " + read_set["sequences"]
 SetDialogPrompt ("Save main screening results to");
 fprintf (PROMPT_FOR_FILE, CLEAR_FILE, KEEP_OPEN);
 IgSCUEAL.result.csv = utility.GetEnvVariable ("LAST_FILE_PATH");
+//console.log (IgSCUEAL.result.csv);
 
 SetDialogPrompt ("Save alternative rearrangements to:");
 fprintf (PROMPT_FOR_FILE, CLEAR_FILE, KEEP_OPEN, "Name\tRearrangement\tSupport\n");
@@ -102,8 +104,8 @@ for (seq_id = 0; seq_id < read_set["sequences"]; ) {
     for (batch_id = 0; batch_id < send.size; batch_id += 1) {
         this_read = alignments.GetIthSequence ("reads", seq_id + batch_id);
         send.indices + (seq_id + batch_id + 1);
-        send.ids + this_read["id"];
-        send.sequences + this_read["sequence"];
+        send.ids + this_read[terms.id];
+        send.sequences + this_read[terms.data.sequence];
     }
 
 
@@ -123,6 +125,8 @@ fprintf (IgSCUEAL.result.rearr.tsv, CLOSE_FILE);
 // ---------------------------------------------------------------------------------------------------------
 
 lfunction igh_human_report_read_batch (node, batch_results, arguments) {
+    //console.log (batch_results);
+
     size = utility.Array1D (batch_results);
     for (k = 0; k < size; k += 1) {
         igh_human_report_read (node, batch_results[k], arguments);
@@ -150,8 +154,12 @@ lfunction igh_human_report_read (node, read_result, arguments) {
         result[i] = "";
     }
 
+    //console.log (read_result);
+
     result[0] = "" + read_result ["index"];
     result[1] = read_result["ID"];
+
+    //console.log (result);
 
     if (Type (read_result["assignment"]) != "AssociativeList") {
         result [2] = "Error: alignment failed";

@@ -1,3 +1,6 @@
+
+LoadFunctionLibrary ("libv3/all-terms.bf");
+
 LoadFunctionLibrary ("libv3/IOFunctions.bf");
 LoadFunctionLibrary ("libv3/UtilityFunctions.bf");
 LoadFunctionLibrary ("libv3/tasks/alignments.bf");
@@ -77,8 +80,8 @@ namespace IgSCUEAL.phylo {
 
 
             DataSetFilter   qry_f = CreateFilter (qry, 1);
-            
-            
+
+
             unique_sites = utility.Array1D (qry_f.site_freqs);
             resolutions  = {};
             GetDataInfo (map_to_unique, qry_f);
@@ -130,7 +133,7 @@ namespace IgSCUEAL.phylo {
                 if (logL_by_branch [this_branch] < best_AIC) {
                     best_AIC = logL_by_branch [this_branch];
                     divergence = BranchLength (screening_tree, "Query") + ((reference_data[segment_name])["lengths"]) [this_branch];
-                    
+
                 }
             }
 
@@ -701,6 +704,7 @@ namespace IgSCUEAL {
                         overall['SCORE'] = result[0];
                         overall['RAW-REF'] = result[1];
                         overall['RAW-QRY'] = result[2];
+
                     }
                 }
             }
@@ -720,8 +724,9 @@ namespace IgSCUEAL {
             console.log ("Score :" + overall['SCORE']);
             console.log ("Computed : " + computed_score);
             console.log ("E :" + alignment_settings["E"]);
-            console.log (overall); */
-            
+            console.log (overall);
+            */
+
 
             if (alignment_settings["E"] <= computed_score) {
                 utility.Extend (overall, correctReadUsingCodonAlignedData (overall['RAW-REF'], overall['RAW-QRY'], alignment_settings["code"]));
@@ -823,13 +828,13 @@ lfunction define_alignment_settings (code) {
 }
 
 lfunction cSM2partialSMs(_cdnScoreMatrix, penalties) {
-        
+
         m3x5  =  { 126, 1250 };
         m3x4  =  { 126, 500 };
         m3x2  =  { 126,  75 };
         m3x1  =  { 126,  15 };
-        
- 
+
+
         if (utility.Array1D (penalties) == 4) {
             p3x1 = penalties [0];
             p3x2 = penalties [1];
@@ -900,9 +905,9 @@ lfunction cSM2partialSMs(_cdnScoreMatrix, penalties) {
 
         return { "3x1": m3x1, "3x2": m3x2, "3x4": m3x4, "3x5": m3x5 };
     }
-    
-    
-    
+
+
+
     lfunction _digits (index) {
         return {{index__$25, index__ % 25 $ 5, index__ % 5}};
     };
@@ -921,21 +926,21 @@ lfunction cSM2partialSMs(_cdnScoreMatrix, penalties) {
             try = digits;
             if (digits[0] == 4) {
                 try [0] = k;
-            } 
+            }
             for (k2 = 0; k2 < 4; k2 += 1) {
                 if (digits[1] == 4) {
                     try [1] = k;
-                } 
+                }
                 for (k3 = 0; k3 < 4; k3 += 1) {
                     if (digits[2] == 4) {
                         try [2] = k;
-                    } 
+                    }
                     resolutions[_map_to_nuc (try)] = 1;
                 }
             }
         }
         return Rows(resolutions);
-    };  
+    };
 
     // -------------------------------------------------------------------------- //
 
@@ -943,50 +948,50 @@ lfunction cSM2partialSMs(_cdnScoreMatrix, penalties) {
 
         _cdnScoreMatrix  = { 126 , 126 };
         _mapping      = utility.MapStrings ( ordering, _letters );
-        
-        
+
+
         for ( _k = 0; _k < 125; _k += 1 ) {
-        
+
             letters1 = _digits (_k);
-            
+
             if (_hazN (letters1)) {
                  letters1 = _generate_resolutions (letters1);
                   for ( _k2 = _k; _k2 < 125 ; _k2 += 1 ) {
                     letters2 = _digits (_k2);
-                    if (_hazN (letters2) == 0) { 
+                    if (_hazN (letters2) == 0) {
                         codon2 = _map_to_nuc(letters2);
                         _mappedK2 = _mapping[ code[ codon2 ] ];
                         _aScore = -1e4;
                         if (_mappedK2 >= 0) {
-                            
+
                             res_count = utility.Array1D (letters1);
                             for (r = 0; r < res_count; r += 1) {
                                 resolution_codon = 0 + letters1[r];
                                 resolution_aa = _mapping[ code[ resolution_codon  ] ];
                                 if (resolution_aa >= 0) {
-                                    try_score = _scorematrix[ resolution_aa ][ _mappedK2 ];
+                                    try_score = _scorematrix[ resolution_aa ][ _mappedK2 ] - 1;
                                     if (resolution_aa == _mappedK2 && codon2 != resolution_codon) {
                                         try_score = try_score - 1;
                                     }
                                     _aScore = Max (_aScore, try_score);
                                 }
-                            }  
+                            }
                         }
-                        
-                         
+
+
                         _cdnScoreMatrix[ _k ][ _k2 ] = _aScore;
                         _cdnScoreMatrix[ _k2 ][ _k ] = _aScore;
-                    } 
+                    }
                  }
             } else {
                 codon1 = _map_to_nuc(letters1);
-        
+
                 _mappedK = _mapping[ code[ codon1 ] ];
-            
+
                 if ( _mappedK >= 0) {
                     for ( _k2 = _k; _k2 < 125 ; _k2 += 1 ) {
                         letters2 = _digits (_k2);
-            
+
                         if (_hazN (letters2)) {
                            _aScore = -1e4;
                            letters2 = _generate_resolutions (letters2);
@@ -995,25 +1000,25 @@ lfunction cSM2partialSMs(_cdnScoreMatrix, penalties) {
                                 resolution_codon = 0 + letters2[r];
                                 resolution_aa = _mapping[ code[ resolution_codon  ] ];
                                 if (resolution_aa >= 0) {
-                                    try_score = _scorematrix[ _mappedK ][ resolution_aa ];
+                                    try_score = _scorematrix[ _mappedK ][ resolution_aa ] - 1;
                                     if (resolution_aa == _mappedK && codon1 != resolution_codon) {
                                         try_score = try_score - 1;
                                     }
                                     _aScore = Max (_aScore, try_score);
                                 }
-                            }  
+                            }
                             _cdnScoreMatrix[ _k ][ _k2 ] = _aScore;
                             _cdnScoreMatrix[ _k2 ][ _k ] = _aScore;
                             continue;
-                        } 
-            
+                        }
+
                         codon2 = _map_to_nuc(letters2);
 
                         _mappedK2 = _mapping[ code[ codon2 ] ];
                         if ( _mappedK2 >= 0 ) {
                             _aScore = _scorematrix[ _mappedK ][ _mappedK2 ];
                             if ( _mappedK == _mappedK2 && _k2 > _k ) {
-                                _aScore = _aScore - 1; // synonymous match 
+                                _aScore = _aScore - 1; // synonymous match
                             }
                         } else {
                             // stop codons don't match anything
@@ -1026,11 +1031,11 @@ lfunction cSM2partialSMs(_cdnScoreMatrix, penalties) {
                     for ( _k2 = _k; _k2 < 125; _k2 += 1 ) {
 
                         letters2 = _digits (_k2);
-            
+
                         if (_hazN (letters2)) {
                             continue;
-                        } 
-            
+                        }
+
                         codon2 = _map_to_nuc(letters2);
 
                         _mappedK2 = _mapping[ code[ codon2 ] ];
