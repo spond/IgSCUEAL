@@ -134,6 +134,25 @@ class colLengthClass:
 
 ####################################
 
+def ensure_key_sum (dict, key, value):
+    if not key in dict:
+        dict[key] = value
+    else:
+        dict[key] += value
+
+def ensure_key_list (dict, key, value):
+    if not key in dict:
+        dict[key] = [value]
+    else:
+        dict[key].append (value)
+
+def ensure_key (dict, key):
+    if not key in dict:
+        dict[key] = {}
+
+
+####################################
+
 def add_random_suffix (name, sep = '_', length = 10):
     return name + sep + "".join (random.sample ("0123456789ABDCDE", length))
 
@@ -226,6 +245,17 @@ def cdr3 (line):
 
 ####################################
 
+def compute_divergence (line):
+    try:
+        tl = len (line[column_mapper["Sequence"]])
+        jl = len (line[column_mapper["J"]])
+        vl = tl - jl - len (line[column_mapper["CH"]])
+        return (float (line[column_mapper["V-divergence"]]) * vl + float (line[column_mapper["J-divergence"]]) * jl) / tl
+    except Exception as e:
+        return -1.
+
+####################################
+
 def increment_dict_key (dict, key, value):
     if not key in dict:
         dict [key] = value
@@ -271,7 +301,8 @@ def outputUsage (line_filter, support, support_col, mappingFunction):
 
 ####################################
 
-def outputSummary (line_filter, support, support_col, rearrangement_col, mappingFunction = None, histogram = None, read_alternatives = None, coverages = None, cluster_sizes = None):
+def outputSummary (line_filter, support, support_col, rearrangement_col, mappingFunction = None, histogram = None, read_alternatives = None, coverages = None, cluster_sizes = None, annotations = None):
+
 
     binByRearrangement = {}
     total        = 0
@@ -312,6 +343,8 @@ def outputSummary (line_filter, support, support_col, rearrangement_col, mapping
             except:
                 continue
 
+    filtered_cluster_sizes = {}
+
     for line in ig_reader:
         total += 1
         if len ([k for k in line if len (k) >0]) > 10: # not a failed alignment
@@ -334,7 +367,6 @@ def outputSummary (line_filter, support, support_col, rearrangement_col, mapping
                     add_to_counts (line, 'Failed filter')
                     continue
 
-
                 filtered_in += 1
 
                 if read_alternatives and line[column_mapper['Name']] in alternatives:
@@ -351,6 +383,19 @@ def outputSummary (line_filter, support, support_col, rearrangement_col, mapping
 
                 add_to_counts (line, 'Passed filter')
 
+                my_cluster_size = None
+
+                if cluster_sizes:
+                    for m in make_sequence_id_2 (line):
+                        sid = m (line)
+                        if sid in cluster_sizes:
+                            my_cluster_size = cluster_sizes[sid]
+                            ensure_key_sum (filtered_cluster_sizes, my_cluster_size, 1)
+                            break
+
+                    if my_cluster_size is None:
+                        raise Exception ("Missing cluster size")
+
 
                 if coverages is not None:
                     for key in coverages:
@@ -358,7 +403,7 @@ def outputSummary (line_filter, support, support_col, rearrangement_col, mapping
                             coverage_mapping[key] += 1
 
 
-                if (histogram):
+                if histogram:
                     prop   = histogram (line)
 
                     for a in alleles:
@@ -367,17 +412,21 @@ def outputSummary (line_filter, support, support_col, rearrangement_col, mapping
                         else:
                             binByRearrangement [a[0]]['Count'] += a[1]
 
-                        if prop not in binByRearrangement [a[0]]:
-                            binByRearrangement [a[0]][prop] = a[1]
+                        if cluster_sizes or annotations:
+                            ensure_key (binByRearrangement [a[0]], prop)
+                            if cluster_sizes:
+                                ensure_key_list (binByRearrangement [a[0]][prop], 'Clones', my_cluster_size)
+                            if annotations:
+                                for tag, functor in annotations.items():
+                                    ensure_key_list (binByRearrangement [a[0]][prop], tag , functor(line))
+
+                            ensure_key_sum (binByRearrangement [a[0]][prop], 'Count', a[1])
                         else:
-                            binByRearrangement [a[0]][prop] += a[1]
+                            ensure_key_sum (binByRearrangement [a[0]], prop, a[1])
 
                 else:
                     for a in alleles:
-                        if a[0] not in binByRearrangement:
-                            binByRearrangement [a[0]] = a[1]
-                        else:
-                            binByRearrangement [a[0]] += a[1]
+                        ensure_key_sum (binByRearrangement, a[0], a[1])
             else:
                 add_to_counts (line, 'Low support')
 
@@ -386,7 +435,7 @@ def outputSummary (line_filter, support, support_col, rearrangement_col, mapping
     if coverages is not None:
         binByRearrangement ['Summary'].append ( ['Coverage', coverage_mapping])
     if cluster_sizes is not None:
-        binByRearrangement ['Summary'].append ( ['Cluster sizes', cluster_sizes])
+        binByRearrangement ['Summary'].append ( ['Cluster sizes', filtered_cluster_sizes])
 
 
     return json.dumps (binByRearrangement, indent = 2)
@@ -529,15 +578,19 @@ if cli_args.column is not None:
         line_filter = colLengthClass (col_triple, column_headings, line_filter)
 
 cluster_sizes = None
+cluster_size_by_centroid = None
 
 if cli_args.cluster is not None:
     filter_set = set ()
 
     cluster_sizes = {}
+    cluster_size_by_centroid = {}
 
     for group in json.load (cli_args.cluster):
         for cluster in group:
-            filter_set.add (cluster['centroid'].split('\n')[0][1:])
+            centroid_id = cluster['centroid'].split('\n')[0][1:]
+            filter_set.add (centroid_id)
+            cluster_size_by_centroid[centroid_id] = cluster['size']
             if not cluster['size'] in cluster_sizes:
                 cluster_sizes[cluster['size']] = 0
             cluster_sizes[cluster['size']] += 1
@@ -547,7 +600,7 @@ if cli_args.cluster is not None:
 
 if cli_args.rearrangement is not None:
     cdr3_id = column_mapper["CDR3_AA"]
-    print (outputSummary (line_filter, cli_args.support, column_mapper['Support'], None,reduceRearrangement,cdr3, cli_args.alternatives, coverages = cli_args.coverage, cluster_sizes = cluster_sizes))
+    print (outputSummary (line_filter, cli_args.support, column_mapper['Support'], None,reduceRearrangement,cdr3, cli_args.alternatives, coverages = cli_args.coverage, cluster_sizes = cluster_size_by_centroid, annotations = {'Divergence' : compute_divergence}))
 
 else:
     if cli_args.length != '':
