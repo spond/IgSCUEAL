@@ -81,7 +81,7 @@ fprintf (PROMPT_FOR_FILE, CLEAR_FILE, KEEP_OPEN, "Name\tRearrangement\tSupport\n
 IgSCUEAL.result.rearr.tsv = utility.GetEnvVariable ("LAST_FILE_PATH");
 
 
-screening.queue = mpi.CreateQueue ({"Headers" : utility.GetListOfLoadedModules (),
+screening.queue = mpi.CreateQueue ({"Headers" : utility.GetListOfLoadedModules ("libv3/"),
                                     "Variables" : {{"igh_human.settings", "NORMALIZE_SEQUENCE_NAMES"}}});
 
 

@@ -139,7 +139,7 @@ namespace IgSCUEAL.phylo {
 
             labels = ((reference_data[segment_name])["labels"]);
             logL_by_branch = utility.Map (logL_by_branch, "_logL_", "Exp(0.5*(^'`&best_AIC`'-_logL_))");
-            sum = + utility.Map (utility.Values (logL_by_branch), "_logL_", "0 + _logL_");
+            sum = +logL_by_branch;
             raw_names_supported = utility.Map (logL_by_branch, "_logL_", "_logL_/^'`&sum`'");
 
             supported = {};
@@ -1111,6 +1111,18 @@ lfunction cSM2partialSMs(_cdnScoreMatrix, penalties) {
 
         if (offsetTo < 0) {
             offsetTo = Abs(qry)-1; /*if no trailing indels then to end of read*/
+        }
+
+        // check to see if the prefix in REF has some out-of-frame indels so that we can start offsetFrom in the correct frame */
+        
+        if (offsetFrom > 0) {
+            frame_skips = 0;
+            for (i = 0; i < offsetFrom; i += 1) {
+               if ((ref[i] && 1) != ref[i]) {
+                    frame_skips += 1;
+               }
+            }
+            offsetFrom += -frame_skips;
         }
 
         seqOffset  = offsetFrom;          /*set the offset of the read relative to the reference. ie the number of indels needed on the read to align to the reference */
